@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>铝型材B2B API 测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .api-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .api-section h3 {
+            color: #007bff;
+            margin-top: 0;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>铝型材B2B API 测试页面</h1>
+        
+        <div class="api-section">
+            <h3>产品相关API</h3>
+            <button onclick="testAPI('/api/categories/')">获取产品分类</button>
+            <button onclick="testAPI('/api/products/')">获取产品列表</button>
+            <button onclick="testAPI('/api/products/featured/')">获取推荐产品</button>
+            <div id="product-result" class="result"></div>
+        </div>
+
+        <div class="api-section">
+            <h3>新闻相关API</h3>
+            <button onclick="testAPI('/api/tags/')">获取标签列表</button>
+            <button onclick="testAPI('/api/articles/')">获取文章列表</button>
+            <button onclick="testAPI('/api/articles/featured/')">获取推荐文章</button>
+            <div id="news-result" class="result"></div>
+        </div>
+
+        <div class="api-section">
+            <h3>关于我们API</h3>
+            <button onclick="testAPI('/api/company-info/')">获取公司信息</button>
+            <button onclick="testAPI('/api/advantages/')">获取企业优势</button>
+            <button onclick="testAPI('/api/certificates/')">获取资质证书</button>
+            <div id="about-result" class="result"></div>
+        </div>
+
+        <div class="api-section">
+            <h3>询价API</h3>
+            <button onclick="testAPI('/api/contact-info/')">获取联系信息</button>
+            <button onclick="testInquiry()">测试询价提交</button>
+            <div id="inquiry-result" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testAPI(endpoint) {
+            const resultDiv = document.querySelector('.result');
+            resultDiv.innerHTML = '加载中...';
+            resultDiv.className = 'result';
+            
+            try {
+                const response = await fetch(`http://127.0.0.1:8000${endpoint}`);
+                const data = await response.json();
+                
+                resultDiv.innerHTML = JSON.stringify(data, null, 2);
+                resultDiv.className = 'result success';
+            } catch (error) {
+                resultDiv.innerHTML = `错误: ${error.message}`;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        async function testInquiry() {
+            const resultDiv = document.getElementById('inquiry-result');
+            resultDiv.innerHTML = '提交中...';
+            resultDiv.className = 'result';
+            
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/inquiries/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: '测试用户',
+                        company: '测试公司',
+                        email: 'test@example.com',
+                        phone: '13800138000',
+                        subject: '产品询价测试',
+                        message: '这是一个测试询价',
+                        product_name: '铝型材产品',
+                        quantity: '100件'
+                    })
+                });
+                
+                const data = await response.json();
+                resultDiv.innerHTML = JSON.stringify(data, null, 2);
+                resultDiv.className = 'result success';
+            } catch (error) {
+                resultDiv.innerHTML = `错误: ${error.message}`;
+                resultDiv.className = 'result error';
+            }
+        }
+    </script>
+</body>
+</html> 

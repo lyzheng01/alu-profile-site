@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aluminum Expert - 专业铝型材制造商</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #3182ce;
+            --accent-color: #f7fafc;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --white: #ffffff;
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-heavy: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+        
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="fixed top-0 w-full z-50 transition-all duration-300 bg-white/95 shadow-sm backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-3 text-2xl font-bold text-gray-800">
+                    <i class="fas fa-industry text-blue-600 text-3xl"></i>
+                    <span>Aluminum Expert</span>
+                </a>
+
+                <!-- Navigation Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="font-medium transition-colors duration-300 relative text-blue-600">
+                        首页
+                        <div class="absolute -bottom-1 left-0 w-full h-0.5 bg-blue-600"></div>
+                    </a>
+                    
+                    <a href="#products" class="font-medium transition-colors duration-300 relative text-gray-700 hover:text-blue-600">
+                        产品中心
+                    </a>
+                    
+                    <a href="#news" class="font-medium transition-colors duration-300 relative text-gray-700 hover:text-blue-600">
+                        技术新闻
+                    </a>
+                    
+                    <a href="#about" class="font-medium transition-colors duration-300 relative text-gray-700 hover:text-blue-600">
+                        关于我们
+                    </a>
+                    
+                    <a href="#contact" class="font-medium transition-colors duration-300 relative text-gray-700 hover:text-blue-600">
+                        产品咨询
+                    </a>
+
+                    <!-- Language Switcher -->
+                    <div class="relative">
+                        <button class="flex items-center gap-2 px-4 py-2 bg-white border-2 border-blue-600 text-blue-600 rounded-full font-semibold transition-all duration-300 hover:bg-blue-600 hover:text-white hover:transform hover:-translate-y-0.5">
+                            <i class="fas fa-globe"></i>
+                            <span>中文</span>
+                            <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-purple-900 text-white overflow-hidden">
+        <div class="absolute inset-0 bg-black/20"></div>
+        <div class="relative z-10 text-center max-w-4xl mx-auto px-8">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 animate-on-scroll visible">
+                专业铝型材制造商
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 text-blue-100 animate-on-scroll visible">
+                提供高品质铝型材解决方案，满足您的各种需求。20年专业经验，全球30+国家出口，值得信赖的合作伙伴。
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center animate-on-scroll visible">
+                <a href="#contact" class="bg-white text-blue-900 px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl flex items-center justify-center gap-2">
+                    <i class="fas fa-phone"></i>
+                    立即咨询
+                </a>
+                <a href="#products" class="border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 hover:bg-white hover:text-blue-900 hover:transform hover:-translate-y-1 flex items-center justify-center gap-2">
+                    <i class="fas fa-eye"></i>
+                    查看产品
+                </a>
+            </div>
+        </div>
+        
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-20 left-20 w-32 h-32 border-2 border-white rounded-full"></div>
+            <div class="absolute bottom-20 right-20 w-24 h-24 border-2 border-white rounded-full"></div>
+            <div class="absolute top-1/2 left-1/4 w-16 h-16 border-2 border-white rounded-full"></div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-8">
+            <div class="text-center mb-16 animate-on-scroll visible">
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+                    我们的核心优势
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    专业的技术团队，先进的生产设备，完善的质量控制体系
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 animate-on-scroll visible">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i class="fas fa-cogs text-2xl text-blue-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">
+                        先进设备
+                    </h3>
+                    <p class="text-gray-600 text-center">
+                        采用国际先进的生产设备，确保产品质量稳定可靠
+                    </p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 animate-on-scroll visible">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i class="fas fa-certificate text-2xl text-blue-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">
+                        质量认证
+                    </h3>
+                    <p class="text-gray-600 text-center">
+                        通过ISO9001质量管理体系认证，产品质量有保障
+                    </p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 animate-on-scroll visible">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i class="fas fa-globe text-2xl text-blue-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">
+                        全球出口
+                    </h3>
+                    <p class="text-gray-600 text-center">
+                        产品远销全球30多个国家和地区，深受客户信赖
+                    </p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 animate-on-scroll visible">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i class="fas fa-users text-2xl text-blue-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">
+                        专业团队
+                    </h3>
+                    <p class="text-gray-600 text-center">
+                        拥有20多年专业经验的技术团队，为客户提供优质服务
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="py-20 bg-blue-900 text-white">
+        <div class="max-w-7xl mx-auto px-8">
+            <div class="grid md:grid-cols-4 gap-8 text-center">
+                <div class="animate-on-scroll visible">
+                    <div class="text-4xl md:text-5xl font-bold mb-2">20+</div>
+                    <div class="text-blue-200">年专业经验</div>
+                </div>
+                <div class="animate-on-scroll visible">
+                    <div class="text-4xl md:text-5xl font-bold mb-2">30+</div>
+                    <div class="text-blue-200">国家出口</div>
+                </div>
+                <div class="animate-on-scroll visible">
+                    <div class="text-4xl md:text-5xl font-bold mb-2">8万</div>
+                    <div class="text-blue-200">吨年产能</div>
+                </div>
+                <div class="animate-on-scroll visible">
+                    <div class="text-4xl md:text-5xl font-bold mb-2">24万</div>
+                    <div class="text-blue-200">平方米厂区</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Preview Section -->
+    <section id="products" class="py-20">
+        <div class="max-w-7xl mx-auto px-8">
+            <div class="text-center mb-16 animate-on-scroll visible">
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+                    产品中心
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    丰富的产品线，满足各种应用需求
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 animate-on-scroll visible">
+                    <div class="h-48 bg-gray-200 flex items-center justify-center">
+                        <i class="fas fa-industry text-4xl text-gray-400"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">
+                            建筑铝型材
+                        </h3>
+                        <p class="text-gray-600 mb-4">
+                            门窗、幕墙、装饰等建筑用铝型材
+                        </p>
+                        <a href="#" class="text-blue-600 font-semibold hover:text-blue-800 transition-colors duration-300">
+                            了解更多 →
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 animate-on-scroll visible">
+                    <div class="h-48 bg-gray-200 flex items-center justify-center">
+                        <i class="fas fa-industry text-4xl text-gray-400"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">
+                            工业铝型材
+                        </h3>
+                        <p class="text-gray-600 mb-4">
+                            机械设备、自动化生产线用铝型材
+                        </p>
+                        <a href="#" class="text-blue-600 font-semibold hover:text-blue-800 transition-colors duration-300">
+                            了解更多 →
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 animate-on-scroll visible">
+                    <div class="h-48 bg-gray-200 flex items-center justify-center">
+                        <i class="fas fa-industry text-4xl text-gray-400"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">
+                            汽车铝型材
+                        </h3>
+                        <p class="text-gray-600 mb-4">
+                            汽车轻量化用铝型材解决方案
+                        </p>
+                        <a href="#" class="text-blue-600 font-semibold hover:text-blue-800 transition-colors duration-300">
+                            了解更多 →
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12 animate-on-scroll visible">
+                <a href="#" class="bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 hover:bg-blue-700 hover:transform hover:-translate-y-1">
+                    查看全部产品
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-8">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="animate-on-scroll visible">
+                    <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+                        关于我们
+                    </h2>
+                    <p class="text-lg text-gray-600 mb-6">
+                        我们是一家专业的铝型材制造商，拥有20多年的生产经验。公司位于安徽省宣城市，占地面积24万平方米，年产能8万吨。
+                    </p>
+                    <p class="text-lg text-gray-600 mb-6">
+                        我们致力于为客户提供高品质的铝型材产品，产品远销全球30多个国家和地区，深受客户信赖。
+                    </p>
+                    <p class="text-lg text-gray-600 mb-8">
+                        公司拥有先进的生产设备和专业的技术团队，通过ISO9001质量管理体系认证，确保产品质量稳定可靠。
+                    </p>
+                    <a href="#" class="bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 hover:bg-blue-700 hover:transform hover:-translate-y-1">
+                        了解更多
+                    </a>
+                </div>
+                
+                <div class="animate-on-scroll visible">
+                    <div class="bg-white p-8 rounded-xl shadow-lg">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-6">为什么选择我们</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-check text-white text-sm"></i>
+                                </div>
+                                <span class="text-gray-700">质量第一、客户至上的经营理念</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-check text-white text-sm"></i>
+                                </div>
+                                <span class="text-gray-700">持续的技术创新和质量管理</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-check text-white text-sm"></i>
+                                </div>
+                                <span class="text-gray-700">全球30+国家的出口经验</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-check text-white text-sm"></i>
+                                </div>
+                                <span class="text-gray-700">24万平方米现代化生产基地</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20">
+        <div class="max-w-7xl mx-auto px-8">
+            <div class="text-center mb-16 animate-on-scroll visible">
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+                    产品咨询
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    多种联系方式，为您提供便捷的服务
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-lg text-center hover:shadow-xl transition-all duration-300 animate-on-scroll visible">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i class="fas fa-phone text-2xl text-blue-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">
+                        电话咨询
+                    </h3>
+                    <p class="text-gray-600 mb-4">
+                        +86 400-123-4567
+                    </p>
+                    <button class="bg-blue-600 text-white px-6 py-2 rounded-full font-semibold transition-all duration-300 hover:bg-blue-700">
+                        立即拨打
+                    </button>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-lg text-center hover:shadow-xl transition-all duration-300 animate-on-scroll visible">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i class="fab fa-whatsapp text-2xl text-blue-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">
+                        WhatsApp
+                    </h3>
+                    <p class="text-gray-600 mb-4">
+                        +86 138-1234-5678
+                    </p>
+                    <button class="bg-blue-600 text-white px-6 py-2 rounded-full font-semibold transition-all duration-300 hover:bg-blue-700">
+                        在线咨询
+                    </button>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-lg text-center hover:shadow-xl transition-all duration-300 animate-on-scroll visible">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i class="fas fa-envelope text-2xl text-blue-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">
+                        邮件咨询
+                    </h3>
+                    <p class="text-gray-600 mb-4">
+                        info@aluminum-expert.com
+                    </p>
+                    <button class="bg-blue-600 text-white px-6 py-2 rounded-full font-semibold transition-all duration-300 hover:bg-blue-700">
+                        发送邮件
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Aluminum Expert</h3>
+                    <p class="text-gray-400">
+                        专业铝型材制造商，提供高品质铝型材解决方案
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">产品中心</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>建筑铝型材</li>
+                        <li>工业铝型材</li>
+                        <li>汽车铝型材</li>
+                        <li>装饰铝型材</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">联系我们</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>电话：+86 400-123-4567</li>
+                        <li>邮箱：info@aluminum-expert.com</li>
+                        <li>地址：安徽省宣城市</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">关注我们</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-weixin text-2xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-weibo text-2xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-linkedin text-2xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>© 2024 Aluminum Expert. 保留所有权利.</p>
+                <p class="mt-2">专业铝型材制造商 | 高品质铝型材解决方案</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 滚动动画
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                navbar.classList.remove('bg-white/95', 'shadow-sm');
+                navbar.classList.add('bg-white/98', 'shadow-lg');
+            } else {
+                navbar.classList.remove('bg-white/98', 'shadow-lg');
+                navbar.classList.add('bg-white/95', 'shadow-sm');
+            }
+        });
+    </script>
+</body>
+</html> 

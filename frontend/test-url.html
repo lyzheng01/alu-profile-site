@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL解析测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-case { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .input { width: 100%; padding: 8px; margin: 5px 0; }
+        .result { background: #f5f5f5; padding: 10px; margin: 10px 0; border-radius: 3px; }
+        .button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 3px; cursor: pointer; }
+        .button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>URL解析测试</h1>
+    
+    <div class="test-case">
+        <h3>测试用例 1: 开发环境URL</h3>
+        <input type="text" class="input" id="test1" value="http://127.0.0.1:9001/media/products/test.jpg" readonly>
+        <div class="result" id="result1">点击测试按钮查看结果</div>
+        <button class="button" onclick="testUrl('test1', 'result1')">测试</button>
+    </div>
+    
+    <div class="test-case">
+        <h3>测试用例 2: 相对路径</h3>
+        <input type="text" class="input" id="test2" value="/media/products/test.jpg" readonly>
+        <div class="result" id="result2">点击测试按钮查看结果</div>
+        <button class="button" onclick="testUrl('test2', 'result2')">测试</button>
+    </div>
+    
+    <div class="test-case">
+        <h3>测试用例 3: 自定义URL</h3>
+        <input type="text" class="input" id="test3" placeholder="输入要测试的URL">
+        <div class="result" id="result3">点击测试按钮查看结果</div>
+        <button class="button" onclick="testUrl('test3', 'result3')">测试</button>
+    </div>
+    
+    <div class="test-case">
+        <h3>当前配置信息</h3>
+        <div class="result" id="config">
+            <div><strong>当前域名:</strong> <span id="current-domain"></span></div>
+            <div><strong>生产环境域名:</strong> http://lingyealu.cn</div>
+            <div><strong>API基础URL:</strong> <span id="api-base-url"></span></div>
+        </div>
+    </div>
+
+    <script>
+        // 显示当前配置
+        document.getElementById('current-domain').textContent = window.location.origin;
+        
+        // 模拟API配置
+        const PRODUCTION_DOMAIN = 'http://lingyealu.cn';
+        const API_BASE_URL = (() => {
+            if (typeof window !== 'undefined') {
+                const origin = window.location.origin;
+                if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+                    return origin;
+                }
+                return PRODUCTION_DOMAIN;
+            }
+            return '';
+        })();
+        
+        document.getElementById('api-base-url').textContent = API_BASE_URL;
+        
+        // URL解析函数
+        function resolveMediaUrl(url) {
+            if (!url) return '';
+            
+            try {
+                if (url.startsWith('/media/')) {
+                    return `${API_BASE_URL}${url}`;
+                }
+                
+                if (url.startsWith('http://') || url.startsWith('https://')) {
+                    const currentOrigin = window.location.origin;
+                    
+                    if (url.includes('127.0.0.1:9001') || url.includes('localhost:9001')) {
+                        const urlObj = new URL(url);
+                        const path = urlObj.pathname;
+                        return `${currentOrigin}${path}`;
+                    }
+                    
+                    return url;
+                }
+                
+                return `${API_BASE_URL}${url}`;
+            } catch (error) {
+                console.warn('解析媒体URL失败:', error, '原始URL:', url);
+                return url;
+            }
+        }
+        
+        function testUrl(inputId, resultId) {
+            const input = document.getElementById(inputId);
+            const result = document.getElementById(resultId);
+            const url = input.value;
+            
+            if (!url) {
+                result.innerHTML = '<span style="color: red;">请输入URL</span>';
+                return;
+            }
+            
+            const resolved = resolveMediaUrl(url);
+            result.innerHTML = `
+                <div><strong>原始URL:</strong> ${url}</div>
+                <div><strong>解析后URL:</strong> ${resolved}</div>
+                <div><strong>状态:</strong> <span style="color: ${resolved !== url ? 'green' : 'orange'}">${resolved !== url ? '已转换' : '未变化'}</span></div>
+            `;
+        }
+        
+        // 自动测试前两个用例
+        setTimeout(() => {
+            testUrl('test1', 'result1');
+            testUrl('test2', 'result2');
+        }, 100);
+    </script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_list %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <style>
+    .translation-panel {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .translation-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .translation-btn {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    .translation-btn:hover {
+      background: #0056b3;
+    }
+    .translation-btn:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+    }
+    .logs-panel {
+      background: #1e1e1e;
+      color: #00ff00;
+      padding: 15px;
+      border-radius: 5px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      max-height: 400px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      margin-top: 20px;
+    }
+    .status-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    .status-success { background: #28a745; }
+    .status-error { background: #dc3545; }
+    .status-loading { background: #ffc107; }
+    .status-idle { background: #6c757d; }
+    .info-text {
+      background: #e7f3ff;
+      border: 1px solid #b3d9ff;
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 20px;
+      color: #0056b3;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="translation-panel">
+  <h2>🌍 翻译管理系统</h2>
+  
+  <div class="info-text">
+    <strong>📝 系统说明：</strong><br>
+    • 默认语言：英语 (English)<br>
+    • 翻译方向：英语 → 其他语言<br>
+    • 支持语言：中文、西班牙语、葡萄牙语、法语、德语、意大利语、俄语、日语、韩语、阿拉伯语、印地语<br>
+    • 翻译策略：预翻译，避免实时翻译延迟
+  </div>
+  
+  <div class="translation-buttons">
+    <button class="translation-btn" onclick="translateFrontend()">
+      🎨 翻译前端内容
+    </button>
+    <button class="translation-btn" onclick="translateProducts()">
+      📦 翻译产品内容
+    </button>
+    <button class="translation-btn" onclick="translateCategories()">
+      📂 翻译分类内容
+    </button>
+    <button class="translation-btn" onclick="translateArticles()">
+      📰 翻译资讯内容
+    </button>
+    <button class="translation-btn" onclick="translateAll()">
+      🚀 翻译所有内容
+    </button>
+    <button class="translation-btn" onclick="getLogs()">
+      📋 查看翻译日志
+    </button>
+  </div>
+  
+  <div id="status" style="margin-bottom: 10px;">
+    <span class="status-indicator status-idle"></span>
+    <span id="status-text">就绪</span>
+  </div>
+  
+  <div id="logs" class="logs-panel" style="display: none;">
+    <div id="logs-content"></div>
+  </div>
+</div>
+
+<script>
+let isTranslating = false;
+
+function updateStatus(status, text) {
+  const statusEl = document.getElementById('status');
+  const indicator = statusEl.querySelector('.status-indicator');
+  const textEl = document.getElementById('status-text');
+  
+  indicator.className = 'status-indicator status-' + status;
+  textEl.textContent = text;
+}
+
+function showLogs(logs) {
+  const logsPanel = document.getElementById('logs');
+  const logsContent = document.getElementById('logs-content');
+  logsContent.textContent = logs;
+  logsPanel.style.display = 'block';
+}
+
+function disableButtons() {
+  const buttons = document.querySelectorAll('.translation-btn');
+  buttons.forEach(btn => btn.disabled = true);
+  isTranslating = true;
+}
+
+function enableButtons() {
+  const buttons = document.querySelectorAll('.translation-btn');
+  buttons.forEach(btn => btn.disabled = false);
+  isTranslating = false;
+}
+
+async function makeTranslationRequest(url, actionName) {
+  if (isTranslating) return;
+  
+  disableButtons();
+  updateStatus('loading', `${actionName}中...`);
+  
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      updateStatus('success', data.message);
+      showLogs(data.logs || '翻译完成，无详细日志');
+    } else {
+      updateStatus('error', data.message);
+      showLogs('翻译失败: ' + data.message);
+    }
+  } catch (error) {
+    updateStatus('error', '请求失败');
+    showLogs('请求失败: ' + error.message);
+  } finally {
+    enableButtons();
+  }
+}
+
+function translateFrontend() {
+  makeTranslationRequest('{% url "admin:translate_frontend" %}', '翻译前端内容');
+}
+
+function translateProducts() {
+  makeTranslationRequest('{% url "admin:translate_products" %}', '翻译产品内容');
+}
+
+function translateCategories() {
+  makeTranslationRequest('{% url "admin:translate_categories" %}', '翻译分类内容');
+}
+
+function translateArticles() {
+  makeTranslationRequest('{% url "admin:translate_articles" %}', '翻译资讯内容');
+}
+
+function translateAll() {
+  makeTranslationRequest('{% url "admin:translate_all" %}', '翻译所有内容');
+}
+
+function getLogs() {
+  makeTranslationRequest('{% url "admin:translation_logs" %}', '获取日志');
+}
+
+// 页面加载时获取CSRF token
+document.addEventListener('DOMContentLoaded', function() {
+  // 如果没有CSRF token，创建一个隐藏的input
+  if (!document.querySelector('[name=csrfmiddlewaretoken]')) {
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = 'csrfmiddlewaretoken';
+    csrfInput.value = '{{ csrf_token }}';
+    document.body.appendChild(csrfInput);
+  }
+});
+</script>
+
+{% csrf_token %}
+{% endblock %} 
