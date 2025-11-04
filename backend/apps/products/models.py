@@ -49,6 +49,23 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='所属分类')
     subcategory = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, blank=True, 
                                    verbose_name='所属子分类')
+    
+    # ⭐新增：产品关联模板
+    template = models.ForeignKey(
+        'ProductTemplate',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='products',
+        verbose_name='关联模板',
+        help_text='如果指定，优先使用此模板；否则自动匹配分类/子分类模板'
+    )
+    use_template = models.BooleanField(
+        '使用模板内容',
+        default=True,
+        help_text='如果为False，则不使用任何模板，只使用产品自定义数据'
+    )
+    
     name = models.CharField('产品名称', max_length=200)
     description = models.TextField('产品描述')
     features = models.TextField('产品特性', blank=True)
@@ -188,6 +205,7 @@ class ProductApplication(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='application_items', verbose_name='产品')
     name = models.CharField('应用名称', max_length=200)
     description = models.TextField('应用描述')
+    image = models.ImageField('应用场景图片', upload_to='applications/', blank=True, null=True)
     order = models.IntegerField('排序', default=0)
     created_at = models.DateTimeField('创建时间', auto_now_add=True)
     
@@ -211,3 +229,159 @@ class TranslationManagement(models.Model):
     
     def __str__(self):
         return self.name
+
+
+class ProductTemplate(models.Model):
+    """产品模板 - 用于存储同一类型产品的通用信息"""
+    name = models.CharField('模板名称', max_length=200, help_text='模板的显示名称')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='templates', 
+                                null=True, blank=True, verbose_name='关联分类', 
+                                help_text='如果设置，该分类下的产品可以使用此模板')
+    subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, related_name='templates',
+                                   null=True, blank=True, verbose_name='关联子分类',
+                                   help_text='如果设置，该子分类下的产品可以使用此模板（优先级高于分类模板）')
+    
+    # 默认参数（参考Product模型的参数字段）
+    range_param = models.CharField('Range', max_length=200, blank=True, default='OEM factory supply aluminium profiles')
+    type_param = models.CharField('Type', max_length=200, blank=True, default='For door and window profiles')
+    surface_treatment = models.CharField('Surface Treatment', max_length=300, blank=True, 
+                                       default='Mill Finished, Anodized, Powder Coated, Electrohoresis, Wood Grain')
+    colors = models.CharField('Colors', max_length=300, blank=True, 
+                             default='Silver, White, Black, Bronze, Champagne, Golden or customized')
+    grade = models.CharField('Grade', max_length=100, blank=True, default='6063 Series')
+    temper = models.CharField('Temper', max_length=100, blank=True, default='T5, T6')
+    
+    # 默认描述和内容
+    description = models.TextField('产品描述', blank=True)
+    features_text = models.TextField('特性文本', blank=True)
+    applications_text = models.TextField('应用文本', blank=True)
+    specifications_text = models.TextField('规格文本', blank=True)
+    packaging_details = models.TextField('包装详情', blank=True)
+    
+    # 商业信息
+    oem_available = models.BooleanField('支持OEM', default=True)
+    free_samples = models.CharField('免费样品', max_length=200, blank=True, 
+                                   default='Available, about 1 days can be sent')
+    supply_ability = models.CharField('供应能力', max_length=200, blank=True)
+    payment_terms = models.CharField('付款方式', max_length=200, blank=True)
+    product_origin = models.CharField('产品产地', max_length=200, blank=True, default='Foshan China')
+    shipping_port = models.CharField('发货港口', max_length=200, blank=True, 
+                                    default='Shenzhen/Guangzhou/Foshan')
+    lead_time = models.CharField('交期', max_length=200, blank=True, default='7-15 Days')
+    
+    # 状态
+    is_active = models.BooleanField('是否激活', default=True)
+    order = models.IntegerField('排序', default=0, help_text='数字越小越靠前')
+    created_at = models.DateTimeField('创建时间', auto_now_add=True)
+    updated_at = models.DateTimeField('更新时间', auto_now=True)
+    
+    class Meta:
+        verbose_name = '产品模板'
+        verbose_name_plural = '产品模板'
+        ordering = ['order', 'name']
+    
+    def __str__(self):
+        if self.subcategory:
+            return f"{self.name} ({self.subcategory.name})"
+        elif self.category:
+            return f"{self.name} ({self.category.name})"
+        return self.name
+
+
+class TemplateSpecification(models.Model):
+    """模板技术规格"""
+    template = models.ForeignKey(ProductTemplate, on_delete=models.CASCADE, related_name='specification_items', 
+                                verbose_name='模板')
+    name = models.CharField('规格名称', max_length=200)
+    value = models.TextField('规格值')
+    order = models.IntegerField('排序', default=0)
+    created_at = models.DateTimeField('创建时间', auto_now_add=True)
+    
+    class Meta:
+        verbose_name = '模板技术规格'
+        verbose_name_plural = '模板技术规格'
+        ordering = ['order', 'created_at']
+    
+    def __str__(self):
+        return f"{self.template.name} - {self.name}"
+
+
+class TemplateFeature(models.Model):
+    """模板特性"""
+    template = models.ForeignKey(ProductTemplate, on_delete=models.CASCADE, related_name='feature_items',
+                                verbose_name='模板')
+    name = models.CharField('特性名称', max_length=200)
+    description = models.TextField('特性描述')
+    order = models.IntegerField('排序', default=0)
+    created_at = models.DateTimeField('创建时间', auto_now_add=True)
+    
+    class Meta:
+        verbose_name = '模板特性'
+        verbose_name_plural = '模板特性'
+        ordering = ['order', 'created_at']
+    
+    def __str__(self):
+        return f"{self.template.name} - {self.name}"
+
+
+class TemplateApplication(models.Model):
+    """模板应用领域"""
+    template = models.ForeignKey(ProductTemplate, on_delete=models.CASCADE, related_name='application_items',
+                                verbose_name='模板')
+    name = models.CharField('应用名称', max_length=200)
+    description = models.TextField('应用描述')
+    image = models.ImageField('应用场景图片', upload_to='template_applications/', blank=True)
+    order = models.IntegerField('排序', default=0)
+    created_at = models.DateTimeField('创建时间', auto_now_add=True)
+    
+    class Meta:
+        verbose_name = '模板应用领域'
+        verbose_name_plural = '模板应用领域'
+        ordering = ['order', 'created_at']
+    
+    def __str__(self):
+        return f"{self.template.name} - {self.name}"
+
+
+class TemplateFactoryImage(models.Model):
+    """模板工厂图片"""
+    template = models.ForeignKey(ProductTemplate, on_delete=models.CASCADE, related_name='factory_images',
+                                verbose_name='模板')
+    title = models.CharField('图片标题', max_length=200)
+    description = models.TextField('图片描述', blank=True)
+    image = models.ImageField('工厂图片', upload_to='template_factory/')
+    category = models.CharField('图片分类', max_length=50, blank=True, 
+                               help_text='如：factory, production, quality, packaging')
+    order = models.IntegerField('排序', default=0)
+    created_at = models.DateTimeField('创建时间', auto_now_add=True)
+    
+    class Meta:
+        verbose_name = '模板工厂图片'
+        verbose_name_plural = '模板工厂图片'
+        ordering = ['order', 'created_at']
+    
+    def __str__(self):
+        return f"{self.template.name} - {self.title}"
+
+
+class TemplateProcess(models.Model):
+    """模板工艺处理"""
+    template = models.ForeignKey(
+        ProductTemplate, 
+        on_delete=models.CASCADE, 
+        related_name='process_items',
+        verbose_name='模板'
+    )
+    name = models.CharField('工艺名称', max_length=200, help_text='如：阳极氧化、粉末喷涂、电泳、木纹转印等')
+    description = models.TextField('工艺描述', help_text='详细的工艺处理说明')
+    image = models.ImageField('工艺图片', upload_to='template_process/', blank=True, null=True)
+    order = models.IntegerField('排序', default=0)
+    created_at = models.DateTimeField('创建时间', auto_now_add=True)
+    
+    class Meta:
+        verbose_name = '模板工艺处理'
+        verbose_name_plural = '模板工艺处理'
+        ordering = ['order', 'created_at']
+    
+    def __str__(self):
+        return f"{self.template.name} - {self.name}"

@@ -2,10 +2,10 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .models import CompanyInfo, Advantage, Certificate, FactoryImage
+from .models import CompanyInfo, Advantage, Certificate, FactoryImage, FriendLink
 from .serializers import (
     CompanyInfoSerializer, AdvantageSerializer, CertificateSerializer,
-    FactoryImageSerializer, TranslatedAdvantageSerializer
+    FactoryImageSerializer, TranslatedAdvantageSerializer, FriendLinkSerializer
 )
 
 
@@ -14,20 +14,9 @@ from .serializers import (
 
 class CompanyInfoViewSet(viewsets.ReadOnlyModelViewSet):
     """公司信息视图集"""
-    queryset = CompanyInfo.objects.filter(is_active=True).order_by('info_type', 'order')
+    queryset = CompanyInfo.objects.filter(is_active=True).order_by('-created_at')
     serializer_class = CompanyInfoSerializer
     
-    @action(detail=False, methods=['get'])
-    def by_type(self, request):
-        """按类型获取公司信息"""
-        info_type = request.query_params.get('type', '')
-        if info_type:
-            queryset = self.get_queryset().filter(info_type=info_type)
-        else:
-            queryset = self.get_queryset()
-        
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
 
 
 class AdvantageViewSet(viewsets.ReadOnlyModelViewSet):
@@ -59,3 +48,15 @@ class FactoryImageViewSet(viewsets.ReadOnlyModelViewSet):
     """工厂图片视图集"""
     queryset = FactoryImage.objects.filter(is_active=True).order_by('order', 'title')
     serializer_class = FactoryImageSerializer
+
+
+class FriendLinkViewSet(viewsets.ReadOnlyModelViewSet):
+    """友情链接视图集"""
+    queryset = FriendLink.objects.filter(is_active=True).order_by('order', 'name')
+    serializer_class = FriendLinkSerializer
+    
+    def get_serializer_context(self):
+        """添加request到序列化器上下文"""
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context

@@ -1,8 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../contexts/TranslationContext';
+import { API_ENDPOINTS } from '../config/api';
+
+interface FriendLink {
+  id: number;
+  name: string;
+  url: string;
+  description?: string;
+  logo?: string;
+  is_nofollow: boolean;
+  target_blank: boolean;
+}
 
 const Footer: React.FC = () => {
   const { t } = useTranslation();
+  const [friendLinks, setFriendLinks] = useState<FriendLink[]>([]);
+  
+  // 获取友情链接
+  useEffect(() => {
+    const fetchFriendLinks = async () => {
+      try {
+        const response = await fetch(API_ENDPOINTS.FRIEND_LINKS);
+        if (response.ok) {
+          const data = await response.json();
+          setFriendLinks(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch friend links:', error);
+      }
+    };
+    
+    fetchFriendLinks();
+  }, []);
   
   // 社交媒体链接
   const socialLinks = [
@@ -93,6 +122,42 @@ const Footer: React.FC = () => {
             </div>
           </div>
         </div>
+        {/* 友情链接区域 */}
+        {friendLinks.length > 0 && (
+          <div className="border-t border-gray-800 mt-8 pt-8">
+            <h4 className="font-semibold mb-4 text-center">{t('footer_friend_links', 'Friend Links')}</h4>
+            <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6">
+              {friendLinks.map((link) => (
+                <a
+                  key={link.id}
+                  href={link.url}
+                  target={link.target_blank ? '_blank' : '_self'}
+                  rel={`${link.is_nofollow ? 'nofollow' : ''} ${link.target_blank ? 'noopener noreferrer' : ''}`.trim() || undefined}
+                  className="text-gray-400 hover:text-white transition-colors duration-300 flex items-center gap-2"
+                  title={link.description || link.name}
+                >
+                  {link.logo ? (
+                    <img 
+                      src={link.logo}
+                      alt={link.name}
+                      className="h-6 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity"
+                      onError={(e) => {
+                        // 如果图片加载失败，显示文字
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        if (target.nextElementSibling) {
+                          (target.nextElementSibling as HTMLElement).style.display = 'inline';
+                        }
+                      }}
+                    />
+                  ) : null}
+                  <span className="text-sm" style={{ display: link.logo ? 'none' : 'inline' }}>{link.name}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+        
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
           <p>{t('footer_copyright', '© 2024 Aluminum Expert. All rights reserved.')}</p>
           <p className="mt-2">{t('footer_slogan2', 'Professional aluminum profile manufacturer | High-quality aluminum solutions')}</p>

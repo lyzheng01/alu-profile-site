@@ -1,11 +1,18 @@
 from django.contrib import admin
 from django.http import JsonResponse
-from django.urls import path
+from django.urls import path, reverse
 from django.utils.html import format_html
 from django.contrib import messages
 from django.utils import timezone
 from django import forms
-from .models import Product, Category, SubCategory, ProductImage, TranslationLog, TranslationManagement, ProductSpecification, ProductFeature, ProductApplication
+from django.shortcuts import redirect
+from io import BytesIO
+import openpyxl
+from .models import (
+    Product, Category, SubCategory, ProductImage, TranslationLog, TranslationManagement,
+    ProductSpecification, ProductFeature, ProductApplication,
+    ProductTemplate, TemplateSpecification, TemplateFeature, TemplateApplication, TemplateFactoryImage, TemplateProcess
+)
 from .widgets import ExcelTableWidget
 from apps.news.models import Article
 from apps.about.models import CompanyInfo, Advantage, Certificate
@@ -93,7 +100,7 @@ class ProductApplicationInline(admin.TabularInline):
     """产品应用领域内联编辑"""
     model = ProductApplication
     extra = 1
-    fields = ['name', 'description', 'order']
+    fields = ['name', 'description', 'image', 'order']
     ordering = ['order', 'created_at']
     verbose_name = '应用领域'
     verbose_name_plural = '应用领域'
@@ -102,21 +109,44 @@ class ProductApplicationInline(admin.TabularInline):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     form = ProductForm
-    list_display = ['name', 'category', 'subcategory', 'is_featured', 'is_active', 'order', 'created_at', 'translation_status', 'image_count']
+    list_display = ['name', 'category', 'subcategory', 'template_display', 'is_featured', 'is_active', 'order', 'created_at', 'translation_status', 'image_count']
     list_filter = ['category', 'subcategory', 'is_featured', 'is_active', 'created_at']
     search_fields = ['name', 'description']
     ordering = ['order', '-created_at']
     prepopulated_fields = {'slug': ('name',)}
     inlines = [ProductImageInline]
     
-    # 字段配置
-    fields = ['category', 'subcategory', 'name', 'description', 'features', 'applications', 'specifications', 
+    # ⭐修改：字段配置，添加模板选择
+    fields = ['category', 'subcategory', 'template', 'use_template', 'name', 'description', 'features', 'applications', 'specifications', 
               'range_param', 'type_param', 'surface_treatment', 'colors', 'grade', 'temper', 
               'slug', 'is_featured', 'is_active', 'order']
     exclude = []
     
+    # ⭐新增：显示使用的模板
+    def template_display(self, obj):
+        """显示产品使用的模板"""
+        if obj.template:
+            return format_html(
+                '<span style="color: blue; font-weight: bold;">{}</span>',
+                obj.template.name
+            )
+        elif obj.use_template:
+            # 自动匹配的模板
+            from .template_serializers import get_product_template
+            template = get_product_template(obj)
+            if template:
+                return format_html(
+                    '<span style="color: green;">自动: {}</span>',
+                    template.name
+                )
+            return format_html('<span style="color: gray;">无匹配模板</span>')
+        else:
+            return format_html('<span style="color: orange;">不使用模板</span>')
+    
+    template_display.short_description = '使用模板'
+    
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related('category', 'subcategory').prefetch_related('images')
+        return super().get_queryset(request).select_related('category', 'subcategory', 'template').prefetch_related('images')
     
     def image_count(self, obj):
         """显示图片数量"""
@@ -502,3 +532,159 @@ class TranslationAdmin(admin.ModelAdmin):
                 'success': False,
                 'message': f'获取日志失败: {str(e)}'
             })
+
+
+# ==================== 模板管理 ====================
+
+class TemplateSpecificationInline(admin.TabularInline):
+    """模板技术规格内联编辑"""
+    model = TemplateSpecification
+    extra = 1
+    fields = ['name', 'value', 'order']
+    ordering = ['order']
+
+
+class TemplateFeatureInline(admin.TabularInline):
+    """模板特性内联编辑"""
+    model = TemplateFeature
+    extra = 1
+    fields = ['name', 'description', 'order']
+    ordering = ['order']
+
+
+class TemplateApplicationInline(admin.TabularInline):
+    """模板应用领域内联编辑"""
+    model = TemplateApplication
+    extra = 1
+    fields = ['name', 'description', 'image', 'order']
+    ordering = ['order']
+
+
+class TemplateFactoryImageInline(admin.TabularInline):
+    """模板工厂图片内联编辑"""
+    model = TemplateFactoryImage
+    extra = 1
+    fields = ['title', 'description', 'image', 'category', 'order']
+    ordering = ['order']
+
+
+class TemplateProcessInline(admin.TabularInline):
+    """模板工艺处理内联编辑"""
+    model = TemplateProcess
+    extra = 1
+    fields = ['name', 'description', 'image', 'order']
+    ordering = ['order']
+
+
+@admin.register(ProductTemplate)
+class ProductTemplateAdmin(admin.ModelAdmin):
+    """产品模板管理"""
+    list_display = ['name', 'category', 'subcategory', 'is_active', 'order', 'item_counts', 'created_at']
+    list_filter = ['is_active', 'category', 'created_at']
+    search_fields = ['name', 'description']
+    ordering = ['order', 'name']
+    
+    fieldsets = (
+        ('基本信息', {
+            'fields': ('name', 'category', 'subcategory', 'is_active', 'order')
+        }),
+        ('基础参数', {
+            'fields': ('range_param', 'type_param', 'surface_treatment', 'colors', 'grade', 'temper')
+        }),
+        ('描述和内容', {
+            'fields': ('description', 'features_text', 'applications_text', 'specifications_text', 'packaging_details')
+        }),
+        ('商业信息', {
+            'fields': ('oem_available', 'free_samples', 'supply_ability', 'payment_terms', 
+                      'product_origin', 'shipping_port', 'lead_time')
+        }),
+    )
+    
+    inlines = [TemplateSpecificationInline, TemplateProcessInline, TemplateFeatureInline, 
+              TemplateApplicationInline, TemplateFactoryImageInline]
+    
+    def item_counts(self, obj):
+        """显示各项数量"""
+        specs = obj.specification_items.count()
+        processes = obj.process_items.count()
+        features = obj.feature_items.count()
+        apps = obj.application_items.count()
+        factory = obj.factory_images.count()
+        return format_html(
+            '规格: {} | 工艺: {} | 特性: {} | 应用: {} | 工厂图: {}',
+            specs, processes, features, apps, factory
+        )
+    item_counts.short_description = '内容项数量'
+    
+    def get_urls(self):
+        """添加Excel导入URL"""
+        urls = super().get_urls()
+        custom_urls = [
+            path(
+                '<int:template_id>/import-specifications/',
+                self.admin_site.admin_view(self.import_specifications),
+                name='products_template_import_specifications',
+            ),
+        ]
+        return custom_urls + urls
+    
+    def import_specifications(self, request, template_id):
+        """导入Excel规格表格"""
+        if request.method == 'POST':
+            try:
+                template = ProductTemplate.objects.get(id=template_id)
+                excel_file = request.FILES.get('excel_file')
+                
+                if not excel_file:
+                    messages.error(request, '请选择Excel文件')
+                    return redirect(f'../products/producttemplate/{template_id}/change/')
+                
+                # 读取Excel文件
+                workbook = openpyxl.load_workbook(BytesIO(excel_file.read()))
+                sheet = workbook.active
+                
+                # 解析Excel（假设第一列是规格名称，第二列是规格值）
+                imported_count = 0
+                existing_count = template.specification_items.count()
+                
+                for row_num, row in enumerate(sheet.iter_rows(min_row=2, values_only=True), start=2):  # 跳过标题行
+                    if row[0] and row[1]:  # 确保两列都有值
+                        # 去除空白字符
+                        spec_name = str(row[0]).strip() if row[0] else ''
+                        spec_value = str(row[1]).strip() if row[1] else ''
+                        
+                        if spec_name and spec_value:
+                            TemplateSpecification.objects.create(
+                                template=template,
+                                name=spec_name,
+                                value=spec_value,
+                                order=existing_count + imported_count
+                            )
+                            imported_count += 1
+                
+                if imported_count > 0:
+                    messages.success(request, f'成功导入 {imported_count} 条规格记录')
+                else:
+                    messages.warning(request, '未导入任何数据，请检查Excel格式是否正确')
+                
+                return redirect(f'../products/producttemplate/{template_id}/change/')
+                
+            except Exception as e:
+                messages.error(request, f'导入失败: {str(e)}')
+                return redirect(f'../products/producttemplate/{template_id}/change/')
+        
+        # GET请求，返回导入页面
+        return redirect(f'../products/producttemplate/{template_id}/change/')
+    
+    def changeform_view(self, request, object_id=None, form_url='', extra_context=None):
+        """添加Excel导入按钮到模板编辑页面"""
+        extra_context = extra_context or {}
+        if object_id:
+            extra_context['show_import_button'] = True
+            extra_context['import_url'] = reverse('admin:products_template_import_specifications', args=[object_id])
+        return super().changeform_view(request, object_id, form_url, extra_context)
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('category', 'subcategory').prefetch_related(
+            'specification_items', 'process_items', 'feature_items', 'application_items', 'factory_images'
+        )

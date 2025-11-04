@@ -40,10 +40,14 @@ export const API_ENDPOINTS = {
   ADVANTAGES: `${API_BASE_URL}/api/advantages/`,
   CERTIFICATES: `${API_BASE_URL}/api/certificates/`,
   FACTORY_IMAGES: `${API_BASE_URL}/api/factory-images/`,
+  FRIEND_LINKS: `${API_BASE_URL}/api/friend-links/`,
   
   // 咨询相关
   INQUIRIES: `${API_BASE_URL}/api/inquiries/`,
   CONTACT_INFO: `${API_BASE_URL}/api/contact-info/`,
+  
+  // 产品模板相关
+  PRODUCT_TEMPLATES: `${API_BASE_URL}/api/product-templates/`,
   
   // 翻译相关
   TRANSLATIONS: `${API_BASE_URL}/api/translations/frontend_content/`,

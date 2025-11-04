@@ -1,5 +1,9 @@
 from rest_framework import serializers
-from .models import Category, SubCategory, Product, ProductImage, ProductSpecification, ProductFeature, ProductApplication
+from .models import (
+    Category, SubCategory, Product, ProductImage, ProductSpecification, ProductFeature, ProductApplication,
+    ProductTemplate, TemplateSpecification, TemplateFeature, TemplateApplication, TemplateFactoryImage
+)
+# ProductTemplate 已导入，无需在__init__中再次导入
 from .services import translation_service
 
 
@@ -9,7 +13,7 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name', 'description', 'image', 'slug', 'order', 'is_active', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'template_name']
 
 
 class TranslatedCategorySerializer(serializers.ModelSerializer):
@@ -20,7 +24,7 @@ class TranslatedCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'translated_name', 'translated_description', 'image', 'slug', 'order', 'is_active', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'template_name']
     
     def get_translated_name(self, obj):
         language = self.context.get('language', 'zh')
@@ -37,7 +41,7 @@ class SubCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SubCategory
         fields = ['id', 'parent_category', 'name', 'description', 'image', 'slug', 'order', 'is_active', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'template_name']
 
 
 class TranslatedSubCategorySerializer(serializers.ModelSerializer):
@@ -48,7 +52,7 @@ class TranslatedSubCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SubCategory
         fields = ['id', 'parent_category', 'translated_name', 'translated_description', 'image', 'slug', 'order', 'is_active', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'template_name']
     
     def get_translated_name(self, obj):
         language = self.context.get('language', 'zh')
@@ -66,7 +70,7 @@ class CategoryWithSubcategoriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name', 'description', 'image', 'slug', 'order', 'is_active', 'subcategories', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'template_name']
 
 
 class TranslatedCategoryWithSubcategoriesSerializer(serializers.ModelSerializer):
@@ -78,7 +82,7 @@ class TranslatedCategoryWithSubcategoriesSerializer(serializers.ModelSerializer)
     class Meta:
         model = Category
         fields = ['id', 'translated_name', 'translated_description', 'image', 'slug', 'order', 'is_active', 'subcategories', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'template_name']
     
     def get_translated_name(self, obj):
         language = self.context.get('language', 'zh')
@@ -122,7 +126,7 @@ class ProductApplicationSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = ProductApplication
-        fields = ['id', 'name', 'description', 'order', 'created_at']
+        fields = ['id', 'name', 'description', 'image', 'order', 'created_at']
         read_only_fields = ['id', 'created_at']
 
 
@@ -137,15 +141,26 @@ class ProductSerializer(serializers.ModelSerializer):
     feature_items = ProductFeatureSerializer(many=True, read_only=True)
     application_items = ProductApplicationSerializer(many=True, read_only=True)
     
+    # ⭐新增：模板字段
+    template = serializers.PrimaryKeyRelatedField(
+        queryset=ProductTemplate.objects.filter(is_active=True),
+        required=False,
+        allow_null=True,
+        read_only=False
+    )
+    template_name = serializers.CharField(source='template.name', read_only=True)
+    use_template = serializers.BooleanField(default=True, required=False)
+    
     class Meta:
         model = Product
         fields = [
-            'id', 'category', 'category_id', 'subcategory', 'subcategory_id', 'name', 'description', 'features', 
+            'id', 'category', 'category_id', 'subcategory', 'subcategory_id', 'template', 'template_name', 'use_template',
+            'name', 'description', 'features', 
             'applications', 'specifications', 'range_param', 'type_param', 'surface_treatment', 'colors', 'grade', 'temper',
             'slug', 'is_featured', 'is_active', 'order', 'created_at', 'updated_at', 'images',
             'specification_items', 'feature_items', 'application_items'
         ]
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'template_name']
 
 
 class TranslatedProductSerializer(serializers.ModelSerializer):
@@ -171,7 +186,7 @@ class TranslatedProductSerializer(serializers.ModelSerializer):
             'slug', 'is_featured', 'is_active', 'order', 'created_at', 'updated_at', 'images',
             'specification_items', 'feature_items', 'application_items'
         ]
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'template_name']
     
     def get_translated_name(self, obj):
         language = self.context.get('language', 'zh')
@@ -191,25 +206,45 @@ class TranslatedProductSerializer(serializers.ModelSerializer):
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
-    """产品详情序列化器"""
+    """产品详情序列化器 - 支持模板合并"""
     category = CategorySerializer(read_only=True)
     category_id = serializers.IntegerField(write_only=True)
     subcategory = SubCategorySerializer(read_only=True)
     subcategory_id = serializers.IntegerField(write_only=True, required=False, allow_null=True)
     images = ProductImageSerializer(many=True, read_only=True)
+    specification_items = ProductSpecificationSerializer(many=True, read_only=True)
+    feature_items = ProductFeatureSerializer(many=True, read_only=True)
+    application_items = ProductApplicationSerializer(many=True, read_only=True)
     
     class Meta:
         model = Product
         fields = [
             'id', 'category', 'category_id', 'subcategory', 'subcategory_id', 'name', 'description', 'features', 
             'applications', 'specifications', 'range_param', 'type_param', 'surface_treatment', 'colors', 'grade', 'temper',
-            'slug', 'is_featured', 'is_active', 'order', 'created_at', 'updated_at', 'images'
+            'slug', 'is_featured', 'is_active', 'order', 'created_at', 'updated_at', 'images',
+            'specification_items', 'feature_items', 'application_items'
         ]
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'template_name']
+    
+    def to_representation(self, instance):
+        """重写序列化方法，合并模板数据"""
+        from .template_serializers import get_product_template, merge_template_data
+        
+        # 先获取基本数据
+        data = super().to_representation(instance)
+        
+        # 获取匹配的模板
+        template = get_product_template(instance)
+        
+        # 合并模板数据
+        if template:
+            data = merge_template_data(data, template)
+        
+        return data
 
 
 class TranslatedProductDetailSerializer(serializers.ModelSerializer):
-    """翻译后的产品详情序列化器"""
+    """翻译后的产品详情序列化器 - 支持模板合并"""
     category = TranslatedCategorySerializer(read_only=True)
     category_id = serializers.IntegerField(write_only=True)
     subcategory = TranslatedSubCategorySerializer(read_only=True)
@@ -219,15 +254,19 @@ class TranslatedProductDetailSerializer(serializers.ModelSerializer):
     translated_features = serializers.SerializerMethodField()
     translated_applications = serializers.SerializerMethodField()
     images = ProductImageSerializer(many=True, read_only=True)
+    specification_items = ProductSpecificationSerializer(many=True, read_only=True)
+    feature_items = ProductFeatureSerializer(many=True, read_only=True)
+    application_items = ProductApplicationSerializer(many=True, read_only=True)
     
     class Meta:
         model = Product
         fields = [
             'id', 'category', 'category_id', 'subcategory', 'subcategory_id', 'translated_name', 'translated_description',
             'translated_features', 'translated_applications', 'specifications', 'range_param', 'type_param', 'surface_treatment', 'colors', 'grade', 'temper',
-            'slug', 'is_featured', 'is_active', 'order', 'created_at', 'updated_at', 'images'
+            'slug', 'is_featured', 'is_active', 'order', 'created_at', 'updated_at', 'images',
+            'specification_items', 'feature_items', 'application_items'
         ]
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'template_name']
     
     def get_translated_name(self, obj):
         language = self.context.get('language', 'zh')
@@ -244,3 +283,19 @@ class TranslatedProductDetailSerializer(serializers.ModelSerializer):
     def get_translated_applications(self, obj):
         language = self.context.get('language', 'zh')
         return translation_service.get_translated_text('product', obj.id, 'applications', language) or obj.applications
+    
+    def to_representation(self, instance):
+        """重写序列化方法，合并模板数据"""
+        from .template_serializers import get_product_template, merge_template_data
+        
+        # 先获取基本数据（包含翻译）
+        data = super().to_representation(instance)
+        
+        # 获取匹配的模板
+        template = get_product_template(instance)
+        
+        # 合并模板数据
+        if template:
+            data = merge_template_data(data, template)
+        
+        return data

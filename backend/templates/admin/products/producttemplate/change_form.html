@@ -1,0 +1,32 @@
+{% extends "admin/change_form.html" %}
+
+{% block submit_buttons_bottom %}
+{{ block.super }}
+
+{% if show_import_button %}
+<div style="margin: 20px 0; padding: 20px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px;">
+    <h3 style="margin-top: 0;">批量导入规格表格</h3>
+    <p style="color: #666; margin-bottom: 15px;">
+        支持导入Excel文件（.xlsx, .xls格式），自动批量添加技术规格记录。
+        <br>Excel格式要求：第一列（A列）= 规格名称，第二列（B列）= 规格值，从第二行开始为数据行。
+    </p>
+    <form method="post" action="{{ import_url }}" enctype="multipart/form-data" style="display: flex; align-items: center; gap: 10px;">
+        {% csrf_token %}
+        <input type="file" name="excel_file" accept=".xlsx,.xls" required style="padding: 5px;">
+        <button type="submit" style="background: #4472C4; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 500;">
+            📥 导入Excel规格表格
+        </button>
+    </form>
+    <div style="margin-top: 15px; padding: 10px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; color: #856404;">
+        <strong>💡 提示：</strong>
+        <ul style="margin: 5px 0 0 20px;">
+            <li>Excel文件第一行可以是标题行（会被自动跳过）</li>
+            <li>从第二行开始，A列为规格名称，B列为规格值</li>
+            <li>导入的记录会追加到现有规格列表的末尾</li>
+            <li>导入前请确保Excel文件格式正确</li>
+        </ul>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+

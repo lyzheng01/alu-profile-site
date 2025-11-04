@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CompanyInfo, Advantage, Certificate, FactoryImage
+from .models import CompanyInfo, Advantage, Certificate, FactoryImage, FriendLink
 
 
 class CompanyInfoSerializer(serializers.ModelSerializer):
@@ -7,7 +7,7 @@ class CompanyInfoSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CompanyInfo
-        fields = ['id', 'key', 'value', 'info_type', 'order']
+        fields = ['id', 'name', 'description', 'address', 'phone', 'email', 'website', 'is_active']
 
 
 class AdvantageSerializer(serializers.ModelSerializer):
@@ -24,8 +24,7 @@ class CertificateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Certificate
         fields = [
-            'id', 'name', 'description', 'image', 'issue_date', 
-            'expiry_date', 'order'
+            'id', 'name', 'description', 'image', 'issue_date', 'order'
         ]
 
 
@@ -54,4 +53,22 @@ class TranslatedAdvantageSerializer(serializers.ModelSerializer):
     def get_translated_description(self, obj):
         from apps.products.services import translation_service
         language = self.context.get('language', 'zh')
-        return translation_service.translate_text(obj.description, language) 
+        return translation_service.translate_text(obj.description, language)
+
+
+class FriendLinkSerializer(serializers.ModelSerializer):
+    """友情链接序列化器"""
+    
+    class Meta:
+        model = FriendLink
+        fields = ['id', 'name', 'url', 'description', 'logo', 'order', 'is_nofollow', 'target_blank']
+        read_only_fields = ['id']
+    
+    def to_representation(self, instance):
+        """重写以返回完整的图片URL"""
+        data = super().to_representation(instance)
+        if data.get('logo') and not data['logo'].startswith('http'):
+            request = self.context.get('request')
+            if request:
+                data['logo'] = request.build_absolute_uri(instance.logo.url)
+        return data 

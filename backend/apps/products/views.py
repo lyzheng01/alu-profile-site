@@ -3,13 +3,14 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.shortcuts import get_object_or_404
-from .models import Category, SubCategory, Product, ProductImage
+from .models import Category, SubCategory, Product, ProductImage, ProductTemplate
 from .serializers import (
     CategorySerializer, SubCategorySerializer, ProductSerializer, ProductDetailSerializer,
     TranslatedCategorySerializer, TranslatedSubCategorySerializer, TranslatedProductSerializer, TranslatedProductDetailSerializer,
     CategoryWithSubcategoriesSerializer, TranslatedCategoryWithSubcategoriesSerializer,
     ProductImageSerializer
 )
+from .template_serializers import ProductTemplateSerializer
 from .services import translation_service
 
 
@@ -233,6 +234,29 @@ class ProductImageViewSet(viewsets.ModelViewSet):
         product_id = self.request.query_params.get('product')
         if product_id:
             queryset = queryset.filter(product_id=product_id)
+        
+        return queryset
+
+
+class ProductTemplateViewSet(viewsets.ModelViewSet):
+    """产品模板视图集"""
+    queryset = ProductTemplate.objects.filter(is_active=True).order_by('order', 'name')
+    serializer_class = ProductTemplateSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    
+    def get_queryset(self):
+        """过滤查询集"""
+        queryset = super().get_queryset()
+        
+        # 按分类过滤
+        category_id = self.request.query_params.get('category')
+        if category_id:
+            queryset = queryset.filter(category_id=category_id)
+        
+        # 按子分类过滤
+        subcategory_id = self.request.query_params.get('subcategory')
+        if subcategory_id:
+            queryset = queryset.filter(subcategory_id=subcategory_id)
         
         return queryset
 

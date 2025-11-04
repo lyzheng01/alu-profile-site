@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { API_ENDPOINTS } from '../config/api';
 import FloatingContactButtons from '../components/FloatingContactButtons';
 import { usePageTitle } from '../hooks/usePageTitle';
+// 模板系统已集成到后端API，前端直接使用API返回的数据即可
 
 interface Product {
   id: number;
@@ -11,10 +12,12 @@ interface Product {
   category: {
     id: number;
     name: string;
+    slug?: string;
   };
   subcategory?: {
     id: number;
     name: string;
+    slug?: string;
   };
   features: string;
   applications: string;
@@ -27,26 +30,42 @@ interface Product {
   grade: string;
   temper: string;
   specification_items: Array<{
-    id: number;
+    id?: number;
     name: string;
     value: string;
     order: number;
   }>;
   feature_items: Array<{
-    id: number;
+    id?: number;
     name: string;
     description: string;
     order: number;
   }>;
   application_items: Array<{
-    id: number;
+    id?: number;
     name: string;
     description: string;
+    image?: string;
     order: number;
   }>;
   images: Array<{
     id: number;
     image: string;
+  }>;
+  // 扩展字段（来自模板）
+  packaging_details?: string;
+  oem_available?: boolean;
+  free_samples?: string;
+  supply_ability?: string;
+  payment_terms?: string;
+  product_origin?: string;
+  shipping_port?: string;
+  lead_time?: string;
+  factory_images?: Array<{
+    title: string;
+    description?: string;
+    image: string;
+    category?: string;
   }>;
   created_at: string;
 }
@@ -79,6 +98,8 @@ const ProductDetail: React.FC = () => {
         const productResponse = await fetch(`${API_ENDPOINTS.PRODUCTS}${productId}/?lang=${currentLanguage}`);
         if (productResponse.ok) {
           const productData = await productResponse.json();
+          
+          // 后端API已经自动合并了模板数据，直接使用
           setProduct(productData);
           
           // Get other products in the same category
@@ -276,6 +297,50 @@ const ProductDetail: React.FC = () => {
                         <span className="text-gray-900 text-right flex-1">{product.temper}</span>
                       </div>
                     )}
+                    
+                    {/* 商业信息（来自模板） */}
+                    {product.oem_available !== undefined && (
+                      <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                        <span className="text-sm font-medium text-gray-500 w-32 flex-shrink-0">OEM</span>
+                        <span className="text-gray-900 text-right flex-1">{product.oem_available ? 'Available' : 'Not Available'}</span>
+                      </div>
+                    )}
+                    {product.free_samples && (
+                      <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                        <span className="text-sm font-medium text-gray-500 w-32 flex-shrink-0">Free Samples</span>
+                        <span className="text-gray-900 text-right flex-1">{product.free_samples}</span>
+                      </div>
+                    )}
+                    {product.supply_ability && (
+                      <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                        <span className="text-sm font-medium text-gray-500 w-32 flex-shrink-0">Supply Ability</span>
+                        <span className="text-gray-900 text-right flex-1">{product.supply_ability}</span>
+                      </div>
+                    )}
+                    {product.payment_terms && (
+                      <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                        <span className="text-sm font-medium text-gray-500 w-32 flex-shrink-0">Payment</span>
+                        <span className="text-gray-900 text-right flex-1">{product.payment_terms}</span>
+                      </div>
+                    )}
+                    {product.product_origin && (
+                      <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                        <span className="text-sm font-medium text-gray-500 w-32 flex-shrink-0">Product Origin</span>
+                        <span className="text-gray-900 text-right flex-1">{product.product_origin}</span>
+                      </div>
+                    )}
+                    {product.shipping_port && (
+                      <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                        <span className="text-sm font-medium text-gray-500 w-32 flex-shrink-0">Shipping Port</span>
+                        <span className="text-gray-900 text-right flex-1">{product.shipping_port}</span>
+                      </div>
+                    )}
+                    {product.lead_time && (
+                      <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                        <span className="text-sm font-medium text-gray-500 w-32 flex-shrink-0">Lead Time</span>
+                        <span className="text-gray-900 text-right flex-1">{product.lead_time}</span>
+                      </div>
+                    )}
                   </div>
                   
                   {/* If no parameter data, show prompt */}
@@ -385,27 +450,76 @@ const ProductDetail: React.FC = () => {
           </div>
         )}
 
-        {/* Technical specifications */}
-        {product.specifications && product.specifications.trim() && (
+        {/* Technical specifications - 使用模板的规格表格 */}
+        {(product.specification_items && product.specification_items.length > 0) || product.specifications ? (
           <div className="mb-16">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Technical Specifications</h2>
             <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-              
               <div className="p-6">
-                <pre className="whitespace-pre-wrap text-gray-700 text-lg leading-relaxed">{String(product.specifications)}</pre>
+                {product.specification_items && product.specification_items.length > 0 ? (
+                  <table className="w-full">
+                    <thead>
+                      <tr className="bg-gray-50">
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 border-b">Specification Name</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 border-b">Specification Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {product.specification_items
+                        .sort((a, b) => a.order - b.order)
+                        .map((spec, index) => (
+                          <tr key={spec.id || index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                            <td className="px-4 py-3 text-sm font-medium text-gray-900 border-b">{spec.name}</td>
+                            <td className="px-4 py-3 text-sm text-gray-700 border-b">{spec.value}</td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                ) : product.specifications && product.specifications.trim() ? (
+                  <pre className="whitespace-pre-wrap text-gray-700 text-lg leading-relaxed">{String(product.specifications)}</pre>
+                ) : null}
               </div>
             </div>
           </div>
-        )}
+        ) : null}
 
-        {/* Application areas */}
-        {product.applications && product.applications.trim() && (
+        {/* Application areas - 使用模板的应用场景 */}
+        {(product.application_items && product.application_items.length > 0) || product.applications ? (
           <div className="mb-16">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Applications</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Product Applications</h2>
             <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-              
               <div className="p-6">
-                <pre className="whitespace-pre-wrap text-gray-700 text-lg leading-relaxed">{String(product.applications)}</pre>
+                {product.application_items && product.application_items.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {product.application_items
+                      .sort((a, b) => a.order - b.order)
+                      .map((app, index) => (
+                        <div key={app.id || index} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                          {app.image && (
+                            <div className="mb-3 h-32 bg-gray-100 rounded overflow-hidden">
+                              <img src={app.image} alt={app.name} className="w-full h-full object-cover" />
+                            </div>
+                          )}
+                          <h4 className="font-semibold text-gray-900 mb-2">{app.name}</h4>
+                          <p className="text-sm text-gray-600">{app.description}</p>
+                        </div>
+                      ))}
+                  </div>
+                ) : product.applications && product.applications.trim() ? (
+                  <pre className="whitespace-pre-wrap text-gray-700 text-lg leading-relaxed">{String(product.applications)}</pre>
+                ) : null}
+              </div>
+            </div>
+          </div>
+        ) : null}
+        
+        {/* Packaging Details */}
+        {product.packaging_details && (
+          <div className="mb-16">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Packaging Details</h2>
+            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+              <div className="p-6">
+                <p className="text-gray-700 text-lg leading-relaxed">{product.packaging_details}</p>
               </div>
             </div>
           </div>
@@ -444,51 +558,37 @@ const ProductDetail: React.FC = () => {
         </div>
 
 
-        {/* Company background information */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">COMPANY BACKGROUND</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Factory scene */}
-            <div className="text-center">
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-4">
-                <div className="h-48 bg-gray-200 flex items-center justify-center">
-                  <p className="text-gray-500 text-sm">Factory Scene</p>
+        {/* Company background information - 使用模板的工厂图片 */}
+        {product.factory_images && product.factory_images.length > 0 ? (
+          <div className="mb-16">
+            <h2 className="text-2xl font-bold text-gray-900 mb-8">COMPANY BACKGROUND</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {product.factory_images.map((factoryImg, index) => (
+                <div key={index} className="text-center">
+                  <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-4">
+                    <div className="h-48 bg-gray-200 overflow-hidden">
+                      {factoryImg.image ? (
+                        <img 
+                          src={factoryImg.image} 
+                          alt={factoryImg.title}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="h-full flex items-center justify-center">
+                          <p className="text-gray-500 text-sm">{factoryImg.title}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900">{factoryImg.title.toUpperCase()}</h3>
+                  {factoryImg.description && (
+                    <p className="text-sm text-gray-600 mt-1">{factoryImg.description}</p>
+                  )}
                 </div>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900">FACTORY SCENE</h3>
-            </div>
-
-            {/* Production process */}
-            <div className="text-center">
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-4">
-                <div className="h-48 bg-gray-200 flex items-center justify-center">
-                  <p className="text-gray-500 text-sm">Production Process</p>
-                </div>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900">PRODUCTION PROCESS</h3>
-            </div>
-
-            {/* Quality inspection */}
-            <div className="text-center">
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-4">
-                <div className="h-48 bg-gray-200 flex items-center justify-center">
-                  <p className="text-gray-500 text-sm">Quality Check</p>
-                </div>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900">QUALITY CHECK</h3>
-            </div>
-
-            {/* Packaging */}
-            <div className="text-center">
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-4">
-                <div className="h-48 bg-gray-200 flex items-center justify-center">
-                  <p className="text-gray-500 text-sm">Packing</p>
-                </div>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900">PACKING</h3>
+              ))}
             </div>
           </div>
-        </div>
+        ) : null}
 
         {/* Related products */}
         {relatedProducts.length > 0 && (
