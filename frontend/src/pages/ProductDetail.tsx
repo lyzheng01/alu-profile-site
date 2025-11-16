@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { API_ENDPOINTS } from '../config/api';
 import FloatingContactButtons from '../components/FloatingContactButtons';
+import InquiryForm from '../components/InquiryForm';
 import { usePageTitle } from '../hooks/usePageTitle';
 // 模板系统已集成到后端API，前端直接使用API返回的数据即可
 
@@ -210,13 +211,50 @@ const ProductDetail: React.FC = () => {
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
               {product.images && product.images.length > 0 ? (
                 <div>
-                  {/* Main image */}
-                  <div className="relative h-96 bg-gray-200">
+                  {/* Main image with navigation buttons */}
+                  <div className="relative h-96 bg-gray-200 group">
                     <img
                       src={product.images[currentImageIndex].image}
                       alt={product.name}
                       className="w-full h-full object-cover"
                     />
+                    
+                    {/* Previous/Next buttons - 只在有多张图片时显示 */}
+                    {product.images.length > 1 && (
+                      <>
+                        {/* Previous button */}
+                        <button
+                          onClick={() => {
+                            const prevIndex = currentImageIndex === 0 
+                              ? product.images.length - 1 
+                              : currentImageIndex - 1;
+                            setCurrentImageIndex(prevIndex);
+                          }}
+                          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center z-10"
+                          aria-label="Previous image"
+                        >
+                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                          </svg>
+                        </button>
+                        
+                        {/* Next button */}
+                        <button
+                          onClick={() => {
+                            const nextIndex = currentImageIndex === product.images.length - 1 
+                              ? 0 
+                              : currentImageIndex + 1;
+                            setCurrentImageIndex(nextIndex);
+                          }}
+                          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center z-10"
+                          aria-label="Next image"
+                        >
+                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                      </>
+                    )}
                   </div>
                   
                   {/* Thumbnails */}
@@ -227,8 +265,11 @@ const ProductDetail: React.FC = () => {
                           <button
                             key={image.id}
                             onClick={() => setCurrentImageIndex(index)}
-                            className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 ${
-                              index === currentImageIndex ? 'border-blue-500' : 'border-gray-200'
+                            onMouseEnter={() => setCurrentImageIndex(index)}
+                            className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all duration-200 cursor-pointer ${
+                              index === currentImageIndex 
+                                ? 'border-blue-500 ring-2 ring-blue-300' 
+                                : 'border-gray-200 hover:border-blue-300'
                             }`}
                           >
                             <img
@@ -366,12 +407,10 @@ const ProductDetail: React.FC = () => {
         {/* Product description - full width display */}
         <div className="mb-16">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">PRODUCT DESCRIPTION</h2>
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-            <div className="p-6">
-              <p className="text-gray-600 text-lg leading-relaxed">
-                {product.description}
-              </p>
-            </div>
+          <div>
+            <p className="text-gray-600 text-lg leading-relaxed">
+              {product.description}
+            </p>
           </div>
         </div>
 
@@ -624,6 +663,14 @@ const ProductDetail: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Inquiry Form - 内嵌询价表单（页面最后） */}
+        <div className="mb-16">
+          <InquiryForm 
+            productName={product.name}
+            productLink={window.location.href}
+          />
+        </div>
       </div>
 
       {/* Floating contact buttons */}
