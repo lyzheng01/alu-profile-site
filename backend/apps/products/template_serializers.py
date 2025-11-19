@@ -3,9 +3,10 @@
 """
 from rest_framework import serializers
 from .models import (
-    ProductTemplate, TemplateSpecification, TemplateFeature, 
+    ProductTemplate, TemplateSpecification, TemplateFeature,
     TemplateApplication, TemplateFactoryImage, TemplateProcess, Product
 )
+from apps.about.models import FactoryImage
 
 
 class TemplateSpecificationSerializer(serializers.ModelSerializer):
@@ -189,19 +190,7 @@ def merge_template_data(product_data, template):
     if not product_data.get('lead_time'):
         product_data['lead_time'] = template.lead_time or ''
     
-    # 工厂图片
-    if not product_data.get('factory_images') or len(product_data.get('factory_images', [])) == 0:
-        product_data['factory_images'] = [
-            {
-                'id': img.id,
-                'title': img.title,
-                'description': img.description or '',
-                'image': img.image.url if img.image else None,
-                'category': img.category or '',
-                'order': img.order
-            }
-            for img in template.factory_images.all().order_by('order')
-        ]
+    product_data = ensure_factory_images(product_data, template)
     
     # ⭐新增：合并工艺处理数据
     if not product_data.get('process_items') or len(product_data.get('process_items', [])) == 0:
@@ -215,6 +204,47 @@ def merge_template_data(product_data, template):
             }
             for item in template.process_items.all().order_by('order')
         ]
+    
+    return product_data
+
+
+def ensure_factory_images(product_data, template=None):
+    """确保产品数据中包含工厂图片，优先模板，其次全局 about FactoryImage"""
+    if product_data.get('factory_images') and len(product_data.get('factory_images', [])) > 0:
+        return product_data
+    
+    template_images = []
+    if template:
+        template_images = [
+            {
+                'id': img.id,
+                'title': img.title,
+                'description': img.description or '',
+                'image': img.image.url if img.image else None,
+                'category': getattr(img, 'category', '') or '',
+                'order': img.order
+            }
+            for img in template.factory_images.all().order_by('order')
+        ]
+    
+    if template_images:
+        product_data['factory_images'] = template_images
+        return product_data
+    
+    fallback_images = [
+        {
+            'id': img.id,
+            'title': img.title,
+            'description': img.description or '',
+            'image': img.image.url if img.image else None,
+            'category': '',
+            'order': img.order
+        }
+        for img in FactoryImage.objects.filter(is_active=True).order_by('order', 'title')
+    ]
+    
+    if fallback_images:
+        product_data['factory_images'] = fallback_images
     
     return product_data
 

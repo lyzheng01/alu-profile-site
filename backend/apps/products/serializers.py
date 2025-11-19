@@ -228,7 +228,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     
     def to_representation(self, instance):
         """重写序列化方法，合并模板数据"""
-        from .template_serializers import get_product_template, merge_template_data
+        from .template_serializers import get_product_template, merge_template_data, ensure_factory_images
         
         # 先获取基本数据
         data = super().to_representation(instance)
@@ -239,6 +239,8 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         # 合并模板数据
         if template:
             data = merge_template_data(data, template)
+        
+        data = ensure_factory_images(data, template)
         
         return data
 
@@ -286,7 +288,7 @@ class TranslatedProductDetailSerializer(serializers.ModelSerializer):
     
     def to_representation(self, instance):
         """重写序列化方法，合并模板数据"""
-        from .template_serializers import get_product_template, merge_template_data
+        from .template_serializers import get_product_template, merge_template_data, ensure_factory_images
         
         # 先获取基本数据（包含翻译）
         data = super().to_representation(instance)
@@ -297,5 +299,7 @@ class TranslatedProductDetailSerializer(serializers.ModelSerializer):
         # 合并模板数据
         if template:
             data = merge_template_data(data, template)
+        
+        data = ensure_factory_images(data, template)
         
         return data
