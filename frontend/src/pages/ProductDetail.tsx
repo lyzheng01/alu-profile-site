@@ -392,7 +392,7 @@ const ProductDetail: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="p-6 space-y-4">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">PRODUCT DESCRIPTION</h2>
                 <p className="text-gray-600 text-lg leading-relaxed">
@@ -478,18 +478,20 @@ const ProductDetail: React.FC = () => {
             )}
 
             {/* Product display images */}
-            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="p-6">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">PRODUCT DISPLAY</h2>
                 {product.images && product.images.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-8">
                     {product.images.slice(0, 4).map((image, index) => (
-                      <div key={index} className="relative">
-                        <img
-                          src={image.image}
-                          alt={`${product.name} view ${index + 1}`}
-                          className="w-full h-64 object-contain"
-                        />
+                      <div key={index} className="w-full">
+                        <div className="w-full bg-gray-50 rounded-2xl overflow-hidden flex items-center justify-center min-h-[360px]">
+                          <img
+                            src={image.image}
+                            alt={`${product.name} view ${index + 1}`}
+                            className="w-full h-auto max-h-[720px] object-contain"
+                          />
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -544,6 +546,15 @@ const ProductDetail: React.FC = () => {
                     </div>
                   );
                 })}
+                <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-3">
+                  <h3 className="text-lg font-semibold text-gray-900">Quality Inspection</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    Each production run passes through dimensional verification, hardness and tensile testing, and strict surface inspection. Our QC engineers record every checkpoint to ensure the extrusion, anodizing, and powder coating meet international standards for architectural windows and doors.
+                  </p>
+                  <p className="text-gray-700 leading-relaxed">
+                    Traceable batch numbers, salt spray resistance verification, and 24-hour sample aging tests guarantee that every profile shipped from Lingye maintains uniform color, thickness tolerance, and long-term performance in harsh climates.
+                  </p>
+                </div>
               </div>
             )}
 
