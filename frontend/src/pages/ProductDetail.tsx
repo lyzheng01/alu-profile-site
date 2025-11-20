@@ -201,7 +201,7 @@ const ProductDetail: React.FC = () => {
         {/* Product title */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {product.name}
+            {product.name} - Aluminium Extrusion Profiles for Windows and Doors
           </h1>
           <p className="text-gray-600">
             Categories: All Product, {product.category.name}
@@ -327,18 +327,14 @@ const ProductDetail: React.FC = () => {
                       <span className="text-gray-900 flex-1">{product.colors}</span>
                     </div>
                   )}
-                  {product.grade && (
-                    <div className="flex items-start gap-4 py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Quality Grade:</span>
-                      <span className="text-gray-900 flex-1">{product.grade}</span>
-                    </div>
-                  )}
-                  {product.temper && (
-                    <div className="flex items-start gap-4 py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Temper State:</span>
-                      <span className="text-gray-900 flex-1">{product.temper}</span>
-                    </div>
-                  )}
+                  <div className="flex items-start gap-4 py-2 border-b border-gray-100">
+                    <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Quality Grade:</span>
+                    <span className="text-gray-900 flex-1">6061, 6063</span>
+                  </div>
+                  <div className="flex items-start gap-4 py-2 border-b border-gray-100">
+                    <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Temper State:</span>
+                    <span className="text-gray-900 flex-1">T5, T6</span>
+                  </div>
                   {product.oem_available !== undefined && (
                     <div className="flex items-start gap-4 py-2 border-b border-gray-100">
                       <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">OEM:</span>
@@ -397,11 +393,19 @@ const ProductDetail: React.FC = () => {
             </div>
 
             <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-              <div className="p-6">
+              <div className="p-6 space-y-4">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">PRODUCT DESCRIPTION</h2>
                 <p className="text-gray-600 text-lg leading-relaxed">
                   {product.description}
                 </p>
+                <div className="text-gray-700 text-base leading-relaxed space-y-3">
+                  <p>
+                    High-quality aluminum profiles can prevent doors and windows from deforming or wearing out in the hot summer and from freezing and cracking in the cold winter. International standards strictly implement the aluminum door and window profiles produced by Lingye Aluminum. Our aluminum door and window profile frames are popular for sliding doors, folding doors, etc. We have also developed a variety of door and window systems, including aluminum alloy sliding windows, aluminum alloy casement windows, aluminum alloy inward-opening inverted windows, aluminum alloy top-hung sliding windows, aluminum alloy casement doors, etc. Here, you can quickly get the aluminum profile projects you want.
+                  </p>
+                  <p>
+                    Our aluminum windows and doors are available in a variety of finishes, including mill finish, anodized aluminum, powder coated, PVDF painted and wood grain transfer. Available in a variety of colors. The color is long-lasting and won't fade. It also includes a variety of aluminum processing, such as high-precision CNC machining, precision cutting, drilling, and milling.
+                  </p>
+                </div>
               </div>
             </div>
 
