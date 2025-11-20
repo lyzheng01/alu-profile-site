@@ -217,6 +217,25 @@ const Home: React.FC = () => {
         </div>
       </section>
 
+      {/* Company Introduction Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed">
+              <p className="text-lg mb-4">
+                Hefei Lingye Technology was established in 2015, a professional manufacturer and supplier of high-quality aluminum profiles. With advance technology and equipment, we are committed to providing reliable, durable, and innovative solutions to meet the diverse needs of our global customers.
+              </p>
+              <p className="text-lg mb-4">
+                Our main products include a wide range of aluminum profiles, which are widely used in construction, industrial applications, decoration, windows and doors, curtain walls, and other fields. We focus on delivering products with excellent strength, precision, and surface finishing, ensuring that every profile meets international quality standards.
+              </p>
+              <p className="text-lg">
+                At Lingye, we uphold the values of integrity, innovation, and customer satisfaction. We continuously invest in advanced production technology and strict quality control systems to guarantee stable product performance and timely delivery.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 产品种类（Product Categories）Section */}
       <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
