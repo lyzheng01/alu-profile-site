@@ -179,6 +179,32 @@ const Products: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-8 py-12">
 
+        {/* 铝门窗系统定制页面推荐 */}
+        <div className="mb-12">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white shadow-2xl">
+            <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.4),_transparent_60%)]" />
+            <div className="relative px-8 py-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+              <div className="max-w-3xl">
+                <p className="text-sm uppercase tracking-[0.4em] text-white/80">Premium System</p>
+                <h2 className="text-3xl font-bold mt-3">Aluminium Windows & Doors Showcase</h2>
+                <p className="text-white/90 mt-3 leading-relaxed">
+                  Explore our newly curated product experience page featuring panoramic sliding doors, thermal break casement windows,
+                  finish libraries, QA workflow and engineering support services tailored for architectural projects.
+                </p>
+              </div>
+              <div className="flex flex-col gap-3">
+                <Link
+                  to={`/${currentLanguage || 'en'}/products/windows-doors/showcase`}
+                  className="inline-flex items-center justify-center px-6 py-3 bg-white text-blue-600 font-semibold rounded-2xl shadow hover:bg-slate-100 transition"
+                >
+                  View Showcase
+                </Link>
+                <span className="text-xs tracking-wide text-white/70 text-center">Available in EN / ZH / ES / PT</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* 分类文字说明（在产品前展示） */}
         {activeCategory && (
           <div className="mb-8 text-center">

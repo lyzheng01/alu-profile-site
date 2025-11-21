@@ -303,18 +303,26 @@ const Home: React.FC = () => {
               className="flex space-x-6 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 py-4 px-4"
               style={{scrollBehavior: 'smooth'}}
             >
-                             {featuredProducts.map((prod, idx) => (
-                 <div key={prod.id || idx} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col min-w-[320px] max-w-[320px] transform hover:scale-105">
-                   <img 
-                    src={resolveMediaUrl(prod.product_image)} 
-                     alt={prod.name} 
-                     className="w-full h-64 object-cover" 
-                   />
-                   <div className="p-6">
-                     <h3 className="text-xl font-semibold text-gray-900 text-center truncate w-full">{prod.name}</h3>
-                   </div>
-                 </div>
-               ))}
+              {featuredProducts.map((prod, idx) => {
+                const productId = prod.id || idx;
+                const productLink = `/${currentLanguage || 'en'}/products/${productId}`;
+                return (
+                  <Link
+                    key={productId}
+                    to={productLink}
+                    className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 flex-shrink-0 flex flex-col min-w-[320px] max-w-[320px] transform hover:scale-105 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-300"
+                  >
+                    <img 
+                      src={resolveMediaUrl(prod.product_image)} 
+                      alt={prod.name} 
+                      className="w-full h-64 object-cover" 
+                    />
+                    <div className="p-6">
+                      <h3 className="text-xl font-semibold text-gray-900 text-center truncate w-full">{prod.name}</h3>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </div>

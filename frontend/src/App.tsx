@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
+import ProductShowcase from './pages/ProductShowcase';
 import News from './pages/News';
 import About from './pages/About';
 
@@ -49,6 +50,13 @@ const AppContent: React.FC = () => {
           ))}
           {supportedLanguages.map(lang => (
             <Route key={`${lang}-product-detail`} path={`/${lang}/products/:productId`} element={<ProductDetail />} />
+          ))}
+          {supportedLanguages.map(lang => (
+            <Route
+              key={`${lang}-product-showcase`}
+              path={`/${lang}/products/windows-doors/showcase`}
+              element={<ProductShowcase />}
+            />
           ))}
           {supportedLanguages.map(lang => (
             <Route key={`${lang}-news-detail`} path={`/${lang}/news/:articleId`} element={<News />} />
