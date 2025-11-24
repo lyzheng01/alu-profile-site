@@ -52,6 +52,7 @@ interface Product {
   images: Array<{
     id: number;
     image: string;
+    caption?: string;
   }>;
   // 扩展字段（来自模板）
   packaging_details?: string;
@@ -79,6 +80,23 @@ const ProductDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentLanguage, setCurrentLanguage] = useState('zh');
+
+  const resolveProductMediaUrl = (imageUrl?: string | null) => {
+    if (!imageUrl) return null;
+    if (imageUrl.startsWith('http')) return imageUrl;
+    if (typeof window !== 'undefined') {
+      const origin = window.location.origin;
+      if (imageUrl.startsWith('/media/')) {
+        return `${origin}${imageUrl}`;
+      }
+      if (imageUrl.startsWith('media/')) {
+        return `${origin}/${imageUrl}`;
+      }
+      const baseUrl = API_ENDPOINTS.PRODUCTS.replace('/api/products/', '');
+      return `${baseUrl}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
+    }
+    return imageUrl;
+  };
 
   // Get current language
   useEffect(() => {
@@ -161,6 +179,18 @@ const ProductDetail: React.FC = () => {
     );
   }
 
+
+  const surfaceTreatmentImageData =
+    (product.images || []).find((img) => {
+      const caption = img.caption?.toLowerCase() || '';
+      return caption.includes('surface') || caption.includes('treatment') || caption.includes('表面') || caption.includes('处理');
+    }) || null;
+
+  const surfaceTreatmentImageUrl = surfaceTreatmentImageData
+    ? resolveProductMediaUrl(surfaceTreatmentImageData.image)
+    : null;
+  const surfaceTreatmentTitle = surfaceTreatmentImageData?.caption;
+  const surfaceTreatmentDescription = product.surface_treatment;
 
   return (
     <div className="pt-20">
@@ -555,6 +585,30 @@ const ProductDetail: React.FC = () => {
                     Traceable batch numbers, salt spray resistance verification, and 24-hour sample aging tests guarantee that every profile shipped from Lingye maintains uniform color, thickness tolerance, and long-term performance in harsh climates.
                   </p>
                 </div>
+                
+                {surfaceTreatmentImageUrl && (
+                  <div className="bg-white rounded-lg shadow-md">
+                    <div className="p-6">
+                      <h2 className="text-xl font-semibold text-gray-900 mb-4 tracking-[0.3em]">SURFACE TREATMENT</h2>
+                      <div className="w-full bg-gray-50 rounded-2xl flex items-center justify-center">
+                        <img
+                          src={surfaceTreatmentImageUrl}
+                          alt={surfaceTreatmentTitle || 'Surface Treatment'}
+                          className="w-full h-auto object-contain"
+                          loading="lazy"
+                        />
+                      </div>
+                      {(surfaceTreatmentTitle || surfaceTreatmentDescription) && (
+                        <div className="mt-4 space-y-1">
+                          {surfaceTreatmentTitle && <p className="text-lg font-semibold text-gray-900">{surfaceTreatmentTitle}</p>}
+                          {surfaceTreatmentDescription && (
+                            <p className="text-sm text-gray-600 leading-relaxed">{surfaceTreatmentDescription}</p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
