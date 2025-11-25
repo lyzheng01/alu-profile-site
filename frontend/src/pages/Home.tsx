@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { API_ENDPOINTS } from '../config/api';
 import { resolveMediaUrl } from '../utils/url';
@@ -41,31 +41,74 @@ const Home: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isServiceExpanded, setIsServiceExpanded] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [heroImageUrl, setHeroImageUrl] = useState('');
+  const [homepageImage3Url, setHomepageImage3Url] = useState('');
 
   // 设置页面标题
   usePageTitle('home');
 
-  // 幻灯片数据 - 使用实际图片
-  const slides = [
+  // 幻灯片默认图片
+  const defaultSlideImages = useMemo(() => ([
+    'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&h=600&fit=crop'
+  ]), []);
+
+  // 幻灯片数据 - 优先使用后台上传的首页图片
+  const slides = useMemo(() => ([
     {
       title: t('slide_1_title', 'LingYe Aluminum'),
       subtitle: t('slide_1_subtitle', 'High-quality solutions for your needs'),
-      image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&h=600&fit=crop',
+      image: homepageImage3Url || defaultSlideImages[0],
       cta: t('slide_1_cta', 'Learn More')
     },
     {
       title: t('slide_2_title', 'Global Export Experience'),
       subtitle: t('slide_2_subtitle', 'Serving 30+ countries worldwide'),
-      image: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&h=600&fit=crop',
+      image: heroImageUrl || defaultSlideImages[1],
       cta: t('slide_2_cta', 'View Products')
     },
     {
       title: t('slide_3_title', 'Advanced Technology'),
       subtitle: t('slide_3_subtitle', 'Innovative manufacturing processes'),
-      image: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&h=600&fit=crop',
+      image: defaultSlideImages[2],
       cta: t('slide_3_cta', 'Contact Us')
     }
-  ];
+  ]), [defaultSlideImages, heroImageUrl, homepageImage3Url, t]);
+  // 加载后台上传的首页图片
+  useEffect(() => {
+    const fetchHeroImages = async () => {
+      try {
+        const response = await fetch(API_ENDPOINTS.FACTORY_IMAGES);
+        if (!response.ok) return;
+        const data = await response.json();
+        const list = data.results || data || [];
+        if (Array.isArray(list) && list.length > 0) {
+          // 获取首页图片1（第二张幻灯片）
+          const homepageImage1 = list.find((item: any) => (item.title || '').includes('首页图片1'));
+          if (homepageImage1) {
+            const resolvedUrl1 = resolveMediaUrl(homepageImage1?.image);
+            if (resolvedUrl1) {
+              setHeroImageUrl(resolvedUrl1);
+            }
+          }
+          
+          // 获取首页图片3（第一张幻灯片）
+          const homepageImage3 = list.find((item: any) => (item.title || '').includes('首页图片3'));
+          if (homepageImage3) {
+            const resolvedUrl3 = resolveMediaUrl(homepageImage3?.image);
+            if (resolvedUrl3) {
+              setHomepageImage3Url(resolvedUrl3);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch hero images:', error);
+      }
+    };
+
+    fetchHeroImages();
+  }, []);
 
   // 自动播放幻灯片
   useEffect(() => {
