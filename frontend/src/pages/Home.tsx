@@ -178,7 +178,23 @@ const Home: React.FC = () => {
       .then(res => res.json())
       .then(data => {
         const list = data.results || data;
-        setCategories(list);
+        // 按照指定顺序排序：construction -> industrial -> common used
+        const sortedList = [...list].sort((a, b) => {
+          const nameA = (a.name || '').toLowerCase();
+          const nameB = (b.name || '').toLowerCase();
+          
+          // 定义优先级
+          const getPriority = (name: string) => {
+            if (name.includes('construction')) return 1;
+            if (name.includes('industrial')) return 2;
+            if (name.includes('common') || name.includes('common used')) return 3;
+            return 4; // 其他分类排在最后
+          };
+          
+          return getPriority(nameA) - getPriority(nameB);
+        });
+        
+        setCategories(sortedList);
       })
       .catch(() => {
         setCategories([]);
@@ -260,19 +276,55 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Company Introduction Section */}
-      <section className="py-16 bg-white">
+      {/* Company Features Cards Section */}
+      <section className="py-12 bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
-            <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed">
-              <p className="text-lg mb-4">
-                Hefei Lingye Technology was established in 2015, a professional manufacturer and supplier of high-quality aluminum profiles. With advance technology and equipment, we are committed to providing reliable, durable, and innovative solutions to meet the diverse needs of our global customers.
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Card 1: Manufacturing Strength - Blue Theme */}
+            <div className="group bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-lg p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-blue-200/50 animate-fade-in cursor-pointer">
+              <div className="mb-4">
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-4 group-hover:rotate-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                  <svg className="w-7 h-7 text-white transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-blue-900 mb-3 group-hover:text-blue-700 transition-colors duration-300">Manufacturing Strength</h3>
+              </div>
+              <p className="text-blue-800/80 leading-relaxed">
+                We operate a modern aluminum extrusion factory equipped with advanced production lines.
+                Stable capacity, consistent quality, and strict QC ensure every profile meets global standards.
               </p>
-              <p className="text-lg mb-4">
-                Our main products include a wide range of aluminum profiles, which are widely used in construction, industrial applications, decoration, windows and doors, curtain walls, and other fields. We focus on delivering products with excellent strength, precision, and surface finishing, ensuring that every profile meets international quality standards.
+            </div>
+
+            {/* Card 2: Custom Solutions - Purple/Indigo Theme */}
+            <div className="group bg-gradient-to-br from-purple-50 to-indigo-100 rounded-xl shadow-lg p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-purple-200/50 animate-fade-in-delay cursor-pointer">
+              <div className="mb-4">
+                <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center mb-4 group-hover:rotate-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                  <svg className="w-7 h-7 text-white transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-purple-900 mb-3 group-hover:text-purple-700 transition-colors duration-300">Custom Solutions</h3>
+              </div>
+              <p className="text-purple-800/80 leading-relaxed">
+                From design support to extrusion, machining, and surface finishing,
+                we provide complete OEM/ODM aluminum profile solutions tailored to your project needs.
               </p>
-              <p className="text-lg">
-                At Lingye, we uphold the values of integrity, innovation, and customer satisfaction. We continuously invest in advanced production technology and strict quality control systems to guarantee stable product performance and timely delivery.
+            </div>
+
+            {/* Card 3: Global Delivery & Service - Orange/Amber Theme */}
+            <div className="group bg-gradient-to-br from-amber-50 to-orange-100 rounded-xl shadow-lg p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-amber-200/50 animate-fade-in-delay-2 cursor-pointer">
+              <div className="mb-4">
+                <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center mb-4 group-hover:rotate-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                  <svg className="w-7 h-7 text-white transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-orange-900 mb-3 group-hover:text-orange-700 transition-colors duration-300">Global Delivery & Service</h3>
+              </div>
+              <p className="text-orange-800/80 leading-relaxed">
+                With years of export experience, fast response, and reliable logistics partners,
+                we deliver high-quality aluminum profiles to global clients with smooth communication and timely support.
               </p>
             </div>
           </div>
@@ -297,11 +349,20 @@ const Home: React.FC = () => {
                 to={`/${currentLanguage}/products?category=${cat.id}`}
                 className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow flex flex-col items-center p-8 cursor-pointer"
               >
-                <img
-                  src={resolveMediaUrl(cat.image) || '/images/category1.jpg'}
-                  alt={cat.name}
-                  className="h-56 w-56 md:h-64 md:w-64 object-cover mb-6 rounded-full border-2 border-gray-200"
-                />
+                <div className="h-56 w-56 md:h-64 md:w-64 mb-6 rounded-full border-2 border-gray-200 bg-white flex items-center justify-center overflow-hidden">
+                  <div className="w-full h-full bg-white flex items-center justify-center p-4">
+                    <img
+                      src={resolveMediaUrl(cat.image) || '/images/category1.jpg'}
+                      alt={cat.name}
+                      className="max-w-full max-h-full object-contain"
+                      style={{ 
+                        backgroundColor: 'white',
+                        mixBlendMode: 'darken',
+                        filter: 'brightness(1.1) contrast(1.1)'
+                      }}
+                    />
+                  </div>
+                </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2 text-center">{cat.name}</h3>
               </Link>
             ))}

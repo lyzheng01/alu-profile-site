@@ -425,17 +425,13 @@ const ProductDetail: React.FC = () => {
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="p-6 space-y-4">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">PRODUCT DESCRIPTION</h2>
-                <p className="text-gray-600 text-lg leading-relaxed">
-                  {product.description}
+                <p className="text-gray-600 text-lg leading-relaxed whitespace-pre-line">
+                  {product.description?.trim()
+                    ? product.description
+                    : `Aluminium tile trim is a durable edging profile designed to protect tile edges and create clean, professional finishes in wall and floor installations.
+Made from high-quality aluminum, it prevents chipping, improves overall appearance, and ensures long-lasting protection.
+Available in various shapes, sizes, and surface finishes, aluminium tile trims are widely used in bathrooms, kitchens, stair areas, and commercial spaces.`}
                 </p>
-                <div className="text-gray-700 text-base leading-relaxed space-y-3">
-                  <p>
-                    High-quality aluminum profiles can prevent doors and windows from deforming or wearing out in the hot summer and from freezing and cracking in the cold winter. International standards strictly implement the aluminum door and window profiles produced by Lingye Aluminum. Our aluminum door and window profile frames are popular for sliding doors, folding doors, etc. We have also developed a variety of door and window systems, including aluminum alloy sliding windows, aluminum alloy casement windows, aluminum alloy inward-opening inverted windows, aluminum alloy top-hung sliding windows, aluminum alloy casement doors, etc. Here, you can quickly get the aluminum profile projects you want.
-                  </p>
-                  <p>
-                    Our aluminum windows and doors are available in a variety of finishes, including mill finish, anodized aluminum, powder coated, PVDF painted and wood grain transfer. Available in a variety of colors. The color is long-lasting and won't fade. It also includes a variety of aluminum processing, such as high-precision CNC machining, precision cutting, drilling, and milling.
-                  </p>
-                </div>
               </div>
             </div>
 
@@ -513,17 +509,26 @@ const ProductDetail: React.FC = () => {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">PRODUCT DISPLAY</h2>
                 {product.images && product.images.length > 0 ? (
                   <div className="space-y-8">
-                    {product.images.slice(0, 4).map((image, index) => (
-                      <div key={index} className="w-full">
-                        <div className="w-full bg-gray-50 rounded-2xl overflow-hidden flex items-center justify-center min-h-[360px]">
-                          <img
-                            src={image.image}
-                            alt={`${product.name} view ${index + 1}`}
-                            className="w-full h-auto max-h-[720px] object-contain"
-                          />
+                    {product.images.slice(0, 4).map((image, index) => {
+                      const isFirstImage = index === 0;
+                      return (
+                        <div key={index} className="w-full flex justify-center">
+                          <div
+                            className={`w-full bg-gray-50 rounded-2xl overflow-hidden flex items-center justify-center ${
+                              isFirstImage
+                                ? 'min-h-[260px] md:min-h-[400px]'
+                                : 'max-w-3xl min-h-[240px] md:min-h-[320px]'
+                            }`}
+                          >
+                            <img
+                              src={image.image}
+                              alt={`${product.name} view ${index + 1}`}
+                              className="w-full h-auto object-contain"
+                            />
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 ) : (
                   <div className="text-center py-6">
