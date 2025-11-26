@@ -542,7 +542,9 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
             {product.factory_images && product.factory_images.length > 0 && (
               <div className="space-y-10">
                 <h2 className="text-xl font-semibold text-gray-900">OUR FACTORY</h2>
-                {product.factory_images.map((factoryImg: any, index: number) => {
+                {product.factory_images
+                  .slice(0, Math.max(0, product.factory_images.length - 2))
+                  .map((factoryImg: any, index: number) => {
                   let imageUrl = factoryImg.image;
                   if (imageUrl && !imageUrl.startsWith('http')) {
                     const origin = window.location.origin;
@@ -581,16 +583,6 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                     </div>
                   );
                 })}
-                <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-3">
-                  <h3 className="text-lg font-semibold text-gray-900">Quality Inspection</h3>
-                  <p className="text-gray-700 leading-relaxed">
-                    Each production run passes through dimensional verification, hardness and tensile testing, and strict surface inspection. Our QC engineers record every checkpoint to ensure the extrusion, anodizing, and powder coating meet international standards for architectural windows and doors.
-                  </p>
-                  <p className="text-gray-700 leading-relaxed">
-                    Traceable batch numbers, salt spray resistance verification, and 24-hour sample aging tests guarantee that every profile shipped from Lingye maintains uniform color, thickness tolerance, and long-term performance in harsh climates.
-                  </p>
-                </div>
-                
                 {surfaceTreatmentImageUrl && (
                   <div className="bg-white rounded-lg shadow-md">
                     <div className="p-6">
@@ -614,6 +606,17 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                     </div>
                   </div>
                 )}
+
+                <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
+                  <h3 className="text-xl font-semibold text-gray-900">Why choose us?</h3>
+                  <ul className="list-disc list-inside space-y-2 text-gray-700">
+                    <li>ISO9001-certified factory</li>
+                    <li>10+ years aluminium extrusion experience</li>
+                    <li>Strict QC for extrusion & finishing</li>
+                    <li>Fast delivery and low MOQ</li>
+                    <li>Export to EU/US/Middle East</li>
+                  </ul>
+                </div>
               </div>
             )}
 
