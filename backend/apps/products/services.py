@@ -390,7 +390,7 @@ class TranslationService:
                 'home_new_products_title': 'New Products',
                 'home_new_products_subtitle': 'Latest high-quality products',
                 'home_quote_title': 'Request A Free Quote',
-                'home_quote_subtitle': 'You can contact us any way that is convenient for you. Shengxin Provide Services 24/7 via fax, email or telephone.',
+                'home_quote_subtitle': 'You can contact us any way that is convenient for you. Lingye Provide Services 24/7 via fax, email or telephone.',
                 
                 # 导航菜单
                 'nav_home': 'Home',

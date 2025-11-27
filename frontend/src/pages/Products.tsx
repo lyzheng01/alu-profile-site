@@ -8,8 +8,10 @@ import { resolveMediaUrl } from '../utils/url';
 
 interface Product {
   id: number;
-  name: string;
-  description: string;
+  name?: string; // 中文时使用
+  translated_name?: string; // 非中文时使用
+  description?: string;
+  translated_description?: string;
   category: {
     id: number;
     name: string;
@@ -236,15 +238,15 @@ const Products: React.FC = () => {
               return (
                 <div
                   key={product.id}
-                  className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow group cursor-pointer product-card"
+                  className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow group cursor-pointer product-card flex flex-col h-full"
                   onClick={() => window.location.href = `/${currentLanguage}/products/${product.id}`}
                 >
                   {/* 产品图片 - 占据主要空间 */}
-                  <div className="h-64 bg-gray-100 overflow-hidden relative product-image-container">
+                  <div className="h-64 bg-gray-100 overflow-hidden relative product-image-container flex-shrink-0">
                     {product.images && product.images.length > 0 ? (
                       <img
                         src={resolveMediaUrl(product.images.find(img => img.is_primary)?.image || product.images[0].image)}
-                        alt={product.name}
+                        alt={product.translated_name || product.name || 'Product Image'}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     ) : (
@@ -256,11 +258,11 @@ const Products: React.FC = () => {
                     )}
                   </div>
 
-                  {/* 产品信息 - 简洁布局 */}
-                  <div className="p-4 text-center">
-                    {/* 产品名称 - 居中显示 */}
-                    <h3 className="text-lg font-semibold text-gray-800 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">
-                      {product.name}
+                  {/* 产品信息 - 简洁布局，增加高度以容纳长名称 */}
+                  <div className="p-4 text-center flex-1 flex flex-col justify-center min-h-[100px]">
+                    {/* 产品名称 - 居中显示，支持多行 */}
+                    <h3 className="text-base font-semibold text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-3 leading-relaxed break-words">
+                      {product.translated_name || product.name || 'Product Name'}
                     </h3>
                   </div>
                 </div>

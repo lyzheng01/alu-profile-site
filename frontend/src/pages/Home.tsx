@@ -5,6 +5,7 @@ import { resolveMediaUrl } from '../utils/url';
 import { useTranslation } from '../contexts/TranslationContext';
 import CountUp from 'react-countup';
 import FloatingContactButtons from '../components/FloatingContactButtons';
+import InquiryForm from '../components/InquiryForm';
 import { usePageTitle } from '../hooks/usePageTitle';
 
 // 类型声明
@@ -43,6 +44,7 @@ const Home: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [heroImageUrl, setHeroImageUrl] = useState('');
   const [homepageImage3Url, setHomepageImage3Url] = useState('');
+  const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
 
   // 设置页面标题
   usePageTitle('home');
@@ -225,6 +227,18 @@ const Home: React.FC = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  // 当弹窗打开时，禁止背景滚动
+  useEffect(() => {
+    if (isInquiryModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isInquiryModalOpen]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -432,118 +446,6 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 工厂展示区块 */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* 标题和副标题 */}
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">{t('home_explore_company_title', 'Explore Our Company')}</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {t('home_explore_company_subtitle', 'From production and product offerings to inventory, see how we bring quality to life.')}
-            </p>
-          </div>
-          
-          {/* 工厂展示图片网格 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* 工厂场景 1 - 生产设备 */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="h-64 bg-gray-200 flex items-center justify-center">
-                <div className="text-center">
-                  <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                  </svg>
-                  <p className="text-gray-500 text-sm">{t('home_factory_production_line', 'Factory Production Line')}</p>
-                </div>
-              </div>
-              <div className="p-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('home_production_equipment', 'Production Equipment')}</h3>
-                <p className="text-gray-600 text-sm">{t('home_production_equipment_desc', 'Advanced manufacturing facilities with cutting-edge technology')}</p>
-              </div>
-            </div>
-
-            {/* 工厂场景 2 - 产品存储 */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="h-64 bg-gray-200 flex items-center justify-center">
-                <div className="text-center">
-                  <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                  </svg>
-                  <p className="text-gray-500 text-sm">{t('home_product_storage', 'Product Storage')}</p>
-                </div>
-              </div>
-              <div className="p-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('home_inventory_management', 'Inventory Management')}</h3>
-                <p className="text-gray-600 text-sm">{t('home_inventory_management_desc', 'Organized storage facilities with efficient inventory control')}</p>
-              </div>
-            </div>
-
-            {/* 工厂场景 3 - 质量控制 */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="h-64 bg-gray-200 flex items-center justify-center">
-                <div className="text-center">
-                  <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                  </svg>
-                  <p className="text-gray-500 text-sm">{t('home_quality_control', 'Quality Control')}</p>
-                </div>
-              </div>
-              <div className="p-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('home_quality_assurance', 'Quality Assurance')}</h3>
-                <p className="text-gray-600 text-sm">{t('home_quality_assurance_desc', 'Strict quality control processes ensuring product excellence')}</p>
-              </div>
-            </div>
-
-            {/* 工厂场景 4 - 包装区域 */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="h-64 bg-gray-200 flex items-center justify-center">
-                <div className="text-center">
-                  <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                  </svg>
-                  <p className="text-gray-500 text-sm">{t('home_packaging_area', 'Packaging Area')}</p>
-                </div>
-              </div>
-              <div className="p-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('home_packaging_shipping', 'Packaging & Shipping')}</h3>
-                <p className="text-gray-600 text-sm">{t('home_packaging_shipping_desc', 'Professional packaging and logistics for global delivery')}</p>
-              </div>
-            </div>
-
-            {/* 工厂场景 5 - 物流运输 */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="h-64 bg-gray-200 flex items-center justify-center">
-                <div className="text-center">
-                  <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                  </svg>
-                  <p className="text-gray-500 text-sm">{t('home_logistics_shipping', 'Logistics & Shipping')}</p>
-                </div>
-              </div>
-              <div className="p-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('home_global_logistics', 'Global Logistics')}</h3>
-                <p className="text-gray-600 text-sm">{t('home_global_logistics_desc', 'Efficient shipping and delivery to customers worldwide')}</p>
-              </div>
-            </div>
-
-            {/* 工厂场景 6 - 研发中心 */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="h-64 bg-gray-200 flex items-center justify-center">
-                <div className="text-center">
-                  <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                  </svg>
-                  <p className="text-gray-500 text-sm">{t('home_rd_center', 'R&D Center')}</p>
-                </div>
-              </div>
-              <div className="p-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('home_research_development', 'Research & Development')}</h3>
-                <p className="text-gray-600 text-sm">{t('home_research_development_desc', 'Innovation center for new product development')}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Why Choose Us Section - 动态统计+市场分布 */}
       <section className="bg-white py-12">
         {/* 顶部数字统计动画 */}
@@ -552,7 +454,7 @@ const Home: React.FC = () => {
             <div className="text-5xl font-bold text-yellow-500 mb-2">
               <CountUp 
                 start={0} 
-                end={29} 
+                end={15} 
                 duration={2.5} 
                 useEasing={true}
                 separator=","
@@ -565,7 +467,7 @@ const Home: React.FC = () => {
             <div className="text-5xl font-bold text-yellow-500 mb-2">
               <CountUp 
                 start={0} 
-                end={80} 
+                end={50} 
                 duration={2.5} 
                 useEasing={true}
                 separator=","
@@ -591,7 +493,7 @@ const Home: React.FC = () => {
             <div className="text-5xl font-bold text-yellow-500 mb-2">
               <CountUp 
                 start={0} 
-                end={1000} 
+                end={400} 
                 duration={2.5} 
                 useEasing={true}
                 separator=","
@@ -682,13 +584,77 @@ const Home: React.FC = () => {
             {t('home_quote_title', 'Request A Free Quote')}
           </h2>
           <p className="text-lg mb-6 animate-slide-in-right">
-            {t('home_quote_subtitle', 'You can contact us any way that is convenient for you. Shengxin Provide Services 24/7 via fax, email or telephone.')}
+            {t('home_quote_subtitle', 'You can contact us any way that is convenient for you. Lingye Provide Services 24/7 via fax, email or telephone.')}
           </p>
-          <button className="bg-white text-blue-600 px-6 py-3 rounded-lg text-base font-semibold hover:bg-gray-100 transition-colors pulse">
+          <button 
+            onClick={() => setIsInquiryModalOpen(true)}
+            className="bg-white text-blue-600 px-6 py-3 rounded-lg text-base font-semibold hover:bg-gray-100 transition-colors pulse"
+          >
             {t('btn_contact_us', 'Contact Us')}
           </button>
         </div>
       </section>
+
+      {/* Inquiry Form Modal */}
+      {isInquiryModalOpen && (
+        <div 
+          className="fixed inset-0 z-50 overflow-y-auto"
+          onClick={() => setIsInquiryModalOpen(false)}
+        >
+          {/* 背景遮罩 */}
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+            style={{ animation: 'fadeIn 0.3s ease-out' }}
+          ></div>
+          
+          {/* 弹窗内容 */}
+          <div className="flex min-h-full items-center justify-center p-4">
+            <div 
+              className="relative bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+              style={{ animation: 'slideUp 0.3s ease-out' }}
+            >
+              {/* 关闭按钮 */}
+              <button
+                onClick={() => setIsInquiryModalOpen(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors z-10 bg-white rounded-full p-2 hover:bg-gray-100 shadow-md"
+                aria-label="Close"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+              
+              {/* 表单内容 */}
+              <InquiryForm 
+                onSuccess={() => {
+                  setTimeout(() => {
+                    setIsInquiryModalOpen(false);
+                  }, 2000); // 2秒后自动关闭，让用户看到成功消息
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 添加动画样式 */}
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes slideUp {
+          from { 
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to { 
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
 
       {/* 悬浮联系按钮 */}
       <FloatingContactButtons />

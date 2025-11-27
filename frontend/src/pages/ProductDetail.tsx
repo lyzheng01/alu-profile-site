@@ -439,10 +439,16 @@ const ProductDetail: React.FC = () => {
         {/* Product title */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {product.name} - Aluminium Extrusion Profiles for Windows and Doors
+            {product.name}
+            {product.category && (
+              <span className="text-2xl font-normal text-gray-600 ml-2">
+                - {product.category.name}
+              </span>
+            )}
           </h1>
           <p className="text-gray-600">
-            Categories: All Product, {product.category.name}
+            Categories: All Product{product.category && `, ${product.category.name}`}
+            {product.subcategory && `, ${product.subcategory.name}`}
           </p>
         </div>
 
