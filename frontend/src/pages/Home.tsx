@@ -608,7 +608,7 @@ const Home: React.FC = () => {
           <div className="md:w-1/3 p-8 flex flex-col justify-center">
             <h2 className="text-3xl font-bold text-white mb-4">{t('home_market_area', 'MARKET AREA')}</h2>
             <p className="text-white text-base mb-2">
-              {t('home_market_area_desc', 'Shengxin is located in Xuancheng City, Anhui Province, China, which is 100km from Wuhu port and 350km from Shanghai port. Our products are exported to America, Africa, Asia, Europe and the Middle East.')}
+              {t('home_market_area_desc', 'Our products are exported to Europe, South America, North America, Africa, Asia, and the Middle East, etc.')}
             </p>
           </div>
           {/* 右侧五大洲icon分布 */}

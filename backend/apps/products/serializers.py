@@ -293,6 +293,16 @@ class TranslatedProductDetailSerializer(serializers.ModelSerializer):
         # 先获取基本数据（包含翻译）
         data = super().to_representation(instance)
         
+        # 将翻译字段映射为标准字段，以便模板合并和前端使用
+        if 'translated_description' in data:
+            data['description'] = data.pop('translated_description')
+        if 'translated_features' in data:
+            data['features'] = data.pop('translated_features')
+        if 'translated_applications' in data:
+            data['applications'] = data.pop('translated_applications')
+        if 'translated_name' in data:
+            data['name'] = data.pop('translated_name')
+        
         # 获取匹配的模板
         template = get_product_template(instance)
         
