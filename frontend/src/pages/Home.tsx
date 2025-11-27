@@ -157,7 +157,6 @@ const Home: React.FC = () => {
   // featuredProducts 拉取逻辑
   const [featuredProducts, setFeaturedProducts] = useState<FeaturedProduct[]>([]);
   const [categories, setCategories] = useState<CategoryItem[]>([]);
-  const scrollRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     fetch(`${API_ENDPOINTS.PRODUCTS}?is_featured=true`)
       .then(res => res.json())
@@ -203,15 +202,8 @@ const Home: React.FC = () => {
       });
   }, []);
 
-  // 自动滚动逻辑
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (scrollRef.current) {
-        scrollRef.current.scrollBy({ left: 320 + 24, behavior: 'smooth' }); // 卡片宽+间距
-      }
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
+  const heroProduct = featuredProducts[0];
+  const secondaryProducts = featuredProducts.slice(1, 5);
 
   // 点击外部关闭移动端菜单
   useEffect(() => {
@@ -346,102 +338,149 @@ const Home: React.FC = () => {
       </section>
 
       {/* 产品种类（Product Categories）Section */}
-      <section className="py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 animate-slide-in-left">
+      <section className="relative py-20 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#eef2ff] via-white to-[#e0ecff]" />
+        <div className="absolute -top-20 -right-10 w-72 h-72 bg-blue-200/40 blur-3xl rounded-full" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-100/50 blur-3xl rounded-full" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          <div className="text-center">
+            <span className="text-sm uppercase tracking-[0.5em] text-blue-400">
               {t('home_product_categories_title', 'Product Categories')}
-            </h2>
-            <p className="text-lg text-gray-600 animate-slide-in-right">
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4">
               {t('home_product_categories_subtitle', 'Explore our main product categories')}
+            </h2>
+            <p className="mt-4 text-lg text-gray-500 max-w-3xl mx-auto">
+              {t('about_company_mission', 'Our mission is to create greater value for customers through innovative technology and quality service.')}
             </p>
           </div>
-          <div className="grid md:grid-cols-3 lg:grid-cols-3 gap-8">
-            {categories.map((cat) => (
+
+          <div className="space-y-10">
+            {categories.map((cat, index) => (
               <Link
                 key={cat.id}
                 to={`/${currentLanguage}/products?category=${cat.id}`}
-                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow flex flex-col items-center p-8 cursor-pointer"
+                className={`group relative rounded-[36px] overflow-hidden shadow-[0_25px_60px_rgba(15,23,42,0.15)] border border-white/60 bg-white/90 backdrop-blur-xl ring-1 ring-blue-100/70 ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} flex flex-col lg:flex-row`}
               >
-                <div className="h-56 w-56 md:h-64 md:w-64 mb-6 rounded-full border-2 border-gray-200 bg-white flex items-center justify-center overflow-hidden">
-                  <div className="w-full h-full bg-white flex items-center justify-center p-4">
-                    <img
-                      src={resolveMediaUrl(cat.image) || '/images/category1.jpg'}
-                      alt={cat.name}
-                      className="max-w-full max-h-full object-contain"
-                      style={{ 
-                        backgroundColor: 'white',
-                        mixBlendMode: 'darken',
-                        filter: 'brightness(1.1) contrast(1.1)'
-                      }}
-                    />
+                <div className="relative lg:w-1/2 h-72 lg:h-[420px]">
+                  <img
+                    src={resolveMediaUrl(cat.image) || '/images/category1.jpg'}
+                    alt={cat.name}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                  <div className="absolute top-6 left-6 bg-white/85 text-gray-900 px-4 py-2 rounded-full text-sm font-semibold shadow">
+                    {String(index + 1).padStart(2, '0')}
+                  </div>
+                  <div className="absolute bottom-6 left-6 right-6 text-white">
+                    <p className="text-sm text-white/80 mb-1">{t('btn_view_details', 'View Details')}</p>
+                    <div className="text-3xl font-semibold flex items-center gap-4">
+                      {cat.name}
+                      <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2 text-center">{cat.name}</h3>
+
+                <div className="lg:w-1/2 p-8 flex flex-col gap-6 bg-gradient-to-br from-white/70 via-white/40 to-blue-50/50">
+                  <div>
+                    <span className="text-xs uppercase tracking-[0.4em] text-blue-400">{t('home_product_categories_title', 'Product Categories')}</span>
+                    <h3 className="text-2xl font-bold text-gray-900 mt-3 mb-2">{cat.name}</h3>
+                    <p className="text-gray-600 leading-relaxed">
+                      {cat.description || t('home_product_categories_subtitle', 'Explore our main product categories')}
+                    </p>
+                  </div>
+
+                  <div className="flex justify-start">
+                    <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-semibold text-sm shadow-lg group-hover:translate-x-1 transition-transform">
+                      {t('btn_view_details', 'View Details')}
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </span>
+                  </div>
+                </div>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 新产品（New Products）Section - 全屏显示 */}
-      <section className="py-16 bg-gray-50 w-full">
-        <div className="w-full px-4 sm:px-6 lg:px-8">
+      {/* 新产品（New Products）Section */}
+      <section className="relative py-16 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0f172a] via-[#1e2761] to-[#1f2937]" />
+        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 20% 20%, #60a5fa, transparent 45%)' }} />
+        <div className="absolute inset-0 opacity-30" style={{ backgroundImage: 'radial-gradient(circle at 80% 0%, #818cf8, transparent 35%)' }} />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 animate-slide-in-left">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 animate-slide-in-left">
               {t('home_new_products_title', 'New Products')}
             </h2>
-            <p className="text-xl text-gray-600 animate-slide-in-right">
+            <p className="text-xl text-white/70 animate-slide-in-right">
               {t('home_new_products_subtitle', 'Latest high-quality products')}
             </p>
           </div>
-          <div className="relative">
-            {/* 滚动按钮 */}
-            <button
-              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-3 hover:bg-gray-100 transition-colors"
-              onClick={() => {
-                if (scrollRef.current) scrollRef.current.scrollBy({ left: -400, behavior: 'smooth' });
-              }}
-              style={{display: 'block'}}
-            >
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-            </button>
-            <button
-              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-3 hover:bg-gray-100 transition-colors"
-              onClick={() => {
-                if (scrollRef.current) scrollRef.current.scrollBy({ left: 400, behavior: 'smooth' });
-              }}
-              style={{display: 'block'}}
-            >
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-            </button>
-            {/* 横向滚动容器 */}
-            <div
-              ref={scrollRef}
-              className="flex space-x-6 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 py-4 px-4"
-              style={{scrollBehavior: 'smooth'}}
-            >
-              {featuredProducts.map((prod, idx) => {
+
+          {featuredProducts.slice(0, 6).length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {featuredProducts.slice(0, 6).map((prod, idx) => {
                 const productId = prod.id || idx;
                 const productLink = `/${currentLanguage || 'en'}/products/${productId}`;
                 return (
                   <Link
                     key={productId}
                     to={productLink}
-                    className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 flex-shrink-0 flex flex-col min-w-[320px] max-w-[320px] transform hover:scale-105 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-300"
+                    className="group bg-gradient-to-br from-white/90 via-white/70 to-blue-50/60 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/40 overflow-hidden flex flex-col backdrop-blur"
                   >
-                    <img 
-                      src={resolveMediaUrl(prod.product_image)} 
-                      alt={prod.name} 
-                      className="w-full h-64 object-cover" 
-                    />
-                    <div className="p-6">
-                      <h3 className="text-xl font-semibold text-gray-900 text-center truncate w-full">{prod.name}</h3>
+                    <div className="relative h-72 md:h-80 overflow-hidden">
+                      <img 
+                        src={resolveMediaUrl(prod.product_image)} 
+                        alt={prod.name} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      <div className="absolute top-4 left-4 bg-white/80 text-gray-800 px-3 py-1 rounded-full text-sm font-medium shadow-md backdrop-blur">
+                        {t('home_new_products_title', 'New Products')}
+                      </div>
+                    </div>
+                    <div className="px-5 py-4 flex flex-col gap-3 text-gray-900">
+                      <h3 className="text-lg font-semibold group-hover:text-blue-600 transition-colors line-clamp-2">
+                        {prod.name}
+                      </h3>
+                      <p className="text-xs md:text-sm text-gray-600 line-clamp-3">
+                        {prod.description || t('about_company_mission', 'Our mission is to create greater value for customers through innovative technology and quality service.')}
+                      </p>
+                      <div className="flex items-center justify-between text-sm font-semibold text-blue-600">
+                        <span className="flex items-center gap-2">
+                          {t('btn_view_details', 'View Details')}
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </span>
+                        <span className="text-gray-400">#{String(idx + 1).padStart(2, '0')}</span>
+                      </div>
                     </div>
                   </Link>
                 );
               })}
             </div>
+          ) : (
+            <div className="text-center py-12 text-white/70">
+              {t('products_no_products', 'No products found')}
+            </div>
+          )}
+
+          <div className="mt-10 text-center">
+            <Link
+              to={`/${currentLanguage}/products`}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-semibold shadow-lg hover:from-blue-600 hover:to-indigo-600 transition-colors"
+            >
+              {t('btn_view_details', 'View Details')}
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
           </div>
         </div>
       </section>

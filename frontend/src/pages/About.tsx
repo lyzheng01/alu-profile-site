@@ -129,7 +129,7 @@ const About: React.FC = () => {
               </h2>
               <div className="prose text-gray-600 leading-relaxed">
                 <p className="mb-4">
-                  {getCompanyInfo('company_introduction') || t('about_company_intro_content', 'We are a professional aluminum profile manufacturer with 20 years of industry experience. We are committed to providing customers with high-quality aluminum products and solutions, with products exported to more than 30 countries and regions worldwide.')}
+                  {getCompanyInfo('company_introduction') || t('about_company_intro_content', 'We are a professional aluminum profile manufacturer with 15 years of industry experience. We are committed to providing customers with high-quality aluminum products and solutions, with products exported to more than 60 countries and regions worldwide.')}
                 </p>
                 <p className="mb-4">
                   {getCompanyInfo('company_mission') || t('about_company_mission', 'Our mission is to create greater value for customers through innovative technology and quality service, and to become a leader in the aluminum profile industry.')}
@@ -161,10 +161,10 @@ const About: React.FC = () => {
 
         {/* 公司数据 */}
         <div className="mb-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="text-4xl font-bold text-blue-600 mb-2">
-                {getCompanyInfo('years_experience') || '20'}
+                {getCompanyInfo('years_experience') || '15'}
               </div>
               <div className="text-gray-600">
                 {t('about_years_experience', 'Years of Experience')}
@@ -172,7 +172,7 @@ const About: React.FC = () => {
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-blue-600 mb-2">
-                {getCompanyInfo('export_countries') || '30+'}
+                {getCompanyInfo('export_countries') || '60+'}
               </div>
               <div className="text-gray-600">
                 {t('about_export_countries', 'Export Countries')}
@@ -184,14 +184,6 @@ const About: React.FC = () => {
               </div>
               <div className="text-gray-600">
                 {t('about_annual_production', 'Annual Production (tons)')}
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600 mb-2">
-                {getCompanyInfo('satisfied_customers') || '1000+'}
-              </div>
-              <div className="text-gray-600">
-                {t('about_satisfied_customers', 'Satisfied Customers')}
               </div>
             </div>
           </div>
