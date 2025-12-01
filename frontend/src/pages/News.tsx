@@ -147,7 +147,7 @@ const NewsDetail: React.FC = () => {
             <img
               src={article.featured_image}
               alt={article.title}
-              className="w-full h-96 object-cover rounded-lg"
+              className="w-full max-h-[600px] object-contain rounded-lg bg-gray-50"
             />
           </div>
         )}
@@ -163,7 +163,7 @@ const NewsDetail: React.FC = () => {
         {/* 文章内容 */}
         <div className="prose max-w-none">
           <div 
-            className="text-gray-700 leading-relaxed text-lg [&>p]:mb-4 [&>h1]:text-3xl [&>h1]:font-bold [&>h1]:mb-6 [&>h1]:mt-8 [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:mb-4 [&>h2]:mt-6 [&>h3]:text-xl [&>h3]:font-semibold [&>h3]:mb-3 [&>h3]:mt-5 [&>h4]:text-lg [&>h4]:font-semibold [&>h4]:mb-2 [&>h4]:mt-4 [&>ul]:list-disc [&>ul]:pl-6 [&>ul]:mb-4 [&>ol]:list-decimal [&>ol]:pl-6 [&>ol]:mb-4 [&>li]:mb-1 [&>strong]:font-bold [&>b]:font-bold [&>em]:italic [&>i]:italic [&>u]:underline [&>blockquote]:border-l-4 [&>blockquote]:border-gray-300 [&>blockquote]:pl-4 [&>blockquote]:italic [&>blockquote]:text-gray-600 [&>blockquote]:mb-4 [&>code]:bg-gray-100 [&>code]:px-2 [&>code]:py-1 [&>code]:rounded [&>code]:text-sm [&>pre]:bg-gray-100 [&>pre]:p-4 [&>pre]:rounded [&>pre]:overflow-x-auto [&>pre]:mb-4 [&>a]:text-blue-600 [&>a]:underline [&>a]:hover:text-blue-800 [&>img]:max-w-full [&>img]:h-auto [&>img]:rounded [&>img]:mb-4 [&>table]:w-full [&>table]:border-collapse [&>table]:mb-4 [&>table>thead]:bg-gray-50 [&>table>thead>tr>th]:border [&>table>thead>tr>th]:border-gray-300 [&>table>thead>tr>th]:px-4 [&>table>thead>tr>th]:py-2 [&>table>thead>tr>th]:text-left [&>table>tbody>tr>td]:border [&>table>tbody>tr>td]:border-gray-300 [&>table>tbody>tr>td]:px-4 [&>table>tbody>tr>td]:py-2 [&>hr]:border-gray-300 [&>hr]:my-6"
+            className="text-gray-700 leading-relaxed text-lg [&>p]:mb-4 [&>h1]:text-3xl [&>h1]:font-bold [&>h1]:mb-6 [&>h1]:mt-8 [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:mb-4 [&>h2]:mt-6 [&>h3]:text-xl [&>h3]:font-semibold [&>h3]:mb-3 [&>h3]:mt-5 [&>h4]:text-lg [&>h4]:font-semibold [&>h4]:mb-2 [&>h4]:mt-4 [&>ul]:list-disc [&>ul]:pl-6 [&>ul]:mb-4 [&>ol]:list-decimal [&>ol]:pl-6 [&>ol]:mb-4 [&>li]:mb-1 [&>strong]:font-bold [&>b]:font-bold [&>em]:italic [&>i]:italic [&>u]:underline [&>blockquote]:border-l-4 [&>blockquote]:border-gray-300 [&>blockquote]:pl-4 [&>blockquote]:italic [&>blockquote]:text-gray-600 [&>blockquote]:mb-4 [&>code]:bg-gray-100 [&>code]:px-2 [&>code]:py-1 [&>code]:rounded [&>code]:text-sm [&>pre]:bg-gray-100 [&>pre]:p-4 [&>pre]:rounded [&>pre]:overflow-x-auto [&>pre]:mb-4 [&>a]:text-blue-600 [&>a]:underline [&>a]:hover:text-blue-800 [&>img]:max-w-full [&>img]:w-full [&>img]:h-auto [&>img]:object-contain [&>img]:rounded-lg [&>img]:mb-4 [&>img]:bg-gray-50 [&>table]:w-full [&>table]:border-collapse [&>table]:mb-4 [&>table>thead]:bg-gray-50 [&>table>thead>tr>th]:border [&>table>thead>tr>th]:border-gray-300 [&>table>thead>tr>th]:px-4 [&>table>thead>tr>th]:py-2 [&>table>thead>tr>th]:text-left [&>table>tbody>tr>td]:border [&>table>tbody>tr>td]:border-gray-300 [&>table>tbody>tr>td]:px-4 [&>table>tbody>tr>td]:py-2 [&>hr]:border-gray-300 [&>hr]:my-6"
             dangerouslySetInnerHTML={{ __html: article.content.replace(/\n/g, '<br>') }}
           />
         </div>

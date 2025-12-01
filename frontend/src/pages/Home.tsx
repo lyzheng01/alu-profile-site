@@ -45,6 +45,7 @@ const Home: React.FC = () => {
   const [heroImageUrl, setHeroImageUrl] = useState('');
   const [homepageImage3Url, setHomepageImage3Url] = useState('');
   const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
+  const [bannerImage3Url, setBannerImage3Url] = useState('');
 
   // 设置页面标题
   usePageTitle('home');
@@ -56,12 +57,13 @@ const Home: React.FC = () => {
     'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&h=600&fit=crop'
   ]), []);
 
-  // 幻灯片数据 - 优先使用后台上传的首页图片
+  // 幻灯片数据 - 优先使用后台上传的首页和 Banner 图片
   const slides = useMemo(() => ([
     {
       title: t('slide_1_title', 'LingYe Aluminum'),
       subtitle: t('slide_1_subtitle', 'High-quality solutions for your needs'),
-      image: homepageImage3Url || defaultSlideImages[0],
+      // 第一张：后台 Banner 3 优先
+      image: bannerImage3Url || defaultSlideImages[0],
       cta: t('slide_1_cta', 'Learn More')
     },
     {
@@ -73,10 +75,11 @@ const Home: React.FC = () => {
     {
       title: t('slide_3_title', 'Advanced Technology'),
       subtitle: t('slide_3_subtitle', 'Innovative manufacturing processes'),
-      image: defaultSlideImages[2],
+      // 第三张：原首页图片3 或默认图
+      image: homepageImage3Url || defaultSlideImages[2],
       cta: t('slide_3_cta', 'Contact Us')
     }
-  ]), [defaultSlideImages, heroImageUrl, homepageImage3Url, t]);
+  ]), [defaultSlideImages, heroImageUrl, homepageImage3Url, bannerImage3Url, t]);
   // 加载后台上传的首页图片
   useEffect(() => {
     const fetchHeroImages = async () => {
@@ -103,6 +106,15 @@ const Home: React.FC = () => {
               setHomepageImage3Url(resolvedUrl3);
             }
           }
+
+          // 获取Banner 3图片（第三张幻灯片）
+          const banner3Image = list.find((item: any) => ((item.title || '').toLowerCase()).includes('banner 3'));
+          if (banner3Image) {
+            const resolvedBanner3 = resolveMediaUrl(banner3Image?.image);
+            if (resolvedBanner3) {
+              setBannerImage3Url(resolvedBanner3);
+            }
+          }
         }
       } catch (error) {
         console.error('Failed to fetch hero images:', error);
@@ -124,8 +136,8 @@ const Home: React.FC = () => {
   const advantages = [
     {
       icon: '🏭',
-      title: t('advantage_1_title', 'Advanced Manufacturing'),
-      description: t('advantage_1_desc', 'State-of-the-art production facilities with cutting-edge technology')
+      title: t('advantage_1_title', 'Full-Service Production Capabilities'),
+      description: t('advantage_1_desc', 'Extrusion, anodizing, powder coating, CNC machining, cutting, punching — all processes completed in-house for stable quality and fast delivery.')
     },
     {
       icon: '🌍',
@@ -249,17 +261,19 @@ const Home: React.FC = () => {
               <div className="absolute inset-0 bg-cover bg-center" style={{
                 backgroundImage: `url(${slide.image})`,
                 backgroundSize: 'cover',
-                backgroundPosition: 'center'
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: index === 1 ? 'center bottom' : 'center',
+                backgroundColor: 'transparent'
               }}></div>
-              <div className="relative z-10 flex items-center justify-center h-full">
-                <div className="text-center text-white max-w-4xl mx-auto px-4">
-                  <h1 className="text-3xl md:text-5xl font-bold mb-4 animate-fade-in text-responsive">
+              <div className="relative z-10 flex items-center justify-start h-full px-6 md:px-16">
+                <div className="max-w-3xl text-left">
+                  <h1 className="text-3xl md:text-5xl font-bold mb-4 animate-fade-in text-responsive text-slate-50 drop-shadow-[0_3px_10px_rgba(0,0,0,0.9)]">
                     {slide.title}
                   </h1>
-                  <p className="text-lg md:text-xl mb-6 animate-fade-in-delay">
+                  <p className="text-lg md:text-xl mb-6 animate-fade-in-delay text-slate-100 drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]">
                     {slide.subtitle}
                   </p>
-                  <button className="bg-blue-600 text-white px-6 py-3 rounded-lg text-base font-semibold hover:bg-blue-700 transition-colors animate-fade-in-delay-2 pulse">
+                  <button className="bg-blue-500/95 hover:bg-blue-600 text-white px-6 py-3 rounded-lg text-base font-semibold transition-colors animate-fade-in-delay-2 shadow-lg">
                     {slide.cta}
                   </button>
                 </div>
@@ -339,14 +353,11 @@ const Home: React.FC = () => {
 
       {/* 产品种类（Product Categories）Section */}
       <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#eef2ff] via-white to-[#e0ecff]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-50 via-white to-indigo-50" />
         <div className="absolute -top-20 -right-10 w-72 h-72 bg-blue-200/40 blur-3xl rounded-full" />
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-100/50 blur-3xl rounded-full" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           <div className="text-center">
-            <span className="text-sm uppercase tracking-[0.5em] text-blue-400">
-              {t('home_product_categories_title', 'Product Categories')}
-            </span>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4">
               {t('home_product_categories_subtitle', 'Explore our main product categories')}
             </h2>
@@ -385,8 +396,7 @@ const Home: React.FC = () => {
 
                 <div className="lg:w-1/2 p-8 flex flex-col gap-6 bg-gradient-to-br from-white/70 via-white/40 to-blue-50/50">
                   <div>
-                    <span className="text-xs uppercase tracking-[0.4em] text-blue-400">{t('home_product_categories_title', 'Product Categories')}</span>
-                    <h3 className="text-2xl font-bold text-gray-900 mt-3 mb-2">{cat.name}</h3>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">{cat.name}</h3>
                     <p className="text-gray-600 leading-relaxed">
                       {cat.description || t('home_product_categories_subtitle', 'Explore our main product categories')}
                     </p>

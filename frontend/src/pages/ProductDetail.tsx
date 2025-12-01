@@ -791,6 +791,11 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
               <div className="space-y-10">
                 <h2 className="text-xl font-semibold text-gray-900">OUR FACTORY</h2>
                 {product.factory_images
+                  .filter((factoryImg: any) => {
+                    // 过滤掉 ANODIZED WORKSHOP 照片
+                    const title = (factoryImg.title || '').toUpperCase();
+                    return !title.includes('ANODIZED WORKSHOP');
+                  })
                   .slice(0, Math.max(0, product.factory_images.length - 2))
                   .map((factoryImg: any, index: number) => {
                   let imageUrl = factoryImg.image;
