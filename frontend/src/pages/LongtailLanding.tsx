@@ -6,6 +6,11 @@ import { useStructuredData } from '../hooks/useStructuredData';
 import { resolveMediaUrl } from '../utils/url';
 import NotFound from './NotFound';
 
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+
 interface LandingPageData {
   slug: string;
   title: string;
@@ -14,6 +19,7 @@ interface LandingPageData {
   intro: string;
   bullets: string[];
   relatedLinks: Array<{ label: string; to: string }>;
+  faqs: FaqItem[];
 }
 
 interface LandingProduct {
@@ -48,6 +54,28 @@ const landingPages: Record<string, LandingPageData> = {
       { label: 'Door and window profile showcase', to: '/en/products/windows-doors/showcase' },
       { label: 'Read aluminum industry news', to: '/en/news' },
     ],
+    faqs: [
+      {
+        question: 'Which construction projects are suitable for your aluminum profiles?',
+        answer:
+          'Our profiles are used in residential towers, commercial buildings, facade systems, and interior partition projects.',
+      },
+      {
+        question: 'Can you customize profile dimensions and wall thickness?',
+        answer:
+          'Yes, we support customized dimensions, wall thickness, and structural requirements based on project drawings.',
+      },
+      {
+        question: 'Do you provide surface treatment options for outdoor use?',
+        answer:
+          'Yes. We provide anodizing, powder coating, and other treatments designed for durability in outdoor environments.',
+      },
+      {
+        question: 'What information is needed for a quick quote?',
+        answer:
+          'Please share drawings, alloy/temper, finish requirement, quantity, and destination port for accurate pricing.',
+      },
+    ],
   },
   'industrial-aluminum-extrusion-manufacturer-in-china': {
     slug: 'industrial-aluminum-extrusion-manufacturer-in-china',
@@ -68,6 +96,28 @@ const landingPages: Record<string, LandingPageData> = {
       { label: 'See profile categories and specs', to: '/en/products' },
       { label: 'Check latest company updates', to: '/en/news' },
     ],
+    faqs: [
+      {
+        question: 'Do you support OEM industrial extrusion projects?',
+        answer:
+          'Yes, we support OEM projects from profile design and tooling development to mass production and export shipment.',
+      },
+      {
+        question: 'What alloys and tempers are commonly available?',
+        answer:
+          'Common options include 6061 and 6063 series with tempers such as T5 and T6, depending on application needs.',
+      },
+      {
+        question: 'Can you provide machining after extrusion?',
+        answer:
+          'Yes, we provide secondary processing such as cutting, drilling, punching, and CNC machining based on drawings.',
+      },
+      {
+        question: 'How do you control quality consistency?',
+        answer:
+          'We apply incoming material checks, process controls, and final inspections for dimensions, surface quality, and packaging.',
+      },
+    ],
   },
   'custom-aluminum-profile-factory-for-oem-orders': {
     slug: 'custom-aluminum-profile-factory-for-oem-orders',
@@ -87,6 +137,28 @@ const landingPages: Record<string, LandingPageData> = {
       { label: 'Submit inquiry from product detail pages', to: '/en/products' },
       { label: 'View windows and doors profile showcase', to: '/en/products/windows-doors/showcase' },
       { label: 'Read technical and market insights', to: '/en/news' },
+    ],
+    faqs: [
+      {
+        question: 'Can you produce profiles strictly based on our drawings?',
+        answer:
+          'Yes, we can produce according to your 2D/3D drawings and technical standards with engineering review before tooling.',
+      },
+      {
+        question: 'Do you support low-volume trial production?',
+        answer:
+          'Yes, we support pilot runs and trial orders before scaling up to regular mass production.',
+      },
+      {
+        question: 'What lead time should we expect for OEM orders?',
+        answer:
+          'Lead time depends on tooling complexity, quantity, and finish process, and we provide a clear timeline during quotation.',
+      },
+      {
+        question: 'How is packaging handled for export shipments?',
+        answer:
+          'We provide export-oriented packaging solutions to reduce damage risk and support efficient container loading.',
+      },
     ],
   },
 };
@@ -146,8 +218,25 @@ const LongtailLanding: React.FC = () => {
     };
   }, [page]);
 
+  const faqData = React.useMemo(() => {
+    if (!page) return null;
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: page.faqs.map((faq) => ({
+        '@type': 'Question',
+        name: faq.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: faq.answer,
+        },
+      })),
+    };
+  }, [page]);
+
   useStructuredData(`landing-${slug || 'unknown'}`, structuredData);
   useStructuredData(`landing-breadcrumb-${slug || 'unknown'}`, breadcrumbData);
+  useStructuredData(`landing-faq-${slug || 'unknown'}`, faqData);
 
   if (!page) {
     return <NotFound />;
@@ -234,6 +323,21 @@ const LongtailLanding: React.FC = () => {
               </li>
             ))}
           </ul>
+        </div>
+
+        <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6">
+          <h3 className="text-xl font-semibold text-gray-900 mb-4">FAQ</h3>
+          <div className="space-y-3">
+            {page.faqs.map((faq, idx) => (
+              <details key={idx} className="group rounded-lg border border-gray-200 p-4 bg-gray-50/70 open:bg-white">
+                <summary className="cursor-pointer list-none font-semibold text-gray-900 flex items-center justify-between">
+                  <span>{faq.question}</span>
+                  <span className="text-blue-600 group-open:rotate-45 transition-transform">+</span>
+                </summary>
+                <p className="mt-3 text-gray-600 leading-relaxed">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
         </div>
       </section>
     </div>
