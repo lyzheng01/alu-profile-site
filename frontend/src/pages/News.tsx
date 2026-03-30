@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from '../contexts/TranslationContext';
 import FloatingContactButtons from '../components/FloatingContactButtons';
 import { usePageTitle, useNewsDetailTitle } from '../hooks/usePageTitle';
+import { useSeoMeta } from '../hooks/useSeoMeta';
 
 interface Article {
   id: number;
@@ -36,6 +37,12 @@ const NewsDetail: React.FC = () => {
 
   // 设置页面标题
   useNewsDetailTitle(article?.title);
+
+  useSeoMeta({
+    title: article ? `${article.title} | LingYe Aluminum` : undefined,
+    description: article?.summary || undefined,
+    canonicalPath: articleId ? `/${currentLanguage}/news/${articleId}` : undefined,
+  });
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -189,6 +196,10 @@ const NewsList: React.FC = () => {
 
   // 设置页面标题
   usePageTitle('news');
+
+  useSeoMeta({
+    canonicalPath: `/${currentLanguage}/news`,
+  });
 
   // 获取新闻数据
   useEffect(() => {

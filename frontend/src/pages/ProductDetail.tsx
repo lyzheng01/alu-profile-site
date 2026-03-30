@@ -4,6 +4,7 @@ import { API_ENDPOINTS } from '../config/api';
 import FloatingContactButtons from '../components/FloatingContactButtons';
 import InquiryForm from '../components/InquiryForm';
 import { usePageTitle } from '../hooks/usePageTitle';
+import { useSeoMeta } from '../hooks/useSeoMeta';
 // 模板系统已集成到后端API，前端直接使用API返回的数据即可
 
 interface Product {
@@ -105,7 +106,15 @@ const ProductDetail: React.FC = () => {
   }, []);
 
   // Set page title
-  usePageTitle('products', product ? `${product.name} - Products` : undefined);
+  usePageTitle('products', product ? `${product.name} | LingYe Aluminum` : undefined);
+
+  useSeoMeta({
+    title: product ? `${product.name} | LingYe Aluminum` : undefined,
+    description: product
+      ? (product.description || `Explore ${product.name} from LingYe Aluminum with custom aluminum extrusion and global supply support.`)
+      : undefined,
+    canonicalPath: productId ? `/${currentLanguage}/products/${productId}` : undefined,
+  });
 
   // Get product details and related products
   useEffect(() => {
@@ -117,14 +126,7 @@ const ProductDetail: React.FC = () => {
         const productResponse = await fetch(`${API_ENDPOINTS.PRODUCTS}${productId}/?lang=${currentLanguage}`);
         if (productResponse.ok) {
           const productData = await productResponse.json();
-          
-          // 调试：检查工厂图片数据和 features
-          console.log('Product Data:', productData);
-          console.log('Factory Images:', productData.factory_images);
-          console.log('Product Features:', productData.features);
-          console.log('Product Features Type:', typeof productData.features);
-          console.log('Product Feature Items:', productData.feature_items);
-          
+
           // 后端API已经自动合并了模板数据，直接使用
           setProduct(productData);
           
@@ -202,10 +204,6 @@ const ProductDetail: React.FC = () => {
     featureString: string;
     featureItems: Array<{ id?: number; name: string; description: string; order: number }> | null;
   }>(() => {
-    console.log('Processing features - product:', product);
-    console.log('Features value:', product?.features);
-    console.log('Feature items:', product?.feature_items);
-    
     // 优先使用 feature_items（结构化数据），但需要检查内容是否有效
     if (product?.feature_items && Array.isArray(product.feature_items) && product.feature_items.length > 0) {
       // 过滤掉无效的 feature_items（比如测试数据）
@@ -236,12 +234,10 @@ const ProductDetail: React.FC = () => {
     
     // 如果没有有效的 feature_items，再使用 features 字段
     if (!product?.features) {
-      console.log('No features data found');
       return { featureTableData: null, featureString: '', featureItems: null };
     }
     
     if (typeof product.features === 'string') {
-      console.log('Features is string:', product.features);
       let decodedFeatures = product.features;
       
       // 先尝试直接解析（可能是双重编码的JSON字符串）
@@ -250,11 +246,9 @@ const ProductDetail: React.FC = () => {
         if (typeof firstParse === 'string') {
           // 如果是字符串，再次解析
           decodedFeatures = firstParse;
-          console.log('Double-encoded JSON detected, second parse:', decodedFeatures);
         } else {
           // 如果解析后是对象或数组，直接使用
           if (Array.isArray(firstParse) && firstParse.length > 0) {
-            console.log('Parsed JSON array directly:', firstParse);
             const decodedArray = firstParse.map((item: any) => {
               if (typeof item === 'object' && item !== null) {
                 const decodedItem: Record<string, any> = {};
@@ -269,17 +263,14 @@ const ProductDetail: React.FC = () => {
           }
         }
       } catch (e) {
-        console.log('First parse failed, treating as plain string');
       }
       
       // 解码 HTML 实体等
       decodedFeatures = decodeText(decodedFeatures);
-      console.log('Decoded features:', decodedFeatures);
       
       // 再次尝试解析为 JSON
       try {
         const parsed = JSON.parse(decodedFeatures);
-        console.log('Parsed JSON:', parsed);
         if (Array.isArray(parsed) && parsed.length > 0) {
           // 解码数组中的每个值
           const decodedArray = parsed.map((item: any) => {
@@ -292,19 +283,15 @@ const ProductDetail: React.FC = () => {
             }
             return typeof item === 'string' ? decodeText(item) : item;
           });
-          console.log('Returning featureTableData:', decodedArray);
           return { featureTableData: decodedArray, featureString: '', featureItems: null };
         }
       } catch (error) {
         // 不是 JSON，作为普通字符串处理
-        console.log('Features is not JSON, treating as plain text. Error:', error);
-        console.log('Returning featureString:', decodedFeatures.trim());
         return { featureTableData: null, featureString: decodedFeatures.trim(), featureItems: null };
       }
     }
     
     if (Array.isArray(product.features) && product.features.length > 0) {
-      console.log('Features is array:', product.features);
       // 解码数组中的每个值
       const decodedArray = product.features.map((item: any) => {
         if (typeof item === 'object' && item !== null) {
@@ -316,11 +303,9 @@ const ProductDetail: React.FC = () => {
         }
         return typeof item === 'string' ? decodeText(item) : item;
       });
-      console.log('Returning featureTableData from array:', decodedArray);
       return { featureTableData: decodedArray, featureString: '', featureItems: null };
     }
     
-    console.log('No valid features data found');
     return { featureTableData: null, featureString: '', featureItems: null };
   }, [product?.features, product?.feature_items, decodeText]);
 
@@ -524,6 +509,7 @@ const ProductDetail: React.FC = () => {
                               src={image.image}
                               alt={`${product.name} ${index + 1}`}
                               className="w-full h-full object-cover"
+                              loading="lazy"
                             />
                           </button>
                         ))}
@@ -772,6 +758,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                               src={image.image}
                               alt={`${product.name} view ${index + 1}`}
                               className="w-full h-auto object-contain"
+                              loading={isFirstImage ? 'eager' : 'lazy'}
                             />
                           </div>
                         </div>
@@ -790,14 +777,23 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
             {product.factory_images && product.factory_images.length > 0 && (
               <div className="space-y-10">
                 <h2 className="text-xl font-semibold text-gray-900">OUR FACTORY</h2>
-                {product.factory_images
-                  .filter((factoryImg: any) => {
-                    // 过滤掉 ANODIZED WORKSHOP 照片
-                    const title = (factoryImg.title || '').toUpperCase();
-                    return !title.includes('ANODIZED WORKSHOP');
-                  })
-                  .slice(0, Math.max(0, product.factory_images.length - 2))
-                  .map((factoryImg: any, index: number) => {
+                {(() => {
+                  // 先过滤掉所有不需要的照片
+                  const filteredImages = product.factory_images
+                    .filter((factoryImg: any) => {
+                      // 过滤掉 ANODIZED WORKSHOP 照片
+                      const title = (factoryImg.title || '').toUpperCase();
+                      return !title.includes('ANODIZED WORKSHOP');
+                    })
+                    .filter((factoryImg: any, index: number) => {
+                      // 过滤掉第二张（index 1）和第四张（index 3）照片
+                      return index !== 1 && index !== 3;
+                    });
+                  
+                  // 去掉最后一张照片
+                  const displayImages = filteredImages.slice(0, filteredImages.length - 1);
+                  
+                  return displayImages.map((factoryImg: any, index: number) => {
                   let imageUrl = factoryImg.image;
                   if (imageUrl && !imageUrl.startsWith('http')) {
                     const origin = window.location.origin;
@@ -819,6 +815,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                             src={imageUrl} 
                             alt={factoryImg.title || `Factory Image ${index + 1}`}
                             className="w-full h-auto max-h-[720px] object-contain"
+                            loading="lazy"
                             onError={(e) => {
                               console.error('Failed to load factory image:', imageUrl);
                               (e.target as HTMLImageElement).style.display = 'none';
@@ -835,7 +832,8 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                       )}
                     </div>
                   );
-                })}
+                });
+                })()}
                 {surfaceTreatmentImageUrl && (
                   <div className="bg-white rounded-lg shadow-md">
                     <div className="p-6">
