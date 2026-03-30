@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { API_ENDPOINTS } from '../config/api';
 import { useSeoMeta } from '../hooks/useSeoMeta';
 import { useStructuredData } from '../hooks/useStructuredData';
+import { resolveMediaUrl } from '../utils/url';
 import NotFound from './NotFound';
 
 interface LandingPageData {
@@ -12,6 +14,18 @@ interface LandingPageData {
   intro: string;
   bullets: string[];
   relatedLinks: Array<{ label: string; to: string }>;
+}
+
+interface LandingProduct {
+  id: number;
+  name?: string;
+  translated_name?: string;
+  description?: string;
+  translated_description?: string;
+  images?: Array<{
+    image: string;
+    is_primary?: boolean;
+  }>;
 }
 
 const landingPages: Record<string, LandingPageData> = {
@@ -80,12 +94,30 @@ const landingPages: Record<string, LandingPageData> = {
 const LongtailLanding: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const page = slug ? landingPages[slug] : undefined;
+  const [relatedProducts, setRelatedProducts] = useState<LandingProduct[]>([]);
 
   useSeoMeta({
     title: page?.title,
     description: page?.description,
     canonicalPath: page ? `/en/${page.slug}` : undefined,
   });
+
+  useEffect(() => {
+    const fetchRelatedProducts = async () => {
+      if (!page) return;
+      try {
+        const response = await fetch(`${API_ENDPOINTS.PRODUCTS}?lang=en&limit=6`);
+        if (!response.ok) return;
+        const data = await response.json();
+        const products = (data.results || data || []) as LandingProduct[];
+        setRelatedProducts(products.slice(0, 3));
+      } catch (error) {
+        console.error('Failed to load related products:', error);
+      }
+    };
+
+    fetchRelatedProducts();
+  }, [page]);
 
   const structuredData = React.useMemo(() => {
     if (!page) return null;
@@ -152,6 +184,44 @@ const LongtailLanding: React.FC = () => {
             Browse products
           </Link>
         </div>
+
+        {relatedProducts.length > 0 && (
+          <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">Recommended products</h3>
+            <div className="grid md:grid-cols-3 gap-4">
+              {relatedProducts.map((product) => {
+                const title = product.translated_name || product.name || 'Aluminum Product';
+                const description = product.translated_description || product.description || 'Explore this aluminum profile product.';
+                const image = product.images?.find((img) => img.is_primary)?.image || product.images?.[0]?.image;
+                return (
+                  <Link
+                    key={product.id}
+                    to={`/en/products/${product.id}`}
+                    className="rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow bg-white"
+                  >
+                    <div className="h-40 bg-gray-100 overflow-hidden">
+                      {image ? (
+                        <img
+                          src={resolveMediaUrl(image)}
+                          alt={title}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">No image</div>
+                      )}
+                    </div>
+                    <div className="p-4">
+                      <h4 className="font-semibold text-gray-900 line-clamp-2 mb-2">{title}</h4>
+                      <p className="text-sm text-gray-600 line-clamp-3">{description}</p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6">
           <h3 className="text-xl font-semibold text-gray-900 mb-3">Related resources</h3>
