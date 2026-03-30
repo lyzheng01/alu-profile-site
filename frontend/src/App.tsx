@@ -9,6 +9,7 @@ import ProductShowcase from './pages/ProductShowcase';
 import News from './pages/News';
 import About from './pages/About';
 import NotFound from './pages/NotFound';
+import LongtailLanding from './pages/LongtailLanding';
 
 import Footer from './components/Footer';
 
@@ -69,7 +70,12 @@ const AppContent: React.FC = () => {
             <Route key={`${lang}-about`} path={`/${lang}/about`} element={<About />} />
           ))}
 
-          
+          {/* EN long-tail landing pages */}
+          <Route
+            path="/en/:slug"
+            element={<LongtailLanding />}
+          />
+
           {/* 404 页面 */}
           <Route path="*" element={<NotFound />} />
         </Routes>

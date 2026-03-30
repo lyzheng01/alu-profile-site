@@ -5,6 +5,11 @@ const path = require('path');
 const SITE_URL = process.env.SITE_URL || 'https://lingyealu.cn';
 const API_BASE = process.env.SITEMAP_API_BASE || 'http://127.0.0.1:9001/api';
 const LANGS = ['en', 'zh', 'es', 'pt'];
+const EN_LANDING_SLUGS = [
+  'aluminum-profile-supplier-for-construction-projects',
+  'industrial-aluminum-extrusion-manufacturer-in-china',
+  'custom-aluminum-profile-factory-for-oem-orders',
+];
 
 const staticPaths = [
   { path: '/', changefreq: 'daily', priority: '1.0' },
@@ -12,6 +17,7 @@ const staticPaths = [
   ...LANGS.map((lang) => ({ path: `/${lang}/products`, changefreq: 'daily', priority: '0.8' })),
   ...LANGS.map((lang) => ({ path: `/${lang}/news`, changefreq: 'daily', priority: '0.7' })),
   ...LANGS.map((lang) => ({ path: `/${lang}/about`, changefreq: 'monthly', priority: '0.6' })),
+  ...EN_LANDING_SLUGS.map((slug) => ({ path: `/en/${slug}`, changefreq: 'weekly', priority: '0.75' })),
 ];
 
 const fetchJson = async (url) => {
