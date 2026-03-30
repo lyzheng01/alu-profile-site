@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.utils.text import slugify
 
 
 class Tag(models.Model):
@@ -15,6 +16,46 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class AluminumBlogTopic(models.Model):
+    """铝型材博客选题池"""
+    STATUS_CHOICES = [
+        ('pending', _('待生成')),
+        ('processing', _('生成中')),
+        ('published', _('已发布')),
+        ('skipped', _('已跳过')),
+    ]
+
+    title = models.CharField(_('标题'), max_length=255, unique=True)
+    slug = models.SlugField(_('别名'), max_length=255, unique=True, blank=True)
+    primary_keyword = models.CharField(_('主关键词'), max_length=120, blank=True)
+    status = models.CharField(_('状态'), max_length=20, choices=STATUS_CHOICES, default='pending')
+    priority = models.IntegerField(_('优先级'), default=100)
+    article = models.ForeignKey(
+        'Article',
+        verbose_name=_('对应文章'),
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='topic_entries',
+    )
+    notes = models.TextField(_('备注'), blank=True)
+    created_at = models.DateTimeField(_('创建时间'), auto_now_add=True)
+    updated_at = models.DateTimeField(_('更新时间'), auto_now=True)
+
+    class Meta:
+        verbose_name = _('铝型材博客选题')
+        verbose_name_plural = _('铝型材博客选题')
+        ordering = ['priority', 'id']
+
+    def __str__(self):
+        return f"[{self.status}] {self.title}"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)[:255]
+        super().save(*args, **kwargs)
 
 
 class Article(models.Model):

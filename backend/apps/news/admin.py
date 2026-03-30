@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Tag, Article
+from .models import Tag, Article, AluminumBlogTopic
 
 
 @admin.register(Tag)
@@ -8,6 +8,15 @@ class TagAdmin(admin.ModelAdmin):
     search_fields = ['name']
     prepopulated_fields = {'slug': ('name',)}
     ordering = ['name']
+
+
+@admin.register(AluminumBlogTopic)
+class AluminumBlogTopicAdmin(admin.ModelAdmin):
+    list_display = ['title', 'primary_keyword', 'status', 'priority', 'article', 'updated_at']
+    list_filter = ['status', 'priority', 'created_at']
+    search_fields = ['title', 'slug', 'primary_keyword']
+    ordering = ['priority', 'id']
+    list_editable = ['status', 'priority']
 
 
 @admin.register(Article)
