@@ -258,6 +258,23 @@ const Products: React.FC = () => {
             {t('products_found_count', 'Found {count} products').replace('{count}', filteredProducts.length.toString())}
           </p>
         </div>
+
+        {currentLanguage === 'en' && (
+          <div className="mt-10 rounded-xl border border-gray-200 bg-white p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">Buying Guides</h2>
+            <div className="grid md:grid-cols-3 gap-3 text-sm">
+              <Link className="text-blue-700 hover:text-blue-900 underline" to="/en/aluminum-profile-supplier-for-construction-projects">
+                Aluminum Profile Supplier for Construction Projects
+              </Link>
+              <Link className="text-blue-700 hover:text-blue-900 underline" to="/en/industrial-aluminum-extrusion-manufacturer-in-china">
+                Industrial Aluminum Extrusion Manufacturer in China
+              </Link>
+              <Link className="text-blue-700 hover:text-blue-900 underline" to="/en/custom-aluminum-profile-factory-for-oem-orders">
+                Custom Aluminum Profile Factory for OEM Orders
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* 悬浮联系按钮 */}

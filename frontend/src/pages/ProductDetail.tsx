@@ -1051,6 +1051,23 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
           </div>
         </div>
 
+        {currentLanguage === 'en' && (
+          <div className="mb-12 rounded-xl border border-gray-200 bg-white p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Related buying guides</h2>
+            <div className="grid md:grid-cols-3 gap-3 text-sm">
+              <Link className="text-blue-700 hover:text-blue-900 underline" to="/en/aluminum-profile-supplier-for-construction-projects">
+                Aluminum Profile Supplier for Construction Projects
+              </Link>
+              <Link className="text-blue-700 hover:text-blue-900 underline" to="/en/industrial-aluminum-extrusion-manufacturer-in-china">
+                Industrial Aluminum Extrusion Manufacturer in China
+              </Link>
+              <Link className="text-blue-700 hover:text-blue-900 underline" to="/en/custom-aluminum-profile-factory-for-oem-orders">
+                Custom Aluminum Profile Factory for OEM Orders
+              </Link>
+            </div>
+          </div>
+        )}
+
         {/* Related products */}
         {relatedProducts.length > 0 && (
           <div className="mb-16">

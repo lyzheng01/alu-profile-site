@@ -11,6 +11,7 @@ interface LandingPageData {
   description: string;
   intro: string;
   bullets: string[];
+  relatedLinks: Array<{ label: string; to: string }>;
 }
 
 const landingPages: Record<string, LandingPageData> = {
@@ -28,6 +29,11 @@ const landingPages: Record<string, LandingPageData> = {
       'Stable production scheduling and export-ready packaging',
       'Technical support from drawing review to shipment planning',
     ],
+    relatedLinks: [
+      { label: 'Browse all aluminum products', to: '/en/products' },
+      { label: 'Door and window profile showcase', to: '/en/products/windows-doors/showcase' },
+      { label: 'Read aluminum industry news', to: '/en/news' },
+    ],
   },
   'industrial-aluminum-extrusion-manufacturer-in-china': {
     slug: 'industrial-aluminum-extrusion-manufacturer-in-china',
@@ -43,6 +49,11 @@ const landingPages: Record<string, LandingPageData> = {
       'Anodizing and powder coating for corrosion resistance and appearance',
       'Quality checks for dimensional consistency and surface finish',
     ],
+    relatedLinks: [
+      { label: 'Explore industrial-ready products', to: '/en/products' },
+      { label: 'See profile categories and specs', to: '/en/products' },
+      { label: 'Check latest company updates', to: '/en/news' },
+    ],
   },
   'custom-aluminum-profile-factory-for-oem-orders': {
     slug: 'custom-aluminum-profile-factory-for-oem-orders',
@@ -57,6 +68,11 @@ const landingPages: Record<string, LandingPageData> = {
       'Flexible MOQ strategy for pilot and scale-up orders',
       'Material, temper, and finish selection based on target market needs',
       'Responsive communication for procurement and engineering teams',
+    ],
+    relatedLinks: [
+      { label: 'Submit inquiry from product detail pages', to: '/en/products' },
+      { label: 'View windows and doors profile showcase', to: '/en/products/windows-doors/showcase' },
+      { label: 'Read technical and market insights', to: '/en/news' },
     ],
   },
 };
@@ -135,6 +151,19 @@ const LongtailLanding: React.FC = () => {
           >
             Browse products
           </Link>
+        </div>
+
+        <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6">
+          <h3 className="text-xl font-semibold text-gray-900 mb-3">Related resources</h3>
+          <ul className="space-y-2">
+            {page.relatedLinks.map((link) => (
+              <li key={link.to + link.label}>
+                <Link to={link.to} className="text-blue-700 hover:text-blue-900 underline underline-offset-4">
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
     </div>
