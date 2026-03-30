@@ -69,6 +69,37 @@ const NewsDetail: React.FC = () => {
 
   useStructuredData('article', articleStructuredData);
 
+  const breadcrumbStructuredData = React.useMemo(() => {
+    if (!article) return null;
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.cn';
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: `${base}/${currentLanguage}`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'News',
+          item: `${base}/${currentLanguage}/news`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: article.title,
+          item: `${base}/${currentLanguage}/news/${article.id}`,
+        },
+      ],
+    };
+  }, [article, currentLanguage]);
+
+  useStructuredData('news-breadcrumb', breadcrumbStructuredData);
+
   useEffect(() => {
     const fetchArticle = async () => {
       try {

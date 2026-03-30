@@ -151,6 +151,37 @@ const ProductDetail: React.FC = () => {
 
   useStructuredData('product', productStructuredData);
 
+  const breadcrumbStructuredData = React.useMemo(() => {
+    if (!product) return null;
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.cn';
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: `${base}/${currentLanguage}`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Products',
+          item: `${base}/${currentLanguage}/products`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: product.name,
+          item: `${base}/${currentLanguage}/products/${product.id}`,
+        },
+      ],
+    };
+  }, [product, currentLanguage]);
+
+  useStructuredData('product-breadcrumb', breadcrumbStructuredData);
+
   // Get product details and related products
   useEffect(() => {
     const fetchProductAndRelated = async () => {

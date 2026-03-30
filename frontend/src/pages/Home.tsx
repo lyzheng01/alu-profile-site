@@ -7,6 +7,7 @@ import CountUp from 'react-countup';
 import FloatingContactButtons from '../components/FloatingContactButtons';
 import InquiryForm from '../components/InquiryForm';
 import { usePageTitle } from '../hooks/usePageTitle';
+import { useStructuredData } from '../hooks/useStructuredData';
 
 // 类型声明
 type ProductImage = {
@@ -165,6 +166,50 @@ const Home: React.FC = () => {
       description: t('advantage_6_desc', 'Dedicated customer service team for your satisfaction')
     }
   ];
+
+  const faqItems = React.useMemo(
+    () => [
+      {
+        question: 'What aluminum profiles do you supply?',
+        answer:
+          'We supply industrial and architectural profiles, including door/window profiles, decorative trims, and custom extrusion products.',
+      },
+      {
+        question: 'Do you support OEM or custom drawings?',
+        answer:
+          'Yes. We support OEM/ODM with custom drawings, sample-based development, and surface finishing requirements.',
+      },
+      {
+        question: 'Which surface treatments are available?',
+        answer:
+          'Common options include anodizing, powder coating, electrophoresis, and wood-grain transfer based on project needs.',
+      },
+      {
+        question: 'How can I get a quotation quickly?',
+        answer:
+          'Send your profile drawing, alloy/temper requirement, finish, quantity, and destination port. Our team will respond with a quotation quickly.',
+      },
+    ],
+    []
+  );
+
+  const faqStructuredData = React.useMemo(
+    () => ({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqItems.map((item) => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: item.answer,
+        },
+      })),
+    }),
+    [faqItems]
+  );
+
+  useStructuredData('home-faq', faqStructuredData);
 
   // featuredProducts 拉取逻辑
   const [featuredProducts, setFeaturedProducts] = useState<FeaturedProduct[]>([]);
@@ -582,6 +627,27 @@ const Home: React.FC = () => {
                   {advantage.description}
                 </p>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-14 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">FAQ</h2>
+            <p className="text-gray-600 mt-3">Common questions from global aluminum profile buyers</p>
+          </div>
+          <div className="space-y-4">
+            {faqItems.map((item, index) => (
+              <details key={index} className="group rounded-xl border border-gray-200 bg-gray-50/70 p-5 open:bg-white open:shadow-sm">
+                <summary className="cursor-pointer list-none font-semibold text-gray-900 flex items-center justify-between">
+                  <span>{item.question}</span>
+                  <span className="text-blue-600 group-open:rotate-45 transition-transform">+</span>
+                </summary>
+                <p className="mt-3 text-gray-600 leading-relaxed">{item.answer}</p>
+              </details>
             ))}
           </div>
         </div>

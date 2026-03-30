@@ -6,6 +6,7 @@ interface SeoMetaOptions {
   canonicalPath?: string;
   ogTitle?: string;
   ogDescription?: string;
+  robots?: string;
 }
 
 const upsertMeta = (attr: 'name' | 'property', key: string, content?: string) => {
@@ -31,14 +32,15 @@ const upsertCanonical = (canonicalPath?: string) => {
   link.setAttribute('href', url);
 };
 
-export const useSeoMeta = ({ title, description, canonicalPath, ogTitle, ogDescription }: SeoMetaOptions) => {
+export const useSeoMeta = ({ title, description, canonicalPath, ogTitle, ogDescription, robots }: SeoMetaOptions) => {
   useEffect(() => {
     if (title) document.title = title;
     upsertMeta('name', 'description', description);
+    upsertMeta('name', 'robots', robots);
     upsertMeta('property', 'og:title', ogTitle || title);
     upsertMeta('property', 'og:description', ogDescription || description);
     upsertMeta('name', 'twitter:title', ogTitle || title);
     upsertMeta('name', 'twitter:description', ogDescription || description);
     upsertCanonical(canonicalPath);
-  }, [title, description, canonicalPath, ogTitle, ogDescription]);
+  }, [title, description, canonicalPath, ogTitle, ogDescription, robots]);
 };

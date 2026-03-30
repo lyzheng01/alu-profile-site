@@ -8,6 +8,7 @@ import ProductDetail from './pages/ProductDetail';
 import ProductShowcase from './pages/ProductShowcase';
 import News from './pages/News';
 import About from './pages/About';
+import NotFound from './pages/NotFound';
 
 import Footer from './components/Footer';
 
@@ -69,8 +70,8 @@ const AppContent: React.FC = () => {
           ))}
 
           
-          {/* 404重定向到英语首页 */}
-          <Route path="*" element={<Navigate to="/en" replace />} />
+          {/* 404 页面 */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />
