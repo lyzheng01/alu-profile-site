@@ -9,6 +9,7 @@ import { useStructuredData } from '../hooks/useStructuredData';
 
 interface Article {
   id: number;
+  slug: string;
   title: string;
   content: string;
   summary: string;
@@ -30,7 +31,7 @@ interface Tag {
 
 // 新闻详情页面组件
 const NewsDetail: React.FC = () => {
-  const { articleId } = useParams<{ articleId: string }>();
+  const { articleRef } = useParams<{ articleRef: string }>();
   const navigate = useNavigate();
   const { t, currentLanguage } = useTranslation();
   const [article, setArticle] = useState<Article | null>(null);
@@ -42,7 +43,7 @@ const NewsDetail: React.FC = () => {
   useSeoMeta({
     title: article ? `${article.title} | LingYe Aluminum` : undefined,
     description: article?.summary || undefined,
-    canonicalPath: articleId ? `/${currentLanguage}/news/${articleId}` : undefined,
+    canonicalPath: article?.slug ? `/${currentLanguage}/news/${article.slug}` : undefined,
   });
 
   const articleStructuredData = React.useMemo(() => {
@@ -92,7 +93,7 @@ const NewsDetail: React.FC = () => {
           '@type': 'ListItem',
           position: 3,
           name: article.title,
-          item: `${base}/${currentLanguage}/news/${article.id}`,
+          item: `${base}/${currentLanguage}/news/${article.slug || article.id}`,
         },
       ],
     };
@@ -103,12 +104,21 @@ const NewsDetail: React.FC = () => {
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        const response = await fetch(`${API_ENDPOINTS.ARTICLES}${articleId}/`);
+        const isNumeric = /^\d+$/.test(articleRef || '');
+        const detailUrl = isNumeric
+          ? `${API_ENDPOINTS.ARTICLES}${articleRef}/`
+          : `${API_ENDPOINTS.ARTICLES}by-slug/${articleRef}/`;
+
+        const response = await fetch(detailUrl);
         if (response.ok) {
           const data = await response.json();
           setArticle(data);
+
+          // Keep backward compatibility for old id URLs and canonicalize to slug path.
+          if (isNumeric && data?.slug) {
+            navigate(`/${currentLanguage}/news/${data.slug}`, { replace: true });
+          }
         } else {
-          // 如果文章不存在，重定向到新闻列表
           navigate(`/${currentLanguage}/news`);
         }
       } catch (error) {
@@ -119,10 +129,10 @@ const NewsDetail: React.FC = () => {
       }
     };
 
-    if (articleId) {
+    if (articleRef) {
       fetchArticle();
     }
-  }, [articleId, navigate, currentLanguage]);
+  }, [articleRef, navigate, currentLanguage]);
 
   // 格式化日期
   const formatDate = (dateString: string) => {
@@ -387,7 +397,7 @@ const NewsList: React.FC = () => {
                 <div
                   key={article.id}
                   className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
-                  onClick={() => navigate(`/${currentLanguage}/news/${article.id}`)}
+                  onClick={() => navigate(`/${currentLanguage}/news/${article.slug || article.id}`)}
                 >
                   {/* 文章图片 */}
                   <div className="h-48 bg-gray-200 overflow-hidden">
@@ -448,7 +458,7 @@ const NewsList: React.FC = () => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        navigate(`/${currentLanguage}/news/${article.id}`);
+                        navigate(`/${currentLanguage}/news/${article.slug || article.id}`);
                       }}
                       className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
                     >
@@ -513,10 +523,10 @@ const NewsList: React.FC = () => {
 
 // 主组件 - 根据路由参数决定显示列表还是详情
 const News: React.FC = () => {
-  const { articleId } = useParams<{ articleId: string }>();
-  
-  // 如果有articleId参数，显示详情页面
-  if (articleId) {
+  const { articleRef } = useParams<{ articleRef: string }>();
+
+  // 如果有文章参数，显示详情页面
+  if (articleRef) {
     return <NewsDetail />;
   }
   

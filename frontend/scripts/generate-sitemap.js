@@ -96,10 +96,11 @@ const build = async () => {
     }
 
     for (const article of articles) {
+      const articlePath = article.slug || article.id;
       for (const lang of LANGS) {
         nodes.push(
           toUrlNode(
-            `${SITE_URL}/${lang}/news/${article.id}`,
+            `${SITE_URL}/${lang}/news/${articlePath}`,
             normalizeDate(article.updated_at || article.created_at),
             'weekly',
             '0.7'

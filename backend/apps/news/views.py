@@ -41,6 +41,7 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
     """文章视图集"""
     queryset = Article.objects.filter(status='published').order_by('-published_at', '-created_at')
     serializer_class = ArticleSerializer
+    lookup_field = 'pk'
     
     def get_serializer_class(self):
         """根据action选择序列化器"""
@@ -90,6 +91,20 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
         
         return Response(serializer.data)
     
+    @action(detail=False, methods=['get'], url_path=r'by-slug/(?P<slug>[-a-zA-Z0-9_]+)')
+    def by_slug(self, request, slug=None):
+        """按 slug 获取文章详情"""
+        try:
+            article = self.get_queryset().get(slug=slug)
+        except Article.DoesNotExist:
+            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        article.views += 1
+        article.save(update_fields=['views'])
+
+        serializer = ArticleDetailSerializer(article)
+        return Response(serializer.data)
+
     @action(detail=False, methods=['get'])
     def search(self, request):
         """搜索文章"""

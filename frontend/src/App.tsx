@@ -61,7 +61,7 @@ const AppContent: React.FC = () => {
             />
           ))}
           {supportedLanguages.map(lang => (
-            <Route key={`${lang}-news-detail`} path={`/${lang}/news/:articleId`} element={<News />} />
+            <Route key={`${lang}-news-detail`} path={`/${lang}/news/:articleRef`} element={<News />} />
           ))}
           {supportedLanguages.map(lang => (
             <Route key={`${lang}-news`} path={`/${lang}/news`} element={<News />} />
