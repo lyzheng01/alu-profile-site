@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { API_ENDPOINTS } from '../config/api';
+import { trackEvent } from '../utils/analytics';
 
 interface InquiryFormProps {
   productName?: string;
@@ -61,6 +62,11 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
 
       if (response.ok) {
         setSubmitStatus('success');
+        trackEvent('generate_lead', {
+          method: 'inquiry_form',
+          page_path: typeof window !== 'undefined' ? window.location.pathname : '',
+          product_name: productName || '',
+        });
         setFormData({
           name: '',
           email: '',

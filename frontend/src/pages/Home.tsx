@@ -8,6 +8,7 @@ import FloatingContactButtons from '../components/FloatingContactButtons';
 import InquiryForm from '../components/InquiryForm';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useStructuredData } from '../hooks/useStructuredData';
+import { trackEvent } from '../utils/analytics';
 
 // 类型声明
 type ProductImage = {
@@ -663,7 +664,13 @@ const Home: React.FC = () => {
             {t('home_quote_subtitle', 'You can contact us any way that is convenient for you. Lingye Provide Services 24/7 via fax, email or telephone.')}
           </p>
           <button 
-            onClick={() => setIsInquiryModalOpen(true)}
+            onClick={() => {
+              trackEvent('contact_click', {
+                source: 'home_contact_section',
+                page_path: typeof window !== 'undefined' ? window.location.pathname : '',
+              });
+              setIsInquiryModalOpen(true);
+            }}
             className="bg-white text-blue-600 px-6 py-3 rounded-lg text-base font-semibold hover:bg-gray-100 transition-colors pulse"
           >
             {t('btn_contact_us', 'Contact Us')}
