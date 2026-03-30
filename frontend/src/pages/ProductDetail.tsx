@@ -5,6 +5,7 @@ import FloatingContactButtons from '../components/FloatingContactButtons';
 import InquiryForm from '../components/InquiryForm';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useSeoMeta } from '../hooks/useSeoMeta';
+import { useStructuredData } from '../hooks/useStructuredData';
 // 模板系统已集成到后端API，前端直接使用API返回的数据即可
 
 interface Product {
@@ -115,6 +116,40 @@ const ProductDetail: React.FC = () => {
       : undefined,
     canonicalPath: productId ? `/${currentLanguage}/products/${productId}` : undefined,
   });
+
+  const productStructuredData = React.useMemo(() => {
+    if (!product) return null;
+    const image = product.images?.[0]?.image;
+    let imageUrl: string | undefined;
+    if (image) {
+      if (image.startsWith('http')) {
+        imageUrl = image;
+      } else if (typeof window !== 'undefined') {
+        const origin = window.location.origin;
+        imageUrl = image.startsWith('/') ? `${origin}${image}` : `${origin}/${image}`;
+      }
+    }
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: product.name,
+      description: product.description || undefined,
+      image: imageUrl ? [imageUrl] : undefined,
+      brand: {
+        '@type': 'Brand',
+        name: 'LingYe Aluminum',
+      },
+      manufacturer: {
+        '@type': 'Organization',
+        name: 'LingYe Aluminum',
+      },
+      category: product.category?.name || undefined,
+      sku: String(product.id),
+      url: typeof window !== 'undefined' ? window.location.href : undefined,
+    };
+  }, [product]);
+
+  useStructuredData('product', productStructuredData);
 
   // Get product details and related products
   useEffect(() => {
@@ -450,6 +485,9 @@ const ProductDetail: React.FC = () => {
                       src={product.images[currentImageIndex].image}
                       alt={product.name}
                       className="w-full h-full object-cover"
+                      loading="eager"
+                      fetchPriority="high"
+                      decoding="async"
                     />
                     
                     {/* Previous/Next buttons - 只在有多张图片时显示 */}
@@ -510,6 +548,7 @@ const ProductDetail: React.FC = () => {
                               alt={`${product.name} ${index + 1}`}
                               className="w-full h-full object-cover"
                               loading="lazy"
+                              decoding="async"
                             />
                           </button>
                         ))}
@@ -759,6 +798,8 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                               alt={`${product.name} view ${index + 1}`}
                               className="w-full h-auto object-contain"
                               loading={isFirstImage ? 'eager' : 'lazy'}
+                              fetchPriority={isFirstImage ? 'high' : 'auto'}
+                              decoding="async"
                             />
                           </div>
                         </div>
@@ -816,6 +857,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                             alt={factoryImg.title || `Factory Image ${index + 1}`}
                             className="w-full h-auto max-h-[720px] object-contain"
                             loading="lazy"
+                            decoding="async"
                             onError={(e) => {
                               console.error('Failed to load factory image:', imageUrl);
                               (e.target as HTMLImageElement).style.display = 'none';
@@ -844,6 +886,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                           alt={surfaceTreatmentTitle || 'Surface Treatment'}
                           className="w-full h-auto object-contain"
                           loading="lazy"
+                          decoding="async"
                         />
                       </div>
                       {(surfaceTreatmentTitle || surfaceTreatmentDescription) && (
@@ -943,7 +986,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                           <div key={app.id || index} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                             {app.image && (
                               <div className="mb-3 h-32 bg-gray-100 rounded overflow-hidden">
-                                <img src={app.image} alt={app.name} className="w-full h-full object-cover" />
+                                <img src={app.image} alt={app.name} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                               </div>
                             )}
                             <h4 className="font-semibold text-gray-900 mb-2">{app.name}</h4>
@@ -990,6 +1033,8 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                         src={relatedProduct.images[0].image}
                         alt={relatedProduct.name}
                         className="w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
                       />
                     ) : (
                       <p className="text-gray-500 text-sm">No Image</p>

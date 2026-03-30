@@ -227,6 +227,8 @@ const Products: React.FC = () => {
                         src={resolveMediaUrl(product.images.find(img => img.is_primary)?.image || product.images[0].image)}
                         alt={product.translated_name || product.name || 'Product Image'}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                        decoding="async"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gradient-to-br from-gray-50 to-gray-100">

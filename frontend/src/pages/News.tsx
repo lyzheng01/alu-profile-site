@@ -5,6 +5,7 @@ import { useTranslation } from '../contexts/TranslationContext';
 import FloatingContactButtons from '../components/FloatingContactButtons';
 import { usePageTitle, useNewsDetailTitle } from '../hooks/usePageTitle';
 import { useSeoMeta } from '../hooks/useSeoMeta';
+import { useStructuredData } from '../hooks/useStructuredData';
 
 interface Article {
   id: number;
@@ -44,6 +45,30 @@ const NewsDetail: React.FC = () => {
     canonicalPath: articleId ? `/${currentLanguage}/news/${articleId}` : undefined,
   });
 
+  const articleStructuredData = React.useMemo(() => {
+    if (!article) return null;
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: article.title,
+      description: article.summary || undefined,
+      datePublished: article.created_at,
+      dateModified: article.updated_at || article.created_at,
+      author: {
+        '@type': 'Person',
+        name: article.author || 'LingYe Aluminum',
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'LingYe Aluminum',
+      },
+      image: article.featured_image ? [article.featured_image] : undefined,
+      mainEntityOfPage: typeof window !== 'undefined' ? window.location.href : undefined,
+    };
+  }, [article]);
+
+  useStructuredData('article', articleStructuredData);
+
   useEffect(() => {
     const fetchArticle = async () => {
       try {
@@ -66,7 +91,7 @@ const NewsDetail: React.FC = () => {
     if (articleId) {
       fetchArticle();
     }
-  }, [articleId, navigate]);
+  }, [articleId, navigate, currentLanguage]);
 
   // 格式化日期
   const formatDate = (dateString: string) => {
@@ -155,6 +180,9 @@ const NewsDetail: React.FC = () => {
               src={article.featured_image}
               alt={article.title}
               className="w-full max-h-[600px] object-contain rounded-lg bg-gray-50"
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
             />
           </div>
         )}
@@ -337,6 +365,8 @@ const NewsList: React.FC = () => {
                         src={article.featured_image}
                         alt={article.title}
                         className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                        decoding="async"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-gray-400">

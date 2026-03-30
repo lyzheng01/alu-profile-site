@@ -378,6 +378,8 @@ const Home: React.FC = () => {
                     src={resolveMediaUrl(cat.image) || '/images/category1.jpg'}
                     alt={cat.name}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
                   <div className="absolute top-6 left-6 bg-white/85 text-gray-900 px-4 py-2 rounded-full text-sm font-semibold shadow">
@@ -448,6 +450,9 @@ const Home: React.FC = () => {
                         src={resolveMediaUrl(prod.product_image)} 
                         alt={prod.name} 
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                        loading={idx === 0 ? 'eager' : 'lazy'}
+                        fetchPriority={idx === 0 ? 'high' : 'auto'}
+                        decoding="async"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                       <div className="absolute top-4 left-4 bg-white/80 text-gray-800 px-3 py-1 rounded-full text-sm font-medium shadow-md backdrop-blur">
@@ -550,50 +555,6 @@ const Home: React.FC = () => {
             </div>
             <div className="text-xl font-semibold">{t('home_stats_employees', 'EMPLOYEES')}</div>
             <div className="text-gray-400 text-sm">{t('home_stats_corporate_employees', 'CORPORATE EMPLOYEES')}</div>
-          </div>
-        </div>
-
-        {/* 市场区域分布 */}
-        <div className="flex flex-col md:flex-row bg-yellow-400 mt-12 rounded-lg overflow-hidden shadow-lg">
-          {/* 左侧文字说明 */}
-          <div className="md:w-1/3 p-8 flex flex-col justify-center">
-            <h2 className="text-3xl font-bold text-white mb-4">{t('home_market_area', 'MARKET AREA')}</h2>
-            <p className="text-white text-base mb-2">
-              {t('home_market_area_desc', 'Our products are exported to Europe, South America, North America, Africa, Asia, and the Middle East, etc.')}
-            </p>
-          </div>
-          {/* 右侧五大洲icon分布 */}
-          <div className="md:w-2/3 grid grid-cols-2 md:grid-cols-3 gap-6 p-8 bg-cover bg-center" style={{backgroundImage: 'url(https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&q=80)'}}>
-            {/* 非洲 */}
-            <div className="flex flex-col items-center">
-              <img src="/images/africa.svg" alt="Africa" className="w-20 h-20 mb-2" />
-              <div className="text-white font-bold text-lg">{t('home_five_continents', 'FIVE CONTINENTS')}</div>
-              <div className="text-white text-sm">{t('home_africa', 'Africa')}</div>
-            </div>
-                         {/* 亚洲 */}
-             <div className="flex flex-col items-center">
-               <img src="/images/asia.svg" alt="Asia" className="w-20 h-20 mb-2" />
-               <div className="text-white font-bold text-lg">{t('home_five_continents', 'FIVE CONTINENTS')}</div>
-               <div className="text-white text-sm">{t('home_asia', 'Asia')}</div>
-             </div>
-             {/* 北美洲 */}
-             <div className="flex flex-col items-center">
-               <img src="/images/north-america.svg" alt="North America" className="w-20 h-20 mb-2" />
-               <div className="text-white font-bold text-lg">{t('home_five_continents', 'FIVE CONTINENTS')}</div>
-               <div className="text-white text-sm">{t('home_north_america', 'North America')}</div>
-             </div>
-             {/* 南美洲 */}
-             <div className="flex flex-col items-center">
-               <img src="/images/south-america.svg" alt="South America" className="w-20 h-20 mb-2" />
-               <div className="text-white font-bold text-lg">{t('home_five_continents', 'FIVE CONTINENTS')}</div>
-               <div className="text-white text-sm">{t('home_south_america', 'South America')}</div>
-             </div>
-             {/* 澳大利亚 */}
-             <div className="flex flex-col items-center">
-               <img src="/images/australia.svg" alt="Australia" className="w-20 h-20 mb-2" />
-               <div className="text-white font-bold text-lg">{t('home_five_continents', 'FIVE CONTINENTS')}</div>
-               <div className="text-white text-sm">{t('home_australia', 'Australia')}</div>
-             </div>
           </div>
         </div>
       </section>
