@@ -38,6 +38,7 @@ class TranslationService {
   async loadTranslations(language: string = 'en') {
     try {
       // 使用与API配置相同的逻辑
+      // 与全局 API 配置保持一致，避免出现 HTTP/HTTPS 混用
       let base = '';
       if (process.env.REACT_APP_API_URL) {
         base = process.env.REACT_APP_API_URL.replace(/\/$/, '');
@@ -46,7 +47,8 @@ class TranslationService {
         if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
           base = origin;
         } else {
-          base = 'http://lingyealu.cn';
+          // 使用当前页面协议和域名（HTTPS 场景下避免回落到 http）
+          base = origin;
         }
       }
       const response = await fetch(`${base}/api/translations/frontend_content/?lang=${language}`);

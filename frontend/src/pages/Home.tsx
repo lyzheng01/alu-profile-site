@@ -1,16 +1,15 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import { API_ENDPOINTS } from '../config/api';
-import { resolveMediaUrl } from '../utils/url';
-import { useTranslation } from '../contexts/TranslationContext';
+import React, { useEffect, useMemo, useState } from 'react';
 import CountUp from 'react-countup';
+import { Link } from 'react-router-dom';
 import FloatingContactButtons from '../components/FloatingContactButtons';
 import InquiryForm from '../components/InquiryForm';
+import { API_ENDPOINTS } from '../config/api';
+import { useTranslation } from '../contexts/TranslationContext';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useStructuredData } from '../hooks/useStructuredData';
 import { trackEvent } from '../utils/analytics';
+import { resolveMediaUrl } from '../utils/url';
 
-// 类型声明
 type ProductImage = {
   image: string;
   is_primary?: boolean;
@@ -19,7 +18,7 @@ type ProductImage = {
 type FeaturedProduct = {
   id: number | string;
   name: string;
-  description: string;
+  description?: string;
   images?: ProductImage[];
   product_image: string;
 };
@@ -29,172 +28,90 @@ type CategoryItem = {
   name: string;
   description?: string;
   image?: string;
-  subcategories?: SubCategoryItem[];
 };
 
-type SubCategoryItem = {
-  id: number | string;
-  name: string;
-  description?: string;
-  parent_category: number | string;
+type FactoryImage = {
+  title?: string;
+  image?: string;
 };
 
 const Home: React.FC = () => {
   const { t, currentLanguage } = useTranslation();
+  const [featuredProducts, setFeaturedProducts] = useState<FeaturedProduct[]>([]);
+  const [categories, setCategories] = useState<CategoryItem[]>([]);
+  const [factoryImages, setFactoryImages] = useState<FactoryImage[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isServiceExpanded, setIsServiceExpanded] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [heroImageUrl, setHeroImageUrl] = useState('');
-  const [homepageImage3Url, setHomepageImage3Url] = useState('');
-  const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
-  const [bannerImage3Url, setBannerImage3Url] = useState('');
 
-  // 设置页面标题
   usePageTitle('home');
 
-  // 幻灯片默认图片
-  const defaultSlideImages = useMemo(() => ([
-    'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&h=600&fit=crop',
-    'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&h=600&fit=crop',
-    'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&h=600&fit=crop'
-  ]), []);
+  const stats = useMemo(
+    () => [
+      { value: 15, suffix: '+', label: 'Years of export-focused manufacturing' },
+      { value: 12, suffix: '', label: 'Extrusion and finishing lines' },
+      { value: 30, suffix: '+', label: 'Countries served with aluminum profiles' },
+      { value: 7, suffix: '-15', label: 'Days typical lead time for standard orders' },
+    ],
+    []
+  );
 
-  // 幻灯片数据 - 优先使用后台上传的首页和 Banner 图片
-  const slides = useMemo(() => ([
-    {
-      title: t('slide_1_title', 'LingYe Aluminum'),
-      subtitle: t('slide_1_subtitle', 'High-quality solutions for your needs'),
-      // 第一张：后台 Banner 3 优先
-      image: bannerImage3Url || defaultSlideImages[0],
-      cta: t('slide_1_cta', 'Learn More')
-    },
-    {
-      title: t('slide_2_title', 'Global Export Experience'),
-      subtitle: t('slide_2_subtitle', 'Serving 30+ countries worldwide'),
-      image: heroImageUrl || defaultSlideImages[1],
-      cta: t('slide_2_cta', 'View Products')
-    },
-    {
-      title: t('slide_3_title', 'Advanced Technology'),
-      subtitle: t('slide_3_subtitle', 'Innovative manufacturing processes'),
-      // 第三张：原首页图片3 或默认图
-      image: homepageImage3Url || defaultSlideImages[2],
-      cta: t('slide_3_cta', 'Contact Us')
-    }
-  ]), [defaultSlideImages, heroImageUrl, homepageImage3Url, bannerImage3Url, t]);
-  // 加载后台上传的首页图片
-  useEffect(() => {
-    const fetchHeroImages = async () => {
-      try {
-        const response = await fetch(API_ENDPOINTS.FACTORY_IMAGES);
-        if (!response.ok) return;
-        const data = await response.json();
-        const list = data.results || data || [];
-        if (Array.isArray(list) && list.length > 0) {
-          // 获取首页图片1（第二张幻灯片）
-          const homepageImage1 = list.find((item: any) => (item.title || '').includes('首页图片1'));
-          if (homepageImage1) {
-            const resolvedUrl1 = resolveMediaUrl(homepageImage1?.image);
-            if (resolvedUrl1) {
-              setHeroImageUrl(resolvedUrl1);
-            }
-          }
-          
-          // 获取首页图片3（第一张幻灯片）
-          const homepageImage3 = list.find((item: any) => (item.title || '').includes('首页图片3'));
-          if (homepageImage3) {
-            const resolvedUrl3 = resolveMediaUrl(homepageImage3?.image);
-            if (resolvedUrl3) {
-              setHomepageImage3Url(resolvedUrl3);
-            }
-          }
-
-          // 获取Banner 3图片（第三张幻灯片）
-          const banner3Image = list.find((item: any) => ((item.title || '').toLowerCase()).includes('banner 3'));
-          if (banner3Image) {
-            const resolvedBanner3 = resolveMediaUrl(banner3Image?.image);
-            if (resolvedBanner3) {
-              setBannerImage3Url(resolvedBanner3);
-            }
-          }
-        }
-      } catch (error) {
-        console.error('Failed to fetch hero images:', error);
-      }
-    };
-
-    fetchHeroImages();
-  }, []);
-
-  // 自动播放幻灯片
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [slides.length]);
-
-  // 产品优势数据
-  const advantages = [
-    {
-      icon: '🏭',
-      title: t('advantage_1_title', 'Full-Service Production Capabilities'),
-      description: t('advantage_1_desc', 'Extrusion, anodizing, powder coating, CNC machining, cutting, punching — all processes completed in-house for stable quality and fast delivery.')
-    },
-    {
-      icon: '🌍',
-      title: t('advantage_2_title', 'Global Export'),
-      description: t('advantage_2_desc', 'Serving customers in 30+ countries with reliable delivery')
-    },
-    {
-      icon: '⚡',
-      title: t('advantage_3_title', 'Fast Delivery'),
-      description: t('advantage_3_desc', 'Efficient supply chain management for quick response')
-    },
-    {
-      icon: '🔧',
-      title: t('advantage_4_title', 'Technical Support'),
-      description: t('advantage_4_desc', 'Professional technical team providing 24/7 support')
-    },
-    {
-      icon: '📋',
-      title: t('advantage_5_title', 'Quality Assurance'),
-      description: t('advantage_5_desc', 'Strict quality control system ensuring product excellence')
-    },
-    {
-      icon: '🤝',
-      title: t('advantage_6_title', 'Customer Service'),
-      description: t('advantage_6_desc', 'Dedicated customer service team for your satisfaction')
-    }
-  ];
-
-  const faqItems = React.useMemo(
+  const capabilityCards = useMemo(
     () => [
       {
-        question: 'What aluminum profiles do you supply?',
-        answer:
-          'We supply industrial and architectural profiles, including door/window profiles, decorative trims, and custom extrusion products.',
+        title: 'OEM Drawing Support',
+        description:
+          'From quotation review to extrusion die evaluation, we help buyers move from drawing to shipment with fewer delays.',
       },
       {
-        question: 'Do you support OEM or custom drawings?',
-        answer:
-          'Yes. We support OEM/ODM with custom drawings, sample-based development, and surface finishing requirements.',
+        title: 'Integrated Surface Finishing',
+        description:
+          'Anodizing, powder coating, wood grain, cutting, drilling, and CNC support are organized around stable export production.',
       },
       {
-        question: 'Which surface treatments are available?',
-        answer:
-          'Common options include anodizing, powder coating, electrophoresis, and wood-grain transfer based on project needs.',
-      },
-      {
-        question: 'How can I get a quotation quickly?',
-        answer:
-          'Send your profile drawing, alloy/temper requirement, finish, quantity, and destination port. Our team will respond with a quotation quickly.',
+        title: 'Reliable Export Packaging',
+        description:
+          'We prepare bundles, film, carton, pallet, and container loading plans that reduce transit damage and simplify receiving.',
       },
     ],
     []
   );
 
-  const faqStructuredData = React.useMemo(
+  const applicationScenes = useMemo(
+    () => [
+      'Windows and doors systems',
+      'Curtain wall and facade projects',
+      'Industrial frames and automation lines',
+      'Decorative trim and furniture applications',
+    ],
+    []
+  );
+
+  const faqItems = useMemo(
+    () => [
+      {
+        question: 'What information helps you quote faster?',
+        answer:
+          'Share drawings, alloy and temper, surface finish, quantity, and destination port. That lets us respond with a practical quotation quickly.',
+      },
+      {
+        question: 'Can you support OEM and custom extrusion orders?',
+        answer:
+          'Yes. We support OEM and ODM projects with custom drawings, profile tooling evaluation, and production planning for export orders.',
+      },
+      {
+        question: 'Which surface treatments are commonly available?',
+        answer:
+          'Typical options include anodizing, powder coating, electrophoresis, and wood-grain transfer based on end-use requirements.',
+      },
+      {
+        question: 'Do you only supply construction profiles?',
+        answer:
+          'No. We supply both architectural and industrial aluminum profiles, including window, door, trim, and custom mechanical applications.',
+      },
+    ],
+    []
+  );
+
+  const faqStructuredData = useMemo(
     () => ({
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
@@ -212,129 +129,184 @@ const Home: React.FC = () => {
 
   useStructuredData('home-faq', faqStructuredData);
 
-  // featuredProducts 拉取逻辑
-  const [featuredProducts, setFeaturedProducts] = useState<FeaturedProduct[]>([]);
-  const [categories, setCategories] = useState<CategoryItem[]>([]);
   useEffect(() => {
-    fetch(`${API_ENDPOINTS.PRODUCTS}?is_featured=true`)
-      .then(res => res.json())
-      .then(data => {
-        // 兼容分页和非分页
-        const products = data.results || data;
-        // 取主图
-        setFeaturedProducts(products.map((prod: any) => ({
-          ...prod,
-          product_image: (prod.images && prod.images.length > 0)
-            ? (prod.images.find((img: any) => img.is_primary)?.image || prod.images[0].image)
-            : '/images/default-product.jpg'
-        })));
-      });
-  }, []);
+    const fetchHomepageData = async () => {
+      try {
+        const [factoryResponse, productsResponse, categoriesResponse] = await Promise.all([
+          fetch(API_ENDPOINTS.FACTORY_IMAGES),
+          fetch(`${API_ENDPOINTS.PRODUCTS}?featured=true&lang=${currentLanguage}`),
+          fetch(`${API_ENDPOINTS.CATEGORIES}?lang=${currentLanguage}`),
+        ]);
 
-  // 分类拉取逻辑（动态）
-  useEffect(() => {
-    fetch(`${API_ENDPOINTS.CATEGORIES}`)
-      .then(res => res.json())
-      .then(data => {
-        const list = data.results || data;
-        // 按照指定顺序排序：construction -> industrial -> common used
-        const sortedList = [...list].sort((a, b) => {
-          const nameA = (a.name || '').toLowerCase();
-          const nameB = (b.name || '').toLowerCase();
-          
-          // 定义优先级
-          const getPriority = (name: string) => {
-            if (name.includes('construction')) return 1;
-            if (name.includes('industrial')) return 2;
-            if (name.includes('common') || name.includes('common used')) return 3;
-            return 4; // 其他分类排在最后
-          };
-          
-          return getPriority(nameA) - getPriority(nameB);
-        });
-        
-        setCategories(sortedList);
-      })
-      .catch(() => {
-        setCategories([]);
-      });
-  }, []);
+        if (factoryResponse.ok) {
+          const factoryData = await factoryResponse.json();
+          const factoryList = factoryData.results || factoryData || [];
+          setFactoryImages(Array.isArray(factoryList) ? factoryList : []);
+        }
 
-  const heroProduct = featuredProducts[0];
-  const secondaryProducts = featuredProducts.slice(1, 5);
+        if (productsResponse.ok) {
+          const productData = await productsResponse.json();
+          const products = (productData.results || productData || []) as any[];
+          setFeaturedProducts(
+            products.map((product) => ({
+              ...product,
+              product_image:
+                product.images && product.images.length > 0
+                  ? product.images.find((img: ProductImage) => img.is_primary)?.image || product.images[0].image
+                  : '',
+            }))
+          );
+        }
 
-  // 点击外部关闭移动端菜单
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element;
-      if (!target.closest('#mobile-contact-menu') && !target.closest('#mobile-contact-button')) {
-        setIsMobileMenuOpen(false);
+        if (categoriesResponse.ok) {
+          const categoryData = await categoriesResponse.json();
+          const categoryList = (categoryData.results || categoryData || []) as CategoryItem[];
+          setCategories(categoryList.slice(0, 4));
+        }
+      } catch (error) {
+        console.error('Failed to fetch homepage data:', error);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+    fetchHomepageData();
+  }, [currentLanguage]);
 
-  // 当弹窗打开时，禁止背景滚动
+  const heroImage = useMemo(() => {
+    const preferredFactoryImage = factoryImages.find((item) => (item.title || '').includes('首页图片1'));
+    return resolveMediaUrl(preferredFactoryImage?.image) || 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=1600&h=900&fit=crop';
+  }, [factoryImages]);
+
+  const slideImages = useMemo(() => {
+    const dynamicImages = factoryImages
+      .map((item) => resolveMediaUrl(item.image))
+      .filter(Boolean) as string[];
+
+    const fallbackImages = [
+      heroImage,
+      'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1600&h=900&fit=crop',
+      'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=1600&h=900&fit=crop',
+    ];
+
+    return [...dynamicImages, ...fallbackImages].slice(0, 3);
+  }, [factoryImages, heroImage]);
+
+  const galleryImages = useMemo(
+    () =>
+      factoryImages
+        .map((item) => ({
+          title: item.title || 'Factory image',
+          image: resolveMediaUrl(item.image),
+        }))
+        .filter((item) => item.image)
+        .slice(0, 3),
+    [factoryImages]
+  );
+
+  const primaryProduct = featuredProducts[0];
+  const secondaryProducts = featuredProducts.slice(1, 4);
+
   useEffect(() => {
-    if (isInquiryModalOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isInquiryModalOpen]);
+    if (slideImages.length <= 1) return undefined;
+    const timer = window.setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slideImages.length);
+    }, 5000);
+    return () => window.clearInterval(timer);
+  }, [slideImages]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Hero Section with Slider - 缩小高度 */}
-      <section className="relative pt-16 pb-16 overflow-hidden">
-        {/* Slider - 调整高度 */}
-        <div className="relative h-96 md:h-[500px]">
-          {slides.map((slide, index) => (
+    <div className="min-h-screen bg-slate-50">
+      <section className="relative overflow-hidden bg-slate-950 text-white">
+        <div className="absolute inset-0">
+          {slideImages.map((image, index) => (
             <div
-              key={index}
-              className={`absolute inset-0 transition-opacity duration-1000 ${
+              key={`${image}-${index}`}
+              className={`absolute inset-0 bg-cover bg-center brightness-[0.88] contrast-[1.08] saturate-[1.08] transition-opacity duration-1000 ${
                 index === currentSlide ? 'opacity-100' : 'opacity-0'
               }`}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 to-purple-900/70"></div>
-              <div className="absolute inset-0 bg-cover bg-center" style={{
-                backgroundImage: `url(${slide.image})`,
-                backgroundSize: 'cover',
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: index === 1 ? 'center bottom' : 'center',
-                backgroundColor: 'transparent'
-              }}></div>
-              <div className="relative z-10 flex items-center justify-start h-full px-6 md:px-16">
-                <div className="max-w-3xl text-left">
-                  <h1 className="text-3xl md:text-5xl font-bold mb-4 animate-fade-in text-responsive text-slate-50 drop-shadow-[0_3px_10px_rgba(0,0,0,0.9)]">
-                    {slide.title}
-                  </h1>
-                  <p className="text-lg md:text-xl mb-6 animate-fade-in-delay text-slate-100 drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]">
-                    {slide.subtitle}
-                  </p>
-                  <button className="bg-blue-500/95 hover:bg-blue-600 text-white px-6 py-3 rounded-lg text-base font-semibold transition-colors animate-fade-in-delay-2 shadow-lg">
-                    {slide.cta}
-                  </button>
-                </div>
+              style={{ backgroundImage: `url(${image})` }}
+            />
+          ))}
+        </div>
+        <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(2,6,23,0.72),rgba(12,74,110,0.44),rgba(15,23,42,0.34))]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(249,115,22,0.22),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(56,189,248,0.18),transparent_30%)]" />
+        <div className="relative mx-auto max-w-7xl px-6 pb-16 pt-24 lg:px-8 lg:pb-24 lg:pt-32">
+          <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
+            <div className="max-w-3xl rounded-[34px] border border-white/10 bg-slate-950/28 p-6 shadow-[0_24px_80px_rgba(15,23,42,0.20)] backdrop-blur-[6px] md:p-8">
+              <div className="inline-flex items-center rounded-full border border-sky-300/30 bg-white/10 px-4 py-2 text-sm font-medium text-sky-100 shadow-lg backdrop-blur-xl">
+                Aluminum extrusion, finishing, and export support from China
+              </div>
+              <h1 className="mt-6 max-w-4xl text-4xl font-semibold leading-tight text-white drop-shadow-[0_8px_32px_rgba(15,23,42,0.75)] md:text-6xl">
+                China Aluminum Profile Manufacturer
+              </h1>
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-sky-50/95 md:text-xl">
+                Built for global buyers who need stable quality, practical lead times, and a supplier that understands OEM drawings,
+                export packaging, and B2B communication.
+              </p>
+              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+                <button
+                  type="button"
+                  onClick={() => {
+                    trackEvent('contact_click', {
+                      source: 'home_hero_quote',
+                      page_path: typeof window !== 'undefined' ? window.location.pathname : '',
+                    });
+                    const element = document.getElementById('home-inquiry-form');
+                    element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }}
+                  className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-gradient-to-r from-orange-500 to-amber-500 px-7 py-3 text-base font-semibold text-white shadow-[0_18px_35px_rgba(249,115,22,0.35)] transition hover:from-orange-600 hover:to-amber-600 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:ring-offset-2 focus:ring-offset-slate-900"
+                >
+                  Get a Quote
+                </button>
+                <Link
+                  to={`/${currentLanguage}/products`}
+                  className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-white/30 bg-white/12 px-7 py-3 text-base font-semibold text-white shadow-lg backdrop-blur transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/60"
+                >
+                  View Products
+                </Link>
               </div>
             </div>
-          ))}
-          
-          {/* Slider Navigation */}
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-            {slides.map((_, index) => (
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+              <div className="rounded-[30px] border border-white/15 bg-slate-950/30 p-6 shadow-[0_30px_80px_rgba(15,23,42,0.30)] backdrop-blur-xl">
+                <h2 className="text-lg font-semibold text-white">What buyers usually ask first</h2>
+                <ul className="mt-5 space-y-4 text-sm leading-6 text-sky-50/90">
+                  <li>Can you quote from 2D or 3D drawings?</li>
+                  <li>Which alloys and tempers are available for this profile?</li>
+                  <li>Can you handle anodizing, powder coating, and machining together?</li>
+                  <li>What is the packaging plan for container shipment?</li>
+                </ul>
+              </div>
+              <div className="rounded-[30px] border border-sky-200/10 bg-gradient-to-br from-sky-500/16 via-slate-950/26 to-orange-500/16 p-6 shadow-[0_20px_60px_rgba(8,47,73,0.24)] backdrop-blur-xl">
+                <p className="text-sm uppercase tracking-[0.24em] text-orange-200">Fast quote checklist</p>
+                <p className="mt-3 text-lg font-semibold text-white">Send drawing, finish, quantity, and destination port.</p>
+                <p className="mt-3 text-sm leading-6 text-orange-50/90">
+                  That gives our team enough context to return a useful quotation instead of a generic reply.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-10 grid gap-4 text-sm text-sky-100/90 md:grid-cols-3">
+            <div className="rounded-[26px] border border-white/12 bg-slate-950/22 p-5 shadow-xl backdrop-blur-lg">
+              OEM and ODM aluminum extrusion support
+            </div>
+            <div className="rounded-[26px] border border-white/12 bg-slate-950/22 p-5 shadow-xl backdrop-blur-lg">
+              Architectural and industrial profile supply
+            </div>
+            <div className="rounded-[26px] border border-white/12 bg-slate-950/22 p-5 shadow-xl backdrop-blur-lg">
+              Fast response for export quotation requests
+            </div>
+          </div>
+
+          <div className="mt-8 flex items-center justify-center gap-3">
+            {slideImages.map((_, index) => (
               <button
                 key={index}
+                type="button"
+                aria-label={`Go to slide ${index + 1}`}
                 onClick={() => setCurrentSlide(index)}
-                className={`w-3 h-3 rounded-full transition-colors ${
-                  index === currentSlide ? 'bg-white' : 'bg-white/50'
+                className={`h-3 rounded-full transition-all ${
+                  index === currentSlide ? 'w-10 bg-white' : 'w-3 bg-white/45 hover:bg-white/70'
                 }`}
               />
             ))}
@@ -342,120 +314,92 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Company Features Cards Section */}
-      <section className="py-12 bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Card 1: Manufacturing Strength - Blue Theme */}
-            <div className="group bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-lg p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-blue-200/50 animate-fade-in cursor-pointer">
-              <div className="mb-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-4 group-hover:rotate-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <svg className="w-7 h-7 text-white transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-blue-900 mb-3 group-hover:text-blue-700 transition-colors duration-300">Manufacturing Strength</h3>
+      <section className="relative -mt-10 z-10 px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 lg:grid-cols-4">
+          {stats.map((item) => (
+            <div key={item.label} className="rounded-[28px] border border-white/60 bg-white/90 p-6 text-center shadow-[0_24px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl">
+              <div className="text-4xl font-semibold text-sky-700">
+                <CountUp start={0} end={item.value} duration={2.2} />
+                <span>{item.suffix}</span>
               </div>
-              <p className="text-blue-800/80 leading-relaxed">
-                We operate a modern aluminum extrusion factory equipped with advanced production lines.
-                Stable capacity, consistent quality, and strict QC ensure every profile meets global standards.
-              </p>
+              <p className="mt-3 text-sm leading-6 text-slate-600">{item.label}</p>
             </div>
+          ))}
+        </div>
+      </section>
 
-            {/* Card 2: Custom Solutions - Purple/Indigo Theme */}
-            <div className="group bg-gradient-to-br from-purple-50 to-indigo-100 rounded-xl shadow-lg p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-purple-200/50 animate-fade-in-delay cursor-pointer">
-              <div className="mb-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center mb-4 group-hover:rotate-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <svg className="w-7 h-7 text-white transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+      <section className="bg-[linear-gradient(180deg,#f8fbff_0%,#eef7ff_100%)] py-20">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="max-w-3xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700">Why procurement teams shortlist us</p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900 md:text-4xl">
+              Production Strength You Can Verify
+            </h2>
+            <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-600">
+              The homepage should answer the commercial questions buyers care about first: manufacturing scope, export readiness, response speed,
+              and whether your team can execute repeated orders without quality drift.
+            </p>
+          </div>
+          <div className="mt-10 grid gap-6 lg:grid-cols-3">
+            {capabilityCards.map((card) => (
+              <article key={card.title} className="rounded-[30px] bg-gradient-to-br from-white via-white to-sky-50 p-7 shadow-[0_20px_55px_rgba(14,116,144,0.10)] ring-1 ring-sky-100 transition hover:-translate-y-1 hover:shadow-[0_28px_70px_rgba(14,116,144,0.16)]">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-100 to-cyan-50 text-sky-700 shadow-sm">
+                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 7h16M7 4v6m10-6v6M5 11h14l-1 8H6l-1-8Z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-purple-900 mb-3 group-hover:text-purple-700 transition-colors duration-300">Custom Solutions</h3>
-              </div>
-              <p className="text-purple-800/80 leading-relaxed">
-                From design support to extrusion, machining, and surface finishing,
-                we provide complete OEM/ODM aluminum profile solutions tailored to your project needs.
-              </p>
-            </div>
-
-            {/* Card 3: Global Delivery & Service - Orange/Amber Theme */}
-            <div className="group bg-gradient-to-br from-amber-50 to-orange-100 rounded-xl shadow-lg p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-amber-200/50 animate-fade-in-delay-2 cursor-pointer">
-              <div className="mb-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center mb-4 group-hover:rotate-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <svg className="w-7 h-7 text-white transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-orange-900 mb-3 group-hover:text-orange-700 transition-colors duration-300">Global Delivery & Service</h3>
-              </div>
-              <p className="text-orange-800/80 leading-relaxed">
-                With years of export experience, fast response, and reliable logistics partners,
-                we deliver high-quality aluminum profiles to global clients with smooth communication and timely support.
-              </p>
-            </div>
+                <h3 className="mt-5 text-xl font-semibold text-slate-900">{card.title}</h3>
+                <p className="mt-3 text-base leading-7 text-slate-600">{card.description}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* 产品种类（Product Categories）Section */}
-      <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-50 via-white to-indigo-50" />
-        <div className="absolute -top-20 -right-10 w-72 h-72 bg-blue-200/40 blur-3xl rounded-full" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-100/50 blur-3xl rounded-full" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4">
-              {t('home_product_categories_subtitle', 'Explore our main product categories')}
-            </h2>
-            <p className="mt-4 text-lg text-gray-500 max-w-3xl mx-auto">
-              {t('about_company_mission', 'Our mission is to create greater value for customers through innovative technology and quality service.')}
-            </p>
+      <section className="bg-white py-20">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-3xl">
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700">Category navigation</p>
+              <h2 className="mt-4 text-3xl font-semibold text-slate-900 md:text-4xl">Explore Core Product Categories</h2>
+              <p className="mt-4 text-lg leading-8 text-slate-600">
+                Make category decisions easy for visitors who arrive from search results and need to confirm quickly whether you handle their application.
+              </p>
+            </div>
+            <Link
+              to={`/${currentLanguage}/products`}
+              className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-sky-400 hover:text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+            >
+              Browse all product categories
+            </Link>
           </div>
 
-          <div className="space-y-10">
-            {categories.map((cat, index) => (
+          <div className="mt-10 grid gap-8 lg:grid-cols-2">
+            {categories.map((category, index) => (
               <Link
-                key={cat.id}
-                to={`/${currentLanguage}/products?category=${cat.id}`}
-                className={`group relative rounded-[36px] overflow-hidden shadow-[0_25px_60px_rgba(15,23,42,0.15)] border border-white/60 bg-white/90 backdrop-blur-xl ring-1 ring-blue-100/70 ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} flex flex-col lg:flex-row`}
+                key={category.id}
+                to={`/${currentLanguage}/products?category=${category.id}`}
+                className="group overflow-hidden rounded-[34px] bg-slate-950 shadow-[0_28px_70px_rgba(15,23,42,0.18)] transition hover:-translate-y-1 hover:shadow-[0_36px_85px_rgba(15,23,42,0.22)]"
               >
-                <div className="relative lg:w-1/2 h-72 lg:h-[420px]">
+                <div className="relative h-64">
                   <img
-                    src={resolveMediaUrl(cat.image) || '/images/category1.jpg'}
-                    alt={cat.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    src={resolveMediaUrl(category.image) || 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&h=800&fit=crop'}
+                    alt={category.name}
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                     loading="lazy"
                     decoding="async"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-                  <div className="absolute top-6 left-6 bg-white/85 text-gray-900 px-4 py-2 rounded-full text-sm font-semibold shadow">
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,23,42,0.08),rgba(15,23,42,0.92))]" />
+                  <div className="absolute left-6 top-6 inline-flex rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-900 shadow-lg">
                     {String(index + 1).padStart(2, '0')}
                   </div>
-                  <div className="absolute bottom-6 left-6 right-6 text-white">
-                    <p className="text-sm text-white/80 mb-1">{t('btn_view_details', 'View Details')}</p>
-                    <div className="text-3xl font-semibold flex items-center gap-4">
-                      {cat.name}
-                      <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="lg:w-1/2 p-8 flex flex-col gap-6 bg-gradient-to-br from-white/70 via-white/40 to-blue-50/50">
-                  <div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">{cat.name}</h3>
-                    <p className="text-gray-600 leading-relaxed">
-                      {cat.description || t('home_product_categories_subtitle', 'Explore our main product categories')}
+                  <div className="absolute inset-x-0 bottom-0 p-6 text-white">
+                    <h3 className="text-2xl font-semibold">{category.name}</h3>
+                    <p className="mt-2 max-w-xl text-sm leading-6 text-slate-100/90">
+                      {category.description || 'Profiles prepared for repeatable production, practical finishing options, and export shipment.'}
                     </p>
-                  </div>
-
-                  <div className="flex justify-start">
-                    <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-semibold text-sm shadow-lg group-hover:translate-x-1 transition-transform">
-                      {t('btn_view_details', 'View Details')}
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
+                    <span className="mt-4 inline-flex items-center rounded-full bg-white/12 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-white/90 backdrop-blur">
+                      View Category
                     </span>
                   </div>
                 </div>
@@ -465,284 +409,191 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 新产品（New Products）Section */}
-      <section className="relative py-16 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0f172a] via-[#1e2761] to-[#1f2937]" />
-        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 20% 20%, #60a5fa, transparent 45%)' }} />
-        <div className="absolute inset-0 opacity-30" style={{ backgroundImage: 'radial-gradient(circle at 80% 0%, #818cf8, transparent 35%)' }} />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 animate-slide-in-left">
-              {t('home_new_products_title', 'New Products')}
-            </h2>
-            <p className="text-xl text-white/70 animate-slide-in-right">
-              {t('home_new_products_subtitle', 'Latest high-quality products')}
-            </p>
-          </div>
+      <section className="relative overflow-hidden bg-slate-950 py-20 text-white">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.20),transparent_25%),radial-gradient(circle_at_bottom_right,rgba(249,115,22,0.20),transparent_25%)]" />
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-[1fr_1fr]">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-orange-300">Featured supply</p>
+              <h2 className="mt-4 text-3xl font-semibold md:text-4xl">Recommended Profiles for High-Intent Buyers</h2>
+              <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-300">
+                Highlighting a few strong products keeps the homepage commercially useful without turning it into an endless catalog.
+              </p>
 
-          {featuredProducts.slice(0, 6).length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredProducts.slice(0, 6).map((prod, idx) => {
-                const productId = prod.id || idx;
-                const productLink = `/${currentLanguage || 'en'}/products/${productId}`;
-                return (
-                  <Link
-                    key={productId}
-                    to={productLink}
-                    className="group bg-gradient-to-br from-white/90 via-white/70 to-blue-50/60 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/40 overflow-hidden flex flex-col backdrop-blur"
-                  >
-                    <div className="relative h-72 md:h-80 overflow-hidden">
-                      <img 
-                        src={resolveMediaUrl(prod.product_image)} 
-                        alt={prod.name} 
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                        loading={idx === 0 ? 'eager' : 'lazy'}
-                        fetchPriority={idx === 0 ? 'high' : 'auto'}
+              {primaryProduct ? (
+                <Link
+                  to={`/${currentLanguage}/products/${primaryProduct.id}`}
+                  className="mt-8 block overflow-hidden rounded-[34px] border border-white/12 bg-white/8 shadow-[0_35px_90px_rgba(15,23,42,0.32)] backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/[0.10]"
+                >
+                  <div className="grid md:grid-cols-[0.95fr_1.05fr]">
+                    <div className="h-72 overflow-hidden">
+                      <img
+                        src={resolveMediaUrl(primaryProduct.product_image) || heroImage}
+                        alt={primaryProduct.name}
+                        className="h-full w-full object-cover"
+                        loading="eager"
                         decoding="async"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      <div className="absolute top-4 left-4 bg-white/80 text-gray-800 px-3 py-1 rounded-full text-sm font-medium shadow-md backdrop-blur">
-                        {t('home_new_products_title', 'New Products')}
-                      </div>
                     </div>
-                    <div className="px-5 py-4 flex flex-col gap-3 text-gray-900">
-                      <h3 className="text-lg font-semibold group-hover:text-blue-600 transition-colors line-clamp-2">
-                        {prod.name}
-                      </h3>
-                      <p className="text-xs md:text-sm text-gray-600 line-clamp-3">
-                        {prod.description || t('about_company_mission', 'Our mission is to create greater value for customers through innovative technology and quality service.')}
+                    <div className="p-7">
+                      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-orange-300">Featured Product</p>
+                      <h3 className="mt-3 text-2xl font-semibold">{primaryProduct.name}</h3>
+                      <p className="mt-4 text-base leading-7 text-slate-300">
+                        {primaryProduct.description || 'Explore a profile page built for procurement review, specification checks, and quotation requests.'}
                       </p>
-                      <div className="flex items-center justify-between text-sm font-semibold text-blue-600">
-                        <span className="flex items-center gap-2">
-                          {t('btn_view_details', 'View Details')}
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </span>
-                        <span className="text-gray-400">#{String(idx + 1).padStart(2, '0')}</span>
-                      </div>
+                      <span className="mt-6 inline-flex items-center text-sm font-semibold text-white">
+                        View product details
+                      </span>
                     </div>
-                  </Link>
-                );
-              })}
+                  </div>
+                </Link>
+              ) : (
+                <div className="mt-8 rounded-[32px] border border-dashed border-white/20 p-8 text-slate-300">
+                  Add featured products in the backend to make the homepage stronger for product discovery and quotation flow.
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="text-center py-12 text-white/70">
-              {t('products_no_products', 'No products found')}
-            </div>
-          )}
 
-          <div className="mt-10 text-center">
-            <Link
-              to={`/${currentLanguage}/products`}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-semibold shadow-lg hover:from-blue-600 hover:to-indigo-600 transition-colors"
-            >
-              {t('btn_view_details', 'View Details')}
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-          </div>
-        </div>
-      </section>
+            <div className="space-y-6">
+              {secondaryProducts.map((product) => (
+                <Link
+                  key={product.id}
+                  to={`/${currentLanguage}/products/${product.id}`}
+                  className="grid min-h-[180px] gap-5 overflow-hidden rounded-[28px] border border-white/10 bg-white/5 p-5 transition hover:-translate-y-1 hover:bg-white/[0.08] md:grid-cols-[160px_1fr]"
+                >
+                  <img
+                    src={resolveMediaUrl(product.product_image) || heroImage}
+                    alt={product.name}
+                    className="h-40 w-full rounded-2xl object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div>
+                    <h3 className="text-xl font-semibold text-white">{product.name}</h3>
+                    <p className="mt-3 text-sm leading-7 text-slate-300">
+                      {product.description || 'Built for aluminum buyers who need a clear product page, not just a name and one image.'}
+                    </p>
+                  </div>
+                </Link>
+              ))}
 
-      {/* Why Choose Us Section - 动态统计+市场分布 */}
-      <section className="bg-white py-12">
-        {/* 顶部数字统计动画 */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center pb-12 border-b border-gray-100">
-          <div>
-            <div className="text-5xl font-bold text-yellow-500 mb-2">
-              <CountUp 
-                start={0} 
-                end={15} 
-                duration={2.5} 
-                useEasing={true}
-                separator=","
-              />
-            </div>
-            <div className="text-xl font-semibold">{t('home_stats_years', 'YEARS')}</div>
-            <div className="text-gray-400 text-sm">{t('home_stats_on_market', 'ON THE MARKET')}</div>
-          </div>
-          <div>
-            <div className="text-5xl font-bold text-yellow-500 mb-2">
-              <CountUp 
-                start={0} 
-                end={50} 
-                duration={2.5} 
-                useEasing={true}
-                separator=","
-              />
-            </div>
-            <div className="text-xl font-semibold">{t('home_stats_thousand', 'THOUSAND')}</div>
-            <div className="text-gray-400 text-sm">{t('home_stats_annual_production', 'ANNUAL PRODUCTION')}</div>
-          </div>
-          <div>
-            <div className="text-5xl font-bold text-yellow-500 mb-2">
-              <CountUp 
-                start={0} 
-                end={62} 
-                duration={2.5} 
-                useEasing={true}
-                separator=","
-              />
-            </div>
-            <div className="text-xl font-semibold">{t('home_stats_country', 'COUNTRY')}</div>
-            <div className="text-gray-400 text-sm">{t('home_stats_cooperation', 'COUNTRY OF COOPERATION')}</div>
-          </div>
-          <div>
-            <div className="text-5xl font-bold text-yellow-500 mb-2">
-              <CountUp 
-                start={0} 
-                end={400} 
-                duration={2.5} 
-                useEasing={true}
-                separator=","
-              />
-            </div>
-            <div className="text-xl font-semibold">{t('home_stats_employees', 'EMPLOYEES')}</div>
-            <div className="text-gray-400 text-sm">{t('home_stats_corporate_employees', 'CORPORATE EMPLOYEES')}</div>
-          </div>
-        </div>
-      </section>
-
-      {/* Product Advantages Section */}
-      <section className="py-12 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 animate-slide-in-left">
-              {t('advantages_title', 'Our Advantages')}
-            </h2>
-            <p className="text-lg text-gray-600 animate-slide-in-right">
-              {t('advantages_subtitle', 'Discover what makes us the preferred choice')}
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {advantages.map((advantage, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-lg p-4 hover:shadow-xl transition-shadow card-hover">
-                <div className="text-3xl mb-3 animate-bounce">{advantage.icon}</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  {advantage.title}
-                </h3>
-                <p className="text-gray-600 text-sm">
-                  {advantage.description}
-                </p>
+              <div className="rounded-[30px] border border-sky-300/20 bg-gradient-to-br from-sky-400/14 via-white/6 to-orange-500/14 p-6 backdrop-blur-xl">
+                <h3 className="text-xl font-semibold text-white">Application coverage</h3>
+                <ul className="mt-4 space-y-3 text-sm leading-6 text-sky-50/90">
+                  {applicationScenes.map((scene) => (
+                    <li key={scene} className="flex items-start gap-3">
+                      <span className="mt-1 h-2.5 w-2.5 rounded-full bg-orange-400" />
+                      <span>{scene}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-14 bg-white">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">FAQ</h2>
-            <p className="text-gray-600 mt-3">Common questions from global aluminum profile buyers</p>
+      <section className="bg-white py-20">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700">Factory and fulfillment</p>
+              <h2 className="mt-4 text-3xl font-semibold text-slate-900 md:text-4xl">Visual Proof for Buyers Who Need More Than Marketing Copy</h2>
+              <p className="mt-4 text-lg leading-8 text-slate-600">
+                Competitor sites convert better when they show factory environment, packaging logic, and shipment readiness. This block gives your homepage the same confidence layer.
+              </p>
+              <div className="mt-8 rounded-[28px] bg-slate-100 p-6">
+                <h3 className="text-lg font-semibold text-slate-900">What this section should communicate</h3>
+                <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-600">
+                  <li>Production scale and process discipline</li>
+                  <li>Surface treatment and machining capacity</li>
+                  <li>Export packaging and loading readiness</li>
+                  <li>Repeat-order confidence for project buyers</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="grid gap-5 md:grid-cols-3">
+              {galleryImages.length > 0 ? (
+                galleryImages.map((item, index) => (
+                  <div key={`${item.title}-${index}`} className="overflow-hidden rounded-[30px] bg-slate-100 shadow-[0_20px_55px_rgba(15,23,42,0.12)]">
+                    <img
+                      src={item.image || heroImage}
+                      alt={item.title}
+                      className="h-64 w-full object-cover"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                ))
+              ) : (
+                <>
+                  {[
+                    'https://images.unsplash.com/photo-1513828583688-c52646db42da?w=900&h=1200&fit=crop',
+                    'https://images.unsplash.com/photo-1581092919535-7146ff1a5902?w=900&h=1200&fit=crop',
+                    'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=900&h=1200&fit=crop',
+                  ].map((image, index) => (
+                    <div key={index} className="overflow-hidden rounded-[30px] bg-slate-100 shadow-[0_20px_55px_rgba(15,23,42,0.12)]">
+                      <img src={image} alt="Factory and production" className="h-64 w-full object-cover" loading="lazy" decoding="async" />
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
           </div>
-          <div className="space-y-4">
-            {faqItems.map((item, index) => (
-              <details key={index} className="group rounded-xl border border-gray-200 bg-gray-50/70 p-5 open:bg-white open:shadow-sm">
-                <summary className="cursor-pointer list-none font-semibold text-gray-900 flex items-center justify-between">
-                  <span>{item.question}</span>
-                  <span className="text-blue-600 group-open:rotate-45 transition-transform">+</span>
-                </summary>
-                <p className="mt-3 text-gray-600 leading-relaxed">{item.answer}</p>
+        </div>
+      </section>
+
+      <section className="bg-[linear-gradient(180deg,#f8fbff_0%,#eef5fb_100%)] py-20">
+        <div className="mx-auto max-w-5xl px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700">FAQ</p>
+            <h2 className="mt-4 text-3xl font-semibold text-slate-900 md:text-4xl">Common Questions from Aluminum Buyers</h2>
+          </div>
+          <div className="mt-10 space-y-4">
+            {faqItems.map((item) => (
+              <details key={item.question} className="rounded-[26px] border border-slate-200 bg-white p-6 shadow-sm open:shadow-md">
+                <summary className="cursor-pointer list-none text-lg font-semibold text-slate-900">{item.question}</summary>
+                <p className="mt-4 text-base leading-7 text-slate-600">{item.answer}</p>
               </details>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section className="py-12 bg-blue-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 animate-slide-in-left">
-            {t('home_quote_title', 'Request A Free Quote')}
-          </h2>
-          <p className="text-lg mb-6 animate-slide-in-right">
-            {t('home_quote_subtitle', 'You can contact us any way that is convenient for you. Lingye Provide Services 24/7 via fax, email or telephone.')}
-          </p>
-          <button 
-            onClick={() => {
-              trackEvent('contact_click', {
-                source: 'home_contact_section',
-                page_path: typeof window !== 'undefined' ? window.location.pathname : '',
-              });
-              setIsInquiryModalOpen(true);
-            }}
-            className="bg-white text-blue-600 px-6 py-3 rounded-lg text-base font-semibold hover:bg-gray-100 transition-colors pulse"
-          >
-            {t('btn_contact_us', 'Contact Us')}
-          </button>
+      <section id="home-inquiry-form" className="bg-white py-20">
+        <div className="mx-auto grid max-w-7xl gap-10 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-orange-600">Inquiry</p>
+            <h2 className="mt-4 text-3xl font-semibold text-slate-900 md:text-4xl">Start Your Quote With the Right Details</h2>
+            <p className="mt-4 text-lg leading-8 text-slate-600">
+              A strong homepage should make the next step obvious. Instead of hiding contact behind multiple clicks, give buyers a direct quotation form and clear expectations.
+            </p>
+            <div className="mt-8 space-y-5 rounded-[30px] bg-gradient-to-br from-slate-950 via-sky-950 to-slate-900 p-6 text-slate-100 shadow-[0_30px_80px_rgba(15,23,42,0.22)]">
+              <div>
+                <h3 className="text-lg font-semibold text-white">Send these details for a faster reply</h3>
+                <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-300">
+                  <li>Profile drawing or reference photo</li>
+                  <li>Alloy, temper, and finish requirement</li>
+                  <li>Estimated quantity and destination port</li>
+                  <li>Packaging or machining expectations</li>
+                </ul>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm leading-6 text-slate-300">
+                Email, WhatsApp, and product links can work together, but the form should remain the clearest conversion path on the page.
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-[34px] bg-white shadow-[0_28px_75px_rgba(15,23,42,0.14)] ring-1 ring-slate-200">
+            <InquiryForm />
+          </div>
         </div>
       </section>
 
-      {/* Inquiry Form Modal */}
-      {isInquiryModalOpen && (
-        <div 
-          className="fixed inset-0 z-50 overflow-y-auto"
-          onClick={() => setIsInquiryModalOpen(false)}
-        >
-          {/* 背景遮罩 */}
-          <div 
-            className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
-            style={{ animation: 'fadeIn 0.3s ease-out' }}
-          ></div>
-          
-          {/* 弹窗内容 */}
-          <div className="flex min-h-full items-center justify-center p-4">
-            <div 
-              className="relative bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-              style={{ animation: 'slideUp 0.3s ease-out' }}
-            >
-              {/* 关闭按钮 */}
-              <button
-                onClick={() => setIsInquiryModalOpen(false)}
-                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors z-10 bg-white rounded-full p-2 hover:bg-gray-100 shadow-md"
-                aria-label="Close"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-              
-              {/* 表单内容 */}
-              <InquiryForm 
-                onSuccess={() => {
-                  setTimeout(() => {
-                    setIsInquiryModalOpen(false);
-                  }, 2000); // 2秒后自动关闭，让用户看到成功消息
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 添加动画样式 */}
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes slideUp {
-          from { 
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to { 
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
-
-      {/* 悬浮联系按钮 */}
       <FloatingContactButtons />
     </div>
   );
 };
 
-export default Home; 
+export default Home;

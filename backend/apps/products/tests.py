@@ -151,3 +151,10 @@ class ProductCloneTests(TestCase):
 
         self.assertIn('clone_actions', fields)
         self.assertIn('新增类似产品', model_admin.clone_actions(self.product))
+
+    def test_admin_list_display_places_clone_button_after_name(self):
+        model_admin = ProductAdmin(Product, AdminSite())
+        list_display = list(model_admin.get_list_display(request=None))
+
+        self.assertEqual(list_display[0], 'name')
+        self.assertEqual(list_display[1], 'clone_button')

@@ -109,7 +109,7 @@ class ProductApplicationInline(admin.TabularInline):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     form = ProductForm
-    list_display = ['name', 'category', 'subcategory', 'template_display', 'is_featured', 'is_active', 'order', 'created_at', 'translation_status', 'image_count', 'clone_button']
+    list_display = ['name', 'clone_button', 'category', 'subcategory', 'template_display', 'is_featured', 'is_active', 'order', 'created_at', 'translation_status', 'image_count']
     list_filter = ['category', 'subcategory', 'is_featured', 'is_active', 'created_at']
     search_fields = ['name', 'description']
     ordering = ['order', '-created_at']
