@@ -17,7 +17,7 @@ from .widgets import ExcelTableWidget
 from apps.news.models import Article
 from apps.about.models import CompanyInfo, Advantage, Certificate
 from apps.inquiry.models import ContactInfo
-from .services import translation_service
+from .services import clone_product, translation_service
 import json
 import time
 
@@ -109,7 +109,7 @@ class ProductApplicationInline(admin.TabularInline):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     form = ProductForm
-    list_display = ['name', 'category', 'subcategory', 'template_display', 'is_featured', 'is_active', 'order', 'created_at', 'translation_status', 'image_count']
+    list_display = ['name', 'category', 'subcategory', 'template_display', 'is_featured', 'is_active', 'order', 'created_at', 'translation_status', 'image_count', 'clone_button']
     list_filter = ['category', 'subcategory', 'is_featured', 'is_active', 'created_at']
     search_fields = ['name', 'description']
     ordering = ['order', '-created_at']
@@ -121,6 +121,19 @@ class ProductAdmin(admin.ModelAdmin):
               'range_param', 'type_param', 'surface_treatment', 'colors', 'grade', 'temper', 
               'slug', 'is_featured', 'is_active', 'order']
     exclude = []
+
+    def get_fields(self, request, obj=None):
+        fields = list(super().get_fields(request, obj))
+        if obj:
+            insert_index = fields.index('use_template') + 1 if 'use_template' in fields else 0
+            fields.insert(insert_index, 'clone_actions')
+        return fields
+
+    def get_readonly_fields(self, request, obj=None):
+        readonly_fields = list(super().get_readonly_fields(request, obj))
+        if obj:
+            readonly_fields.append('clone_actions')
+        return readonly_fields
     
     # ⭐新增：显示使用的模板
     def template_display(self, obj):
@@ -147,6 +160,17 @@ class ProductAdmin(admin.ModelAdmin):
     
     def get_queryset(self, request):
         return super().get_queryset(request).select_related('category', 'subcategory', 'template').prefetch_related('images')
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path(
+                '<int:product_id>/clone/',
+                self.admin_site.admin_view(self.clone_product_view),
+                name='products_product_clone',
+            ),
+        ]
+        return custom_urls + urls
     
     def image_count(self, obj):
         """显示图片数量"""
@@ -171,6 +195,34 @@ class ProductAdmin(admin.ModelAdmin):
             return format_html('<span style="color: red;">✗ 未翻译</span>')
     
     translation_status.short_description = '翻译状态'
+
+    def clone_button(self, obj):
+        url = reverse('admin:products_product_clone', args=[obj.id])
+        return format_html(
+            '<a class="button" href="{}" style="padding: 6px 10px; background: #2563eb; color: white; border-radius: 6px;">复制为新产品</a>',
+            url,
+        )
+
+    clone_button.short_description = '快速复制'
+
+    def clone_actions(self, obj):
+        url = reverse('admin:products_product_clone', args=[obj.id])
+        return format_html(
+            '<a class="button" href="{}" style="padding: 8px 12px; background: #2563eb; color: white; border-radius: 6px; text-decoration: none;">新增类似产品</a>',
+            url,
+        )
+
+    clone_actions.short_description = '快捷操作'
+
+    def clone_product_view(self, request, product_id):
+        source_product = self.get_queryset(request).get(id=product_id)
+        cloned_product = clone_product(source_product)
+        self.message_user(
+            request,
+            f'已从“{source_product.name}”复制出新产品“{cloned_product.name}”。请继续修改差异内容。',
+            level=messages.SUCCESS,
+        )
+        return redirect(reverse('admin:products_product_change', args=[cloned_product.id]))
 
 
 @admin.register(ProductImage)

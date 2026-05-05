@@ -3,10 +3,13 @@ import json
 import hashlib
 import time
 import os
+import uuid
+from django.db import transaction
 from django.conf import settings
 from django.core.cache import cache
 from pathlib import Path
 from deep_translator import GoogleTranslator
+from .models import Product, ProductApplication, ProductFeature, ProductSpecification
 
 
 class TranslationService:
@@ -547,5 +550,65 @@ class TranslationService:
         return translated_content
 
 
+@transaction.atomic
+def clone_product(product: Product) -> Product:
+    """复制产品及其关联内容，生成新的产品副本。"""
+    unique_slug = f'product-copy-{product.id}-{uuid.uuid4().hex[:8]}'
+    cloned_product = Product.objects.create(
+        category=product.category,
+        subcategory=product.subcategory,
+        template=product.template,
+        use_template=product.use_template,
+        name=f'{product.name} - Copy',
+        description=product.description,
+        features=product.features,
+        applications=product.applications,
+        specifications=product.specifications,
+        range_param=product.range_param,
+        type_param=product.type_param,
+        surface_treatment=product.surface_treatment,
+        colors=product.colors,
+        grade=product.grade,
+        temper=product.temper,
+        slug=unique_slug,
+        is_featured=False,
+        is_active=product.is_active,
+        order=0,
+    )
+
+    ProductSpecification.objects.bulk_create([
+        ProductSpecification(
+            product=cloned_product,
+            name=item.name,
+            value=item.value,
+            order=item.order,
+        )
+        for item in product.specification_items.all()
+    ])
+
+    ProductFeature.objects.bulk_create([
+        ProductFeature(
+            product=cloned_product,
+            name=item.name,
+            description=item.description,
+            order=item.order,
+        )
+        for item in product.feature_items.all()
+    ])
+
+    ProductApplication.objects.bulk_create([
+        ProductApplication(
+            product=cloned_product,
+            name=item.name,
+            description=item.description,
+            image=item.image.name if item.image else '',
+            order=item.order,
+        )
+        for item in product.application_items.all()
+    ])
+
+    return cloned_product
+
+
 # 全局翻译服务实例
-translation_service = TranslationService() 
+translation_service = TranslationService()
