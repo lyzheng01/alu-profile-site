@@ -8,7 +8,7 @@ const API_BASE_URL = (() => {
     return process.env.REACT_APP_API_URL.replace(/\/$/, '');
   }
   
-  // 如果在浏览器环境中
+  // 如果在浏览器环境中，使用当前页面的 origin（同源请求，避免跨域）
   if (typeof window !== 'undefined') {
     const origin = window.location.origin;
     
@@ -17,8 +17,8 @@ const API_BASE_URL = (() => {
       return origin;
     }
     
-    // 生产环境，使用配置的域名（通过nginx代理）
-    return PRODUCTION_DOMAIN;
+    // 生产环境直接使用当前页面 origin，避免硬编码域名导致跨域
+    return origin;
   }
   
   // 默认返回空字符串

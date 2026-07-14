@@ -9,6 +9,11 @@ export function resolveMediaUrl(url?: string): string {
       return `${API_BASE_URL}${url}`;
     }
     
+    // 兼容缺少 /media/ 前缀的路径（数据库中存的是 products/xxx 而非 /media/products/xxx）
+    if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
+      return `${API_BASE_URL}/media/${url}`;
+    }
+    
     // 如果是绝对URL，检查是否需要替换域名
     if (url.startsWith('http://') || url.startsWith('https://')) {
       // 获取当前页面的域名和协议
@@ -42,6 +47,11 @@ export function forceProductionUrl(url?: string): string {
     // 如果是相对媒体路径，直接拼接生产环境域名
     if (url.startsWith('/media/')) {
       return `${API_BASE_URL}${url}`;
+    }
+    
+    // 兼容缺少 /media/ 前缀的路径
+    if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
+      return `${API_BASE_URL}/media/${url}`;
     }
     
     // 如果是绝对URL，提取路径并拼接生产环境域名

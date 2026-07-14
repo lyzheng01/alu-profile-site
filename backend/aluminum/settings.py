@@ -27,6 +27,13 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['lingyealu.cn', 'www.lingyealu.cn', '127.0.0.1', 'localhost', '129.226.155.118', '*']
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://lingyealu.cn',
+    'https://www.lingyealu.cn',
+    'https://lingyealu.com',
+    'https://www.lingyealu.com',
+]
+
 # Application definition
 
 INSTALLED_APPS = [
