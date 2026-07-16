@@ -2,7 +2,9 @@ from django.contrib.admin.sites import AdminSite
 from django.contrib.auth import get_user_model
 from django.contrib.messages.storage.fallback import FallbackStorage
 from django.contrib.sessions.middleware import SessionMiddleware
+from django.core.management import call_command
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.template.loader import render_to_string
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from unittest import mock
@@ -15,9 +17,17 @@ from .models import (
     ProductFeature,
     ProductImage,
     ProductSpecification,
+    ProductTemplate,
     SubCategory,
 )
-from .services import clone_product
+from .services import add_product_images, clone_product
+
+
+class AdminThemeTests(TestCase):
+    def test_admin_base_site_references_aluminum_admin_css(self):
+        html = render_to_string("admin/base_site.html", {})
+
+        self.assertIn("aluminum_admin.css", html)
 
 
 class ProductCloneTests(TestCase):
@@ -156,5 +166,84 @@ class ProductCloneTests(TestCase):
         model_admin = ProductAdmin(Product, AdminSite())
         list_display = list(model_admin.get_list_display(request=None))
 
-        self.assertEqual(list_display[0], 'name')
-        self.assertEqual(list_display[1], 'clone_button')
+        self.assertEqual(list_display[0], 'primary_image_preview')
+        self.assertEqual(list_display[1], 'name')
+        self.assertEqual(list_display[2], 'clone_button')
+
+    def test_product_admin_list_display_has_product_manager_columns(self):
+        model_admin = ProductAdmin(Product, AdminSite())
+        list_display = list(model_admin.get_list_display(request=None))
+
+        self.assertIn('primary_image_preview', list_display)
+        self.assertIn('publish_status_badge', list_display)
+        self.assertIn('image_count', list_display)
+        self.assertIn('clone_button', list_display)
+
+    def test_admin_fieldsets_group_product_form_for_cleaner_editing(self):
+        model_admin = ProductAdmin(Product, AdminSite())
+        fieldsets = model_admin.get_fieldsets(request=None, obj=self.product)
+        titles = [fieldset[0] for fieldset in fieldsets]
+
+        self.assertEqual(
+            titles,
+            ['快速操作', '快速上传', '外贸参数', '内容描述', '发布设置'],
+        )
+
+    def test_product_admin_fieldsets_include_batch_images_in_quick_upload(self):
+        model_admin = ProductAdmin(Product, AdminSite())
+        fields = [
+            field
+            for _, options in model_admin.get_fieldsets(request=None, obj=self.product)
+            for field in options['fields']
+        ]
+
+        self.assertIn('batch_images', fields)
+
+
+class ProductImageBatchUploadTests(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.translation_patcher = mock.patch(
+            'apps.products.signals.translation_service.auto_translate_on_save',
+            autospec=True,
+        )
+        cls.translation_patcher.start()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.translation_patcher.stop()
+        super().tearDownClass()
+
+    def setUp(self):
+        self.category = Category.objects.create(name='Industrial Profiles')
+
+    def test_add_product_images_marks_first_image_primary_when_product_has_no_images(self):
+        product = Product.objects.create(
+            category=self.category,
+            name='Test Profile',
+            description='Test',
+        )
+        files = [
+            SimpleUploadedFile('a.jpg', b'file-a', content_type='image/jpeg'),
+            SimpleUploadedFile('b.jpg', b'file-b', content_type='image/jpeg'),
+        ]
+
+        created = add_product_images(product, files)
+
+        self.assertEqual(len(created), 2)
+        self.assertTrue(created[0].is_primary)
+        self.assertFalse(created[1].is_primary)
+        self.assertEqual(product.images.count(), 2)
+
+
+class ProductTemplateSeedCommandTests(TestCase):
+    def test_seed_product_templates_creates_common_templates(self):
+        call_command('seed_product_templates')
+
+        names = set(ProductTemplate.objects.values_list('name', flat=True))
+        self.assertIn('Window and Door Aluminium Profile', names)
+        self.assertIn('Industrial T-Slot Aluminium Profile', names)
+        self.assertIn('Tile Trim and Decorative Aluminium Profile', names)
+        self.assertIn('Tube and Common Aluminium Profile', names)
+        self.assertIn('Custom OEM Aluminium Extrusion', names)

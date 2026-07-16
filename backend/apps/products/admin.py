@@ -17,17 +17,40 @@ from .widgets import ExcelTableWidget
 from apps.news.models import Article
 from apps.about.models import CompanyInfo, Advantage, Certificate
 from apps.inquiry.models import ContactInfo
-from .services import clone_product, translation_service
+from .services import add_product_images, clone_product, translation_service
 import json
 import time
 
 
+class MultipleFileInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+
+
+class MultipleFileField(forms.FileField):
+    def clean(self, data, initial=None):
+        single_file_clean = super().clean
+        if isinstance(data, (list, tuple)):
+            return [single_file_clean(file, initial) for file in data]
+        return single_file_clean(data, initial)
+
+
 class ProductForm(forms.ModelForm):
     """产品表单 - 使用Excel风格表格widget"""
+    description = forms.CharField(
+        widget=forms.Textarea,
+        required=False,
+        help_text="可留空并优先使用产品模板内容"
+    )
     features = forms.CharField(
         widget=ExcelTableWidget(),
         required=False,
         help_text="使用Excel风格表格输入产品特性，支持键盘导航和实时编辑"
+    )
+    batch_images = MultipleFileField(
+        required=False,
+        widget=MultipleFileInput(attrs={"multiple": True}),
+        help_text="可一次选择多张产品图片；第一张会自动设为主图。",
+        label="批量上传产品图片",
     )
     
     class Meta:
@@ -109,31 +132,49 @@ class ProductApplicationInline(admin.TabularInline):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     form = ProductForm
-    list_display = ['name', 'clone_button', 'category', 'subcategory', 'template_display', 'is_featured', 'is_active', 'order', 'created_at', 'translation_status', 'image_count']
+    list_display = [
+        'primary_image_preview',
+        'name',
+        'clone_button',
+        'category',
+        'subcategory',
+        'template_display',
+        'publish_status_badge',
+        'is_featured',
+        'order',
+        'image_count',
+        'updated_at',
+    ]
     list_filter = ['category', 'subcategory', 'is_featured', 'is_active', 'created_at']
     search_fields = ['name', 'description']
     ordering = ['order', '-created_at']
     prepopulated_fields = {'slug': ('name',)}
     inlines = [ProductImageInline]
     
-    # ⭐修改：字段配置，添加模板选择
-    fields = ['category', 'subcategory', 'template', 'use_template', 'name', 'description', 'features', 'applications', 'specifications', 
-              'range_param', 'type_param', 'surface_treatment', 'colors', 'grade', 'temper', 
-              'slug', 'is_featured', 'is_active', 'order']
-    exclude = []
+    fieldsets = (
+        ('快速操作', {
+            'fields': ('clone_actions',),
+            'description': '复制同类产品后，只需要修改名称、规格、主图和发布状态。',
+        }),
+        ('快速上传', {
+            'fields': ('category', 'subcategory', 'template', 'use_template', 'name', 'slug', 'batch_images'),
+            'description': '日常上传产品只需要填写这里，再补充外贸参数即可。高级描述可使用模板自动补齐。',
+        }),
+        ('外贸参数', {
+            'fields': ('range_param', 'type_param', 'surface_treatment', 'colors', 'grade', 'temper'),
+            'description': '这些字段会显示在产品详情页的 Product Parameters 区域。',
+        }),
+        ('内容描述', {
+            'fields': ('description', 'features', 'applications', 'specifications'),
+            'classes': ('collapse',),
+            'description': '常规产品优先使用模板内容；只有差异内容才需要在这里单独填写。',
+        }),
+        ('发布设置', {
+            'fields': ('is_featured', 'is_active', 'order'),
+        }),
+    )
 
-    def get_fields(self, request, obj=None):
-        fields = list(super().get_fields(request, obj))
-        if obj:
-            insert_index = fields.index('use_template') + 1 if 'use_template' in fields else 0
-            fields.insert(insert_index, 'clone_actions')
-        return fields
-
-    def get_readonly_fields(self, request, obj=None):
-        readonly_fields = list(super().get_readonly_fields(request, obj))
-        if obj:
-            readonly_fields.append('clone_actions')
-        return readonly_fields
+    readonly_fields = ('clone_actions',)
     
     # ⭐新增：显示使用的模板
     def template_display(self, obj):
@@ -183,6 +224,25 @@ class ProductAdmin(admin.ModelAdmin):
             return format_html('<span style="color: green;">{} 张图片</span>', count)
     
     image_count.short_description = '图片数量'
+
+    def primary_image_preview(self, obj):
+        image = obj.images.filter(is_primary=True).first() or obj.images.first()
+        if not image:
+            return format_html('<span class="admin-status-pill" style="background:#fee2e2;color:#991b1b;">缺图</span>')
+        return format_html(
+            '<img class="admin-product-thumb" src="{}" alt="{}" />',
+            image.image.url,
+            obj.name,
+        )
+
+    primary_image_preview.short_description = '主图'
+
+    def publish_status_badge(self, obj):
+        if obj.is_active:
+            return format_html('<span class="admin-status-pill" style="background:#dcfce7;color:#166534;">已发布</span>')
+        return format_html('<span class="admin-status-pill" style="background:#f1f5f9;color:#475569;">草稿</span>')
+
+    publish_status_badge.short_description = '发布状态'
     
     def translation_status(self, obj):
         """显示翻译状态"""
@@ -206,6 +266,10 @@ class ProductAdmin(admin.ModelAdmin):
     clone_button.short_description = '快速复制'
 
     def clone_actions(self, obj):
+        if not obj:
+            return format_html(
+                '<span style="color: #64748b;">请先保存产品，再使用快速复制。</span>'
+            )
         url = reverse('admin:products_product_clone', args=[obj.id])
         return format_html(
             '<a class="button" href="{}" style="padding: 8px 12px; background: #2563eb; color: white; border-radius: 6px; text-decoration: none;">新增类似产品</a>',
@@ -223,6 +287,13 @@ class ProductAdmin(admin.ModelAdmin):
             level=messages.SUCCESS,
         )
         return redirect(reverse('admin:products_product_change', args=[cloned_product.id]))
+
+    def save_related(self, request, form, formsets, change):
+        super().save_related(request, form, formsets, change)
+        files = request.FILES.getlist('batch_images')
+        if files:
+            created = add_product_images(form.instance, files)
+            self.message_user(request, f'已上传 {len(created)} 张产品图片。', level=messages.SUCCESS)
 
 
 @admin.register(ProductImage)

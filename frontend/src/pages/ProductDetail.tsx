@@ -425,7 +425,7 @@ const ProductDetail: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="pt-20">
+      <div>
         <div className="max-w-7xl mx-auto px-8 py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
@@ -438,7 +438,7 @@ const ProductDetail: React.FC = () => {
 
   if (!product) {
     return (
-      <div className="pt-20">
+      <div>
         <div className="max-w-7xl mx-auto px-8 py-12">
           <div className="text-center">
             <p className="text-gray-500 text-lg">Product not found</p>
@@ -452,7 +452,7 @@ const ProductDetail: React.FC = () => {
   }
 
   return (
-    <div className="pt-20">
+    <div>
       {/* Breadcrumb navigation */}
       <div className="bg-gray-50 py-4">
         <div className="max-w-7xl mx-auto px-8">

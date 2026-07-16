@@ -243,7 +243,7 @@ const LongtailLanding: React.FC = () => {
   }
 
   return (
-    <div className="pt-20">
+    <div>
       <section className="bg-gradient-to-r from-blue-700 to-indigo-800 text-white py-16">
         <div className="max-w-5xl mx-auto px-6">
           <h1 className="text-4xl font-bold mb-4">{page.h1}</h1>

@@ -7,6 +7,8 @@ interface SeoMetaOptions {
   ogTitle?: string;
   ogDescription?: string;
   robots?: string;
+  language?: string;
+  ogImage?: string;
 }
 
 const upsertMeta = (attr: 'name' | 'property', key: string, content?: string) => {
@@ -32,15 +34,19 @@ const upsertCanonical = (canonicalPath?: string) => {
   link.setAttribute('href', url);
 };
 
-export const useSeoMeta = ({ title, description, canonicalPath, ogTitle, ogDescription, robots }: SeoMetaOptions) => {
+export const useSeoMeta = ({ title, description, canonicalPath, ogTitle, ogDescription, robots, language, ogImage }: SeoMetaOptions) => {
   useEffect(() => {
+    if (language) document.documentElement.lang = language;
     if (title) document.title = title;
     upsertMeta('name', 'description', description);
     upsertMeta('name', 'robots', robots);
     upsertMeta('property', 'og:title', ogTitle || title);
     upsertMeta('property', 'og:description', ogDescription || description);
+    upsertMeta('property', 'og:url', canonicalPath && typeof window !== 'undefined' ? `${window.location.origin}${canonicalPath}` : undefined);
+    upsertMeta('property', 'og:image', ogImage);
     upsertMeta('name', 'twitter:title', ogTitle || title);
     upsertMeta('name', 'twitter:description', ogDescription || description);
+    upsertMeta('name', 'twitter:image', ogImage);
     upsertCanonical(canonicalPath);
-  }, [title, description, canonicalPath, ogTitle, ogDescription, robots]);
+  }, [title, description, canonicalPath, ogTitle, ogDescription, robots, language, ogImage]);
 };

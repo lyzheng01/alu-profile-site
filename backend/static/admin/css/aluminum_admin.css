@@ -1,0 +1,86 @@
+:root {
+  --lingye-bg: #f6f8fb;
+  --lingye-panel: #ffffff;
+  --lingye-border: #dbe3ef;
+  --lingye-text: #0f172a;
+  --lingye-muted: #64748b;
+  --lingye-primary: #0369a1;
+  --lingye-primary-dark: #075985;
+  --lingye-success: #15803d;
+  --lingye-warning: #b45309;
+  --lingye-danger: #b91c1c;
+}
+
+body {
+  background: var(--lingye-bg);
+  color: var(--lingye-text);
+}
+
+#header {
+  background: #0f172a;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+#branding h1,
+#branding h1 a:link,
+#branding h1 a:visited {
+  color: #fff;
+  font-weight: 700;
+}
+
+.module,
+.inline-group,
+div.breadcrumbs,
+#content-main > form,
+.change-list .filtered #changelist,
+#changelist {
+  border-radius: 10px;
+  border: 1px solid var(--lingye-border);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, .06);
+}
+
+.button,
+input[type=submit],
+input[type=button],
+.submit-row input,
+a.button {
+  border-radius: 8px;
+  border: 0;
+  background: var(--lingye-primary);
+  color: #fff;
+  font-weight: 700;
+}
+
+.button:hover,
+input[type=submit]:hover,
+input[type=button]:hover,
+.submit-row input:hover,
+a.button:hover {
+  background: var(--lingye-primary-dark);
+}
+
+fieldset.module h2,
+.inline-group h2 {
+  background: #eef5fb;
+  color: var(--lingye-text);
+  font-weight: 700;
+}
+
+.admin-product-thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid var(--lingye-border);
+  background: #f8fafc;
+}
+
+.admin-status-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}

@@ -1,177 +1,22 @@
-{% extends "admin/base_site.html" %}
-{% load i18n static %}
+{% extends "admin/base.html" %}
+{% load static %}
 
-{% block title %}{{ title }} | 铝型材B2B管理系统{% endblock %}
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}LingYe Aluminum Admin{% endblock %}
 
 {% block extrastyle %}
-<style>
-    .admin-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 2rem;
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-    
-    .admin-header h1 {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-    }
-    
-    .admin-header p {
-        font-size: 1.2rem;
-        opacity: 0.9;
-    }
-    
-    .quick-actions {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        margin: 2rem 0;
-    }
-    
-    .action-card {
-        background: white;
-        border-radius: 10px;
-        padding: 2rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        border-left: 4px solid #3182ce;
-    }
-    
-    .action-card h3 {
-        color: #2d3748;
-        margin-bottom: 1rem;
-        font-size: 1.3rem;
-    }
-    
-    .action-card p {
-        color: #718096;
-        margin-bottom: 1.5rem;
-    }
-    
-    .action-btn {
-        background: #3182ce;
-        color: white;
-        padding: 0.75rem 1.5rem;
-        border-radius: 5px;
-        text-decoration: none;
-        display: inline-block;
-        transition: background 0.3s ease;
-    }
-    
-    .action-btn:hover {
-        background: #2c5aa0;
-        color: white;
-        text-decoration: none;
-    }
-    
-    .api-info {
-        background: #f7fafc;
-        border-radius: 10px;
-        padding: 2rem;
-        margin: 2rem 0;
-    }
-    
-    .api-info h3 {
-        color: #2d3748;
-        margin-bottom: 1rem;
-    }
-    
-    .api-endpoints {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1rem;
-        margin-top: 1rem;
-    }
-    
-    .endpoint {
-        background: white;
-        padding: 1rem;
-        border-radius: 5px;
-        border-left: 3px solid #48bb78;
-    }
-    
-    .endpoint .method {
-        font-weight: bold;
-        color: #48bb78;
-    }
-    
-    .endpoint .url {
-        color: #2d3748;
-        font-family: monospace;
-    }
-</style>
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'admin/css/custom_admin.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/css/aluminum_admin.css' %}">
 {% endblock %}
 
-{% block content %}
-<div class="admin-header">
-    <h1>🏭 铝型材B2B管理系统</h1>
-    <p>专业铝型材制造商 - 后台管理平台</p>
-</div>
+{% block branding %}
+  <div class="admin-branding">
+    <div>
+      <h1 id="site-name"><a href="{% url 'admin:index' %}">LingYe Aluminum Admin</a></h1>
+      <p class="admin-branding-subtitle">Products, inquiries, content, and translation workflow</p>
+    </div>
+    <div class="admin-branding-badge">Lightweight CMS</div>
+  </div>
+{% endblock %}
 
-<div class="quick-actions">
-    <div class="action-card">
-        <h3>📦 产品管理</h3>
-        <p>管理产品分类、产品信息、产品图片等</p>
-        <a href="{% url 'admin:products_category_changelist' %}" class="action-btn">管理产品分类</a>
-        <a href="{% url 'admin:products_product_changelist' %}" class="action-btn">管理产品</a>
-    </div>
-    
-    <div class="action-card">
-        <h3>📰 新闻管理</h3>
-        <p>发布和管理技术新闻、行业资讯等</p>
-        <a href="{% url 'admin:news_tag_changelist' %}" class="action-btn">管理标签</a>
-        <a href="{% url 'admin:news_article_changelist' %}" class="action-btn">管理文章</a>
-    </div>
-    
-    <div class="action-card">
-        <h3>💼 公司信息</h3>
-        <p>管理公司基本信息、优势、证书等</p>
-        <a href="{% url 'admin:about_companyinfo_changelist' %}" class="action-btn">公司信息</a>
-        <a href="{% url 'admin:about_advantage_changelist' %}" class="action-btn">公司优势</a>
-    </div>
-    
-    <div class="action-card">
-        <h3>📞 咨询管理</h3>
-        <p>查看和管理客户咨询信息</p>
-        <a href="{% url 'admin:inquiry_inquiry_changelist' %}" class="action-btn">客户咨询</a>
-        <a href="{% url 'admin:inquiry_contactinfo_changelist' %}" class="action-btn">联系信息</a>
-    </div>
-</div>
-
-<div class="api-info">
-    <h3>🔗 API接口</h3>
-    <p>前端可以通过以下API接口获取数据：</p>
-    
-    <div class="api-endpoints">
-        <div class="endpoint">
-            <div class="method">GET</div>
-            <div class="url">/api/products/</div>
-            <div>获取产品列表</div>
-        </div>
-        
-        <div class="endpoint">
-            <div class="method">GET</div>
-            <div class="url">/api/articles/</div>
-            <div>获取新闻列表</div>
-        </div>
-        
-        <div class="endpoint">
-            <div class="method">GET</div>
-            <div class="url">/api/company-info/</div>
-            <div>获取公司信息</div>
-        </div>
-        
-        <div class="endpoint">
-            <div class="method">POST</div>
-            <div class="url">/api/inquiries/</div>
-            <div>提交客户咨询</div>
-        </div>
-    </div>
-</div>
-
-<div style="text-align: center; margin-top: 3rem; color: #718096;">
-    <p>💡 提示：前端网站将使用React开发，通过API接口获取数据</p>
-    <p>🌐 前端地址：http://localhost:3000 (开发环境)</p>
-</div>
-{% endblock %} 
+{% block nav-global %}{% endblock %}

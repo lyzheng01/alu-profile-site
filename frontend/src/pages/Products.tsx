@@ -24,6 +24,10 @@ interface Product {
   features: string; // 改为字符串，因为后端存储的是字符串
   applications: string; // 改为字符串，因为后端存储的是字符串
   specifications: Record<string, any>;
+  range_param?: string;
+  surface_treatment?: string;
+  grade?: string;
+  temper?: string;
   images: Array<{
     id: number;
     image: string;
@@ -55,8 +59,24 @@ const Products: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState<number | null>(null);
-  const [currentLanguage, setCurrentLanguage] = useState('zh'); // 默认中文
+  const [currentLanguage, setCurrentLanguage] = useState(() => {
+    if (typeof window === 'undefined') return 'zh';
+    return localStorage.getItem('language') || 'zh';
+  });
   const [searchParams, setSearchParams] = useSearchParams();
+  const fallbackProductImage = 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=900&h=700&fit=crop';
+  const cleanEnglishCopy = (value?: string) =>
+    (value || '')
+      .replace(/\bProfle\b/g, 'Profile')
+      .replace(/\bIndustry Profile\b/g, 'Industrial Profile')
+      .trim();
+  const cleanMediaUrl = (value?: string) => {
+    const resolved = resolveMediaUrl(value);
+    if (!resolved) return '';
+    return resolved
+      .replace(/^http:\/\/lingyealu\.cn/i, 'https://lingyealuminum.com')
+      .replace(/^https:\/\/lingyealu\.cn/i, 'https://lingyealuminum.com');
+  };
 
   // 获取当前语言
   useEffect(() => {
@@ -69,6 +89,12 @@ const Products: React.FC = () => {
 
   useSeoMeta({
     canonicalPath: `/${currentLanguage}/products`,
+    title: 'Aluminum Profile Product Catalog | LingYe Aluminum',
+    description:
+      'Browse architectural, industrial, trim, tube, and custom aluminum extrusion profiles with alloy, temper, finish, and RFQ details for export buyers.',
+    ogTitle: 'LingYe Aluminum Product Catalog',
+    ogDescription: 'Find aluminum profiles for windows, doors, industrial framing, trim, tubes, and OEM extrusion projects.',
+    language: currentLanguage,
   });
 
   // 从URL参数获取分类ID和子分类ID
@@ -83,6 +109,16 @@ const Products: React.FC = () => {
     }
   }, [searchParams]);
 
+  const handleCategorySelect = (categoryId: number | null) => {
+    setSelectedCategory(categoryId);
+    setSelectedSubcategory(null);
+    if (categoryId === null) {
+      setSearchParams({});
+    } else {
+      setSearchParams({ category: String(categoryId) });
+    }
+  };
+
   // 获取产品数据
   useEffect(() => {
     const fetchProducts = async () => {
@@ -90,7 +126,19 @@ const Products: React.FC = () => {
         const response = await fetch(`${API_ENDPOINTS.PRODUCTS}?lang=${currentLanguage}`);
         if (response.ok) {
           const data = await response.json();
-          setProducts(data.results || data);
+          setProducts(
+            (data.results || data).map((product: Product) => ({
+              ...product,
+              translated_name: cleanEnglishCopy(product.translated_name),
+              name: cleanEnglishCopy(product.name),
+              translated_description: cleanEnglishCopy(product.translated_description),
+              description: cleanEnglishCopy(product.description),
+              category: {
+                ...product.category,
+                name: cleanEnglishCopy(product.category?.name),
+              },
+            }))
+          );
         }
       } catch (error) {
         console.error('获取产品数据失败:', error);
@@ -104,12 +152,12 @@ const Products: React.FC = () => {
           const data = await response.json();
           const list = (data.results || data).map((item: any) => ({
             id: item.id,
-            name: item.translated_name || item.name,
-            description: item.translated_description || item.description,
+            name: cleanEnglishCopy(item.translated_name || item.name),
+            description: cleanEnglishCopy(item.translated_description || item.description),
             subcategories: item.subcategories ? item.subcategories.map((sub: any) => ({
               id: sub.id,
-              name: sub.translated_name || sub.name,
-              description: sub.translated_description || sub.description,
+              name: cleanEnglishCopy(sub.translated_name || sub.name),
+              description: cleanEnglishCopy(sub.translated_description || sub.description),
               parent_category: sub.parent_category,
             })) : [],
           }));
@@ -129,8 +177,6 @@ const Products: React.FC = () => {
   const activeCategory = selectedCategory ? categories.find(c => c.id === selectedCategory) : null;
   const activeSubcategory = selectedSubcategory ? activeCategory?.subcategories?.find(s => s.id === selectedSubcategory) : null;
 
-  // 页面仅通过URL参数设置分类，不提供页面内切换控件
-
   // 过滤产品（按分类和子分类筛选）
   const filteredProducts = products.filter(product => {
     const matchesCategory = selectedCategory === null || product.category.id === selectedCategory;
@@ -138,16 +184,15 @@ const Products: React.FC = () => {
     return matchesCategory && matchesSubcategory;
   });
 
-  // 将字符串转换为数组（用于显示）
-  const parseFeatures = (features: string): string[] => {
-    if (!features) return [];
-    // 尝试按换行符分割，如果没有换行符则按逗号分割
-    return features.split(/\n|,|、/).filter(item => item.trim());
-  };
+  const getProductTitle = (product: Product) => product.translated_name || product.name || 'Aluminum Profile';
+  const getProductDescription = (product: Product) =>
+    product.translated_description || product.description || 'Custom aluminum extrusion profile with export-ready production support.';
+  const getProductImage = (product: Product) =>
+    cleanMediaUrl(product.images?.find(img => img.is_primary)?.image || product.images?.[0]?.image) || fallbackProductImage;
 
   if (loading) {
     return (
-      <div className="pt-20">
+      <div>
         <div className="max-w-7xl mx-auto px-8 py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
@@ -159,46 +204,83 @@ const Products: React.FC = () => {
   }
 
   return (
-    <div className="pt-20">
-      {/* 页面标题 */}
-      <div 
-        className="relative bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16 overflow-hidden"
-        style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&h=400&fit=crop')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}
-      >
-        {/* 背景遮罩 */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/80 to-blue-800/80"></div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto px-8">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              {t('products_page_title', 'Product Center')}
+    <div data-testid="products-page" className="bg-slate-50">
+      <section className="relative overflow-hidden bg-slate-950 text-white">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-45"
+          style={{
+            backgroundImage: `url('https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=1600&h=650&fit=crop')`,
+          }}
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(2,6,23,0.92),rgba(12,74,110,0.74),rgba(15,23,42,0.70))]" />
+        <div className="relative mx-auto max-w-7xl px-6 py-16 lg:px-8 lg:py-20">
+          <div className="max-w-4xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-200">Product catalog</p>
+            <h1 className="mt-4 text-4xl font-semibold leading-tight md:text-5xl">
+              Aluminum Profile Product Center
             </h1>
-            <p className="text-xl opacity-90 max-w-3xl mx-auto">
-              {t('products_page_subtitle', 'Comprehensive product line to meet various application requirements')}
+            <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-100">
+              Find architectural, industrial, trim, tube, and custom extrusion profiles with the details buyers need before sending drawings or RFQs.
             </p>
           </div>
+          <div className="mt-8 grid gap-4 text-sm text-slate-100 sm:grid-cols-3">
+            <div className="rounded-lg border border-white/15 bg-white/10 p-4 backdrop-blur">Custom extrusion and OEM projects</div>
+            <div className="rounded-lg border border-white/15 bg-white/10 p-4 backdrop-blur">Anodizing, powder coating, CNC support</div>
+            <div className="rounded-lg border border-white/15 bg-white/10 p-4 backdrop-blur">Export packaging and shipment planning</div>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div className="max-w-7xl mx-auto px-8 py-12">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
+        <div className="mb-8 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-slate-900">Browse by profile type</h2>
+              <p className="mt-1 text-sm text-slate-600">Use categories as a fast starting point, then open a product page for parameters and RFQ details.</p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => handleCategorySelect(null)}
+                className={`min-h-[44px] rounded-lg border px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                  selectedCategory === null
+                    ? 'border-sky-700 bg-sky-700 text-white'
+                    : 'border-slate-200 bg-white text-slate-700 hover:border-sky-400 hover:text-sky-700'
+                }`}
+              >
+                All Products
+              </button>
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  type="button"
+                  onClick={() => handleCategorySelect(category.id)}
+                  className={`min-h-[44px] rounded-lg border px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                    selectedCategory === category.id
+                      ? 'border-sky-700 bg-sky-700 text-white'
+                      : 'border-slate-200 bg-white text-slate-700 hover:border-sky-400 hover:text-sky-700'
+                  }`}
+                >
+                  {category.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
 
         {/* 分类文字说明（在产品前展示） */}
         {activeCategory && (
-          <div className="mb-8 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+          <div className="mb-8 rounded-xl border border-sky-100 bg-white p-6">
+            <h2 className="text-2xl md:text-3xl font-semibold text-slate-900 mb-3">
               {activeCategory.name}
               {activeSubcategory && (
-                <span className="text-2xl md:text-3xl text-blue-600 ml-2">
+                <span className="text-xl md:text-2xl text-sky-700 ml-2">
                   - {activeSubcategory.name}
                 </span>
               )}
             </h2>
             {(activeCategory.description || activeSubcategory?.description) && (
-              <p className="text-gray-700 leading-relaxed whitespace-pre-line max-w-3xl mx-auto">
+              <p className="text-slate-600 leading-7 whitespace-pre-line max-w-4xl">
                 {activeSubcategory?.description || activeCategory.description}
               </p>
             )}
@@ -212,41 +294,64 @@ const Products: React.FC = () => {
             <p className="text-gray-400 mt-2">{t('products_no_products_desc', 'Please add product information in the backend first')}</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 product-grid">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 product-grid">
             {filteredProducts.map(product => {
               return (
-                <div
+                <article
                   key={product.id}
-                  className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow group cursor-pointer product-card flex flex-col h-full"
-                  onClick={() => window.location.href = `/${currentLanguage}/products/${product.id}`}
+                  className="group flex h-full flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
                 >
-                  {/* 产品图片 - 占据主要空间 */}
-                  <div className="h-64 bg-gray-100 overflow-hidden relative product-image-container flex-shrink-0">
-                    {product.images && product.images.length > 0 ? (
+                  <Link to={`/${currentLanguage}/products/${product.id}`} className="block">
+                    <div className="h-64 bg-slate-100 overflow-hidden relative product-image-container flex-shrink-0">
                       <img
-                        src={resolveMediaUrl(product.images.find(img => img.is_primary)?.image || product.images[0].image)}
-                        alt={product.translated_name || product.name || 'Product Image'}
+                        src={getProductImage(product)}
+                        alt={getProductTitle(product)}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         loading="lazy"
                         decoding="async"
                       />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gradient-to-br from-gray-50 to-gray-100">
-                        <svg className="w-20 h-20" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                        </svg>
+                      <div className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-800 shadow">
+                        {product.category?.name || 'Aluminum Profile'}
                       </div>
-                    )}
-                  </div>
-
-                  {/* 产品信息 - 简洁布局，增加高度以容纳长名称 */}
-                  <div className="p-4 text-center flex-1 flex flex-col justify-center min-h-[100px]">
-                    {/* 产品名称 - 居中显示，支持多行 */}
-                    <h3 className="text-base font-semibold text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-3 leading-relaxed break-words">
-                      {product.translated_name || product.name || 'Product Name'}
+                    </div>
+                  </Link>
+                  <div className="flex flex-1 flex-col p-5">
+                    <h3 className="text-lg font-semibold leading-7 text-slate-900 group-hover:text-sky-700 line-clamp-2">
+                      {getProductTitle(product)}
                     </h3>
+                    <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-600">
+                      {getProductDescription(product)}
+                    </p>
+                    <dl className="mt-5 grid gap-3 text-sm">
+                      {product.range_param && (
+                        <div className="rounded-lg bg-slate-50 p-3">
+                          <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Range</dt>
+                          <dd className="mt-1 text-slate-900">{product.range_param}</dd>
+                        </div>
+                      )}
+                      {(product.grade || product.temper) && (
+                        <div className="rounded-lg bg-slate-50 p-3">
+                          <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Alloy / Temper</dt>
+                          <dd className="mt-1 text-slate-900">{[product.grade, product.temper].filter(Boolean).join(' / ')}</dd>
+                        </div>
+                      )}
+                    </dl>
+                    <div className="mt-auto flex flex-col gap-3 pt-5 sm:flex-row">
+                      <Link
+                        to={`/${currentLanguage}/products/${product.id}`}
+                        className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-800 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                      >
+                        View Details
+                      </Link>
+                      <Link
+                        to={`/${currentLanguage}/products/${product.id}#inquiry`}
+                        className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-lg border border-sky-200 px-4 py-2 text-sm font-semibold text-sky-800 transition hover:border-sky-500 hover:bg-sky-50 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                      >
+                        Send RFQ
+                      </Link>
+                    </div>
                   </div>
-                </div>
+                </article>
               );
             })}
           </div>
@@ -254,7 +359,7 @@ const Products: React.FC = () => {
 
         {/* 产品统计 */}
         <div className="mt-12 text-center">
-          <p className="text-gray-600">
+          <p className="text-slate-600">
             {t('products_found_count', 'Found {count} products').replace('{count}', filteredProducts.length.toString())}
           </p>
         </div>

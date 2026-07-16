@@ -146,7 +146,7 @@ const NewsDetail: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="pt-20">
+      <div>
         <div className="max-w-4xl mx-auto px-8 py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
@@ -159,7 +159,7 @@ const NewsDetail: React.FC = () => {
 
   if (!article) {
     return (
-      <div className="pt-20">
+      <div>
         <div className="max-w-4xl mx-auto px-8 py-12">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-800 mb-4">Article Not Found</h1>
@@ -177,7 +177,7 @@ const NewsDetail: React.FC = () => {
   }
 
   return (
-    <div className="pt-20">
+    <div>
       <div className="max-w-4xl mx-auto px-8 py-12">
         {/* 返回按钮 */}
         <button
@@ -327,7 +327,7 @@ const NewsList: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="pt-20">
+      <div>
         <div className="max-w-7xl mx-auto px-8 py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
@@ -339,7 +339,7 @@ const NewsList: React.FC = () => {
   }
 
   return (
-    <div className="pt-20">
+    <div>
       {/* 页面标题 */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-8">

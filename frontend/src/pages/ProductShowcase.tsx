@@ -56,7 +56,7 @@ const ProductShowcase: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
-      <div className="relative overflow-hidden pt-24">
+      <div className="relative overflow-hidden py-16 lg:py-20">
         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.25),_transparent_50%)]" />
         <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -230,5 +230,4 @@ const ProductShowcase: React.FC = () => {
 };
 
 export default ProductShowcase;
-
 

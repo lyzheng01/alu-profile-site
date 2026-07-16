@@ -92,7 +92,7 @@ const About: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="pt-20">
+      <div>
         <div className="max-w-7xl mx-auto px-8 py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
@@ -104,7 +104,7 @@ const About: React.FC = () => {
   }
 
   return (
-    <div className="pt-20">
+    <div>
       {/* 页面标题 */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-8">
@@ -312,7 +312,7 @@ const About: React.FC = () => {
                 </svg>
               </div>
               <h3 className="text-lg font-semibold text-gray-800 mb-2">{t('contact_email', 'Email')}</h3>
-              <p className="text-gray-600">{getCompanyInfo('email') || 'info@lingyealu.cn'}</p>
+              <p className="text-gray-600">{getCompanyInfo('email') || 'iris@lingyealu.com'}</p>
             </div>
             <div className="text-center">
               <div className="text-blue-600 mb-4">

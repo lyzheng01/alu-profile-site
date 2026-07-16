@@ -9,7 +9,24 @@ from django.conf import settings
 from django.core.cache import cache
 from pathlib import Path
 from deep_translator import GoogleTranslator
-from .models import Product, ProductApplication, ProductFeature, ProductSpecification
+from .models import Product, ProductApplication, ProductFeature, ProductImage, ProductSpecification
+
+
+def add_product_images(product, files):
+    existing_count = product.images.count()
+    created = []
+
+    for index, uploaded_file in enumerate(files):
+        image = ProductImage.objects.create(
+            product=product,
+            image=uploaded_file,
+            caption=getattr(uploaded_file, "name", ""),
+            is_primary=(existing_count == 0 and index == 0),
+            order=existing_count + index,
+        )
+        created.append(image)
+
+    return created
 
 
 class TranslationService:

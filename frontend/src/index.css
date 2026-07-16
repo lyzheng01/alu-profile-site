@@ -9,14 +9,14 @@
 }
 
 :root {
-  --primary-color: #1a365d;
-  --secondary-color: #3182ce;
-  --accent-color: #f7fafc;
-  --text-dark: #2d3748;
-  --text-light: #718096;
+  --primary-color: #1f2933;
+  --secondary-color: #f97316;
+  --accent-color: #f4f1ea;
+  --text-dark: #1f2933;
+  --text-light: #64748b;
   --white: #ffffff;
-  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --gradient-primary: linear-gradient(135deg, #111827 0%, #374151 58%, #f97316 100%);
+  --gradient-secondary: linear-gradient(135deg, #27272a 0%, #52525b 100%);
   --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   --shadow-heavy: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
@@ -300,15 +300,15 @@ html {
 
 /* 渐变背景 */
 .gradient-bg {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #111827 0%, #374151 58%, #f97316 100%);
 }
 
 .gradient-bg-2 {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, #27272a 0%, #52525b 100%);
 }
 
 .gradient-bg-3 {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: linear-gradient(135deg, #3f3f46 0%, #a16207 100%);
 }
 
 /* 响应式文本 */

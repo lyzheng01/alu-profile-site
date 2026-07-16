@@ -46,7 +46,7 @@ const FloatingContactButtons: React.FC = () => {
         {/* 邮箱按钮 */}
         <div className="relative group">
           <button 
-            onClick={() => window.open('mailto:info@lingyealu.cn?subject=Aluminum Products Inquiry&body=Hello! I am interested in your aluminum products. Please provide more information.', '_self')}
+            onClick={() => window.open('mailto:iris@lingyealu.com?subject=Aluminum Products Inquiry&body=Hello! I am interested in your aluminum products. Please provide more information.', '_self')}
             className="bg-red-500 text-white p-3 rounded-full shadow-lg hover:bg-red-600 transition-all duration-300 transform hover:scale-110 group-hover:shadow-xl floating-contact-button"
             title="Email Us"
           >
@@ -56,7 +56,7 @@ const FloatingContactButtons: React.FC = () => {
           </button>
           {/* 悬浮提示 */}
           <div className="absolute right-full mr-3 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-            Email Us: info@lingyealu.cn
+            Email Us: iris@lingyealu.com
             <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-l-gray-800"></div>
           </div>
         </div>
@@ -134,7 +134,7 @@ const FloatingContactButtons: React.FC = () => {
               </button>
               
               <button 
-                onClick={() => window.open('mailto:info@lingyealu.cn?subject=Aluminum Products Inquiry&body=Hello! I am interested in your aluminum products. Please provide more information.', '_self')}
+                onClick={() => window.open('mailto:iris@lingyealu.com?subject=Aluminum Products Inquiry&body=Hello! I am interested in your aluminum products. Please provide more information.', '_self')}
                 className="w-full flex items-center space-x-3 px-3 py-2 text-left hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
@@ -144,7 +144,7 @@ const FloatingContactButtons: React.FC = () => {
                 </div>
                 <div>
                   <div className="text-sm font-medium text-gray-900">Email Us</div>
-                  <div className="text-xs text-gray-500">info@lingyealu.cn</div>
+                  <div className="text-xs text-gray-500">iris@lingyealu.com</div>
                 </div>
               </button>
             </div>
