@@ -122,16 +122,6 @@ const Home: React.FC = () => {
     []
   );
 
-  const applicationScenes = useMemo(
-    () => [
-      'Windows and doors systems',
-      'Curtain wall and facade projects',
-      'Industrial frames and automation lines',
-      'Decorative trim and furniture applications',
-    ],
-    []
-  );
-
   const faqItems = useMemo(
     () => [
       {
@@ -435,17 +425,6 @@ const Home: React.FC = () => {
                 </Link>
               ))}
 
-              <div className="rounded-lg border border-sky-300/20 bg-white/[0.06] p-6 backdrop-blur-xl">
-                <h3 className="text-xl font-semibold text-white">Application coverage</h3>
-                <ul className="mt-4 space-y-3 text-sm leading-6 text-sky-50/90">
-                  {applicationScenes.map((scene) => (
-                    <li key={scene} className="flex items-start gap-3">
-                      <span className="mt-1 h-2.5 w-2.5 rounded-full bg-sky-300" />
-                      <span>{scene}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
             </div>
           </div>
         </div>
