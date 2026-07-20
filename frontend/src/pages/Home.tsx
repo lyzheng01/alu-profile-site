@@ -396,7 +396,7 @@ const Home: React.FC = () => {
                     <div className="p-7">
                       <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-300">Featured Product</p>
                       <h3 className="mt-3 text-2xl font-semibold">{primaryProduct.name}</h3>
-                      <p className="mt-4 text-base leading-7 text-slate-300">
+                      <p className="mt-4 text-base leading-7 text-slate-300 line-clamp-3">
                         {primaryProduct.description || 'Explore a profile page built for procurement review, specification checks, and quotation requests.'}
                       </p>
                       <span className="mt-6 inline-flex items-center text-sm font-semibold text-white">
@@ -428,7 +428,7 @@ const Home: React.FC = () => {
                   />
                   <div>
                     <h3 className="text-xl font-semibold text-white">{product.name}</h3>
-                    <p className="mt-3 text-sm leading-7 text-slate-300">
+                    <p className="mt-3 text-sm leading-7 text-slate-300 line-clamp-3">
                       {product.description || 'Built for aluminum buyers who need a clear product page, not just a name and one image.'}
                     </p>
                   </div>
