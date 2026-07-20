@@ -80,11 +80,6 @@ const cleanMediaUrl = (value?: string) => {
   return resolved;
 };
 
-const capabilityItems = [
-  'Drawing review and extrusion die evaluation',
-  'Anodizing, powder coating, wood grain, cutting, drilling, and CNC machining',
-];
-
 const categoryCardImages: Record<string, string> = {
   '5': '/media/products/t-slot_aluminium_profile.jpg',
   '6': '/media/products/chile_1.jpg',
@@ -439,17 +434,6 @@ const Home: React.FC = () => {
               <p className="mt-4 text-lg leading-8 text-slate-600">
                 Show the production, finishing, packaging, and export readiness that serious B2B buyers need before they send drawings or project quantities.
               </p>
-              <div className="mt-8 rounded-lg bg-slate-100 p-6">
-                <h3 className="text-lg font-semibold text-slate-900">What buyers can verify</h3>
-                <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-600">
-                  {capabilityItems.map((item) => (
-                    <li key={item} className="flex gap-3">
-                      <span className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-sky-700" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
             </div>
 
             <div className="grid gap-5 md:grid-cols-3">
