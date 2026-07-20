@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
 import base64
+import io
 import json
 import os
 import re
 import sys
+import time
 import uuid
 from datetime import datetime
 from pathlib import Path
-from urllib import request
 
 import django
+import requests
 from django.core.files import File
 from django.db import transaction
 from django.utils import timezone
 from django.utils.text import slugify
+from PIL import Image
 
 BASE_DIR = Path(__file__).resolve().parent
 sys.path.append(str(BASE_DIR))
@@ -22,8 +25,8 @@ django.setup()
 
 from apps.news.models import AluminumBlogTopic, Article  # noqa: E402
 
-API_KEY = os.getenv("GRSAI_API_KEY") or os.getenv("OPENAI_API_KEY", "")
-API_URL = os.getenv("GRSAI_API_URL", "https://api.openai.com/v1/images/generations")
+GRSAI_API_KEY = os.getenv("GRSAI_API_KEY") or os.getenv("OPENAI_API_KEY", "")
+GRSAI_BASE_URL = (os.getenv("GRSAI_BASE_URL") or "https://grsaiapi.com").rstrip("/")
 SITE_URL = "https://lingyealu.cn"
 MEDIA_DIR = BASE_DIR / "media" / "articles"
 MEDIA_DIR.mkdir(parents=True, exist_ok=True)
@@ -125,36 +128,62 @@ def generate_article(topic_title: str, keyword: str) -> dict:
     }
 
 
-def call_image_api(prompt: str) -> bytes:
-    if not API_KEY:
-        raise RuntimeError("Missing GRSAI/OpenAI API key")
-
+def call_image_api_grsai(prompt: str) -> bytes:
+    if not GRSAI_API_KEY:
+        raise RuntimeError("Missing GRSAI API key")
+    headers = {"Authorization": f"Bearer {GRSAI_API_KEY}", "Content-Type": "application/json"}
     payload = {
-        "model": "gpt-image-1",
-        "prompt": prompt,
-        "size": "1536x1024",
-        "quality": "high",
-        "response_format": "b64_json",
+        "model": "nano-banana-fast",
+        "prompt": f"{prompt}\n\nNegative prompt: text, watermark, logo, blurry, low quality, distorted",
+        "aspectRatio": "16:9",
+        "shutProgress": True,
     }
-    data = json.dumps(payload).encode("utf-8")
-    req = request.Request(
-        API_URL,
-        data=data,
-        headers={
-            "Authorization": f"Bearer {API_KEY}",
-            "Content-Type": "application/json",
-        },
-        method="POST",
-    )
-    with request.urlopen(req, timeout=120) as resp:
-        raw = resp.read().decode("utf-8")
-    obj = json.loads(raw)
-    if not obj.get("data"):
-        raise RuntimeError(f"Image API empty response: {raw[:300]}")
-    b64 = obj["data"][0].get("b64_json")
-    if not b64:
-        raise RuntimeError(f"Image API missing b64_json: {raw[:300]}")
-    return base64.b64decode(b64)
+    resp = requests.post(f"{GRSAI_BASE_URL}/v1/draw/nano-banana", headers=headers, json=payload, timeout=(10, 120))
+    resp.raise_for_status()
+
+    text = resp.text.strip()
+    data_lines = []
+    for line in text.splitlines():
+        line = line.strip()
+        if line.startswith("data:"):
+            payload_line = line[5:].strip()
+            if payload_line and payload_line not in ("[DONE]", "DONE"):
+                data_lines.append(payload_line)
+    candidate = json.loads(data_lines[-1] if data_lines else text)
+    task_id = candidate.get("id") or (candidate.get("data") or {}).get("id") or candidate.get("taskId")
+    status = (candidate.get("status") or (candidate.get("data") or {}).get("status") or "").lower()
+    if status == "succeeded":
+        urls = [x.get("url") for x in (candidate.get("results") or []) if isinstance(x, dict) and x.get("url")]
+        if urls:
+            raw = requests.get(urls[0], timeout=30).content
+            return _resize_and_compress(raw)
+    if not task_id:
+        raise RuntimeError("No GrsAI task id")
+    for _ in range(60):
+        time.sleep(2)
+        r2 = requests.post(f"{GRSAI_BASE_URL}/v1/draw/result", headers=headers, json={"id": task_id}, timeout=30)
+        r2.raise_for_status()
+        d2 = r2.json()
+        status = (d2.get("status") or (d2.get("data") or {}).get("status") or "").lower()
+        if status == "succeeded":
+            urls = [x.get("url") for x in ((d2.get("results") or (d2.get("data") or {}).get("results") or [])) if isinstance(x, dict) and x.get("url")]
+            if not urls:
+                raise RuntimeError("GrsAI finished without image url")
+            raw = requests.get(urls[0], timeout=30).content
+            return _resize_and_compress(raw)
+        if status in ("failed", "error", "cancelled", "canceled"):
+            raise RuntimeError(f"GrsAI image failed: {status}")
+    raise RuntimeError("GrsAI image timeout")
+
+
+def _resize_and_compress(raw: bytes, max_width: int = 1536, quality: int = 82) -> bytes:
+    img = Image.open(io.BytesIO(raw)).convert("RGB")
+    if img.width > max_width:
+        ratio = max_width / img.width
+        img = img.resize((max_width, int(img.height * ratio)), Image.LANCZOS)
+    buf = io.BytesIO()
+    img.save(buf, "WEBP", quality=quality, method=6)
+    return buf.getvalue()
 
 
 def generate_images(slug: str) -> list[str]:
@@ -165,8 +194,9 @@ def generate_images(slug: str) -> list[str]:
 
     saved = []
     for idx, prompt in enumerate(prompts, 1):
-        img_bytes = call_image_api(prompt)
-        filename = f"{slug}-ai-{idx}.png"
+        img_bytes = call_image_api_grsai(prompt)
+        img_bytes = _resize_and_compress(img_bytes)
+        filename = f"{slug}-ai-{idx}.webp"
         filepath = MEDIA_DIR / filename
         with open(filepath, "wb") as f:
             f.write(img_bytes)
@@ -218,8 +248,17 @@ def publish() -> dict:
             article.meta_keywords = article_data["meta_keywords"]
             article.published_at = article.published_at or timezone.now()
 
+        first_img_name = Path(image_paths[0]).name
         with open(image_paths[0], "rb") as f:
-            article.featured_image.save(Path(image_paths[0]).name, File(f), save=False)
+            article.featured_image.save(first_img_name, File(f), save=False)
+
+        if len(image_paths) > 1:
+            img2_rel = f"/media/articles/{Path(image_paths[1]).name}"
+            img2_tag = f'<p style="text-align:center;margin:30px 0"><img src="{img2_rel}" alt="{article_data["title"]} - Factory Scene" style="max-width:100%;height:auto;border-radius:8px;"></p>'
+            content_parts = article.content.split("</h1>", 1)
+            if len(content_parts) == 2:
+                article.content = content_parts[0] + "</h1>" + img2_tag + content_parts[1]
+
         article.save()
 
         topic.article = article
