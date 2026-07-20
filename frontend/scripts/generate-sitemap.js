@@ -20,6 +20,8 @@ const staticPaths = [
   ...EN_LANDING_SLUGS.map((slug) => ({ path: `/en/${slug}`, changefreq: 'weekly', priority: '0.75' })),
 ];
 
+const todayISO = new Date().toISOString();
+
 const fetchJson = async (url) => {
   const res = await fetch(url, { headers: { Accept: 'application/json' } });
   if (!res.ok) {
@@ -52,11 +54,11 @@ const fetchAll = async (resource) => {
 };
 
 const toUrlNode = (loc, lastmod, changefreq, priority) => {
-  const lastmodNode = lastmod ? `<lastmod>${lastmod}</lastmod>` : '';
+  const lastmodStr = lastmod ? `    <lastmod>${lastmod}</lastmod>` : '';
   return [
     '  <url>',
     `    <loc>${loc}</loc>`,
-    lastmodNode ? `    ${lastmodNode}` : '',
+    lastmodStr,
     `    <changefreq>${changefreq}</changefreq>`,
     `    <priority>${priority}</priority>`,
     '  </url>',
@@ -76,17 +78,18 @@ const build = async () => {
   const nodes = [];
 
   for (const route of staticPaths) {
-    nodes.push(toUrlNode(`${SITE_URL}${route.path}`, '', route.changefreq, route.priority));
+    nodes.push(toUrlNode(`${SITE_URL}${route.path}`, todayISO, route.changefreq, route.priority));
   }
 
   try {
     const [products, articles] = await Promise.all([fetchAll('products'), fetchAll('articles')]);
 
     for (const product of products) {
+      const productPath = product.slug || product.id;
       for (const lang of LANGS) {
         nodes.push(
           toUrlNode(
-            `${SITE_URL}/${lang}/products/${product.id}`,
+            `${SITE_URL}/${lang}/products/${productPath}`,
             normalizeDate(product.updated_at || product.created_at),
             'weekly',
             '0.7'

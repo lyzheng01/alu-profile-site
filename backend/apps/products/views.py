@@ -193,6 +193,17 @@ class ProductViewSet(viewsets.ModelViewSet):
         
         return Response(serializer.data)
     
+    @action(detail=False, methods=['get'], url_path='by-slug/(?P<slug>[^/.]+)')
+    def by_slug(self, request, slug=None):
+        """根据slug获取产品"""
+        language = request.query_params.get('lang', 'zh')
+        product = get_object_or_404(Product, slug=slug, is_active=True)
+        if language != 'zh':
+            serializer = TranslatedProductDetailSerializer(product, context={'language': language})
+        else:
+            serializer = ProductDetailSerializer(product)
+        return Response(serializer.data)
+    
     @action(detail=False, methods=['get'])
     def search(self, request):
         """搜索产品"""

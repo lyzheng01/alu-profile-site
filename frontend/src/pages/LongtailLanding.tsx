@@ -24,6 +24,7 @@ interface LandingPageData {
 
 interface LandingProduct {
   id: number;
+  slug: string;
   name?: string;
   translated_name?: string;
   description?: string;
@@ -285,7 +286,7 @@ const LongtailLanding: React.FC = () => {
                 return (
                   <Link
                     key={product.id}
-                    to={`/en/products/${product.id}`}
+                    to={`/en/products/${product.slug}`}
                     className="rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow bg-white"
                   >
                     <div className="h-40 bg-gray-100 overflow-hidden">

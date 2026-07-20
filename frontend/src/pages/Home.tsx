@@ -16,6 +16,7 @@ type ProductImage = {
 
 type FeaturedProduct = {
   id: number | string;
+  slug: string;
   name: string;
   description?: string;
   images?: ProductImage[];
@@ -365,7 +366,7 @@ const Home: React.FC = () => {
 
               {primaryProduct ? (
                 <Link
-                  to={`/${currentLanguage}/products/${primaryProduct.id}`}
+                  to={`/${currentLanguage}/products/${primaryProduct.slug}`}
                   className="mt-8 block overflow-hidden rounded-lg border border-white/12 bg-white/8 shadow-[0_28px_80px_rgba(15,23,42,0.30)] backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/[0.10]"
                 >
                   <div className="grid md:grid-cols-[0.95fr_1.05fr]">
@@ -401,7 +402,7 @@ const Home: React.FC = () => {
               {secondaryProducts.map((product) => (
                 <Link
                   key={product.id}
-                  to={`/${currentLanguage}/products/${product.id}`}
+                  to={`/${currentLanguage}/products/${product.slug}`}
                   className="grid min-h-[180px] gap-5 overflow-hidden rounded-lg border border-white/10 bg-white/5 p-5 transition hover:-translate-y-1 hover:bg-white/[0.08] md:grid-cols-[160px_1fr]"
                 >
                   <img

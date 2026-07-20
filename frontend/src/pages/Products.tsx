@@ -6,9 +6,11 @@ import { usePageTitle } from '../hooks/usePageTitle';
 import { useTranslation } from '../contexts/TranslationContext';
 import { resolveMediaUrl } from '../utils/url';
 import { useSeoMeta } from '../hooks/useSeoMeta';
+import { useStructuredData } from '../hooks/useStructuredData';
 
 interface Product {
   id: number;
+  slug: string;
   name?: string; // 中文时使用
   translated_name?: string; // 非中文时使用
   description?: string;
@@ -96,6 +98,30 @@ const Products: React.FC = () => {
     ogDescription: 'Find aluminum profiles for windows, doors, industrial framing, trim, tubes, and OEM extrusion projects.',
     language: currentLanguage,
   });
+
+  const collectionStructuredData = React.useMemo(() => ({
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Aluminum Profile Product Catalog | LingYe Aluminum',
+    description: 'Browse architectural, industrial, trim, tube, and custom aluminum extrusion profiles.',
+    isPartOf: { '@type': 'WebSite', name: 'LingYe Aluminum', url: 'https://lingyealu.cn' },
+  }), []);
+
+  useStructuredData('products-collection', collectionStructuredData);
+
+  const breadcrumbStructuredData = React.useMemo(() => {
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.cn';
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `${base}/${currentLanguage}` },
+        { '@type': 'ListItem', position: 2, name: 'Products', item: `${base}/${currentLanguage}/products` },
+      ],
+    };
+  }, [currentLanguage]);
+
+  useStructuredData('products-breadcrumb', breadcrumbStructuredData);
 
   // 从URL参数获取分类ID和子分类ID
   useEffect(() => {
@@ -301,7 +327,7 @@ const Products: React.FC = () => {
                   key={product.id}
                   className="group flex h-full flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
                 >
-                  <Link to={`/${currentLanguage}/products/${product.id}`} className="block">
+                  <Link to={`/${currentLanguage}/products/${product.slug}`} className="block">
                     <div className="h-64 bg-slate-100 overflow-hidden relative product-image-container flex-shrink-0">
                       <img
                         src={getProductImage(product)}
@@ -338,7 +364,7 @@ const Products: React.FC = () => {
                     </dl>
                     <div className="mt-auto flex flex-col gap-3 pt-5 sm:flex-row">
                       <Link
-                        to={`/${currentLanguage}/products/${product.id}`}
+                        to={`/${currentLanguage}/products/${product.slug}`}
                         className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-800 focus:outline-none focus:ring-2 focus:ring-sky-500"
                       >
                         View Details

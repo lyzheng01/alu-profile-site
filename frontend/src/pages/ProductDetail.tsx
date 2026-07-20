@@ -10,6 +10,7 @@ import { useStructuredData } from '../hooks/useStructuredData';
 
 interface Product {
   id: number;
+  slug: string;
   name: string;
   description: string;
   category: {
@@ -75,7 +76,7 @@ interface Product {
 }
 
 const ProductDetail: React.FC = () => {
-  const { productId } = useParams<{ productId: string }>();
+  const { productSlug } = useParams<{ productSlug: string }>();
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
@@ -114,7 +115,7 @@ const ProductDetail: React.FC = () => {
     description: product
       ? (product.description || `Explore ${product.name} from LingYe Aluminum with custom aluminum extrusion and global supply support.`)
       : undefined,
-    canonicalPath: productId ? `/${currentLanguage}/products/${productId}` : undefined,
+    canonicalPath: product?.slug ? `/${currentLanguage}/products/${product.slug}` : undefined,
   });
 
   const productStructuredData = React.useMemo(() => {
@@ -174,7 +175,7 @@ const ProductDetail: React.FC = () => {
           '@type': 'ListItem',
           position: 3,
           name: product.name,
-          item: `${base}/${currentLanguage}/products/${product.id}`,
+          item: `${base}/${currentLanguage}/products/${product.slug}`,
         },
       ],
     };
@@ -185,17 +186,27 @@ const ProductDetail: React.FC = () => {
   // Get product details and related products
   useEffect(() => {
     const fetchProductAndRelated = async () => {
-      if (!productId) return;
-      
+        if (!productSlug) return;
+
+      const isNumeric = /^\d+$/.test(productSlug);
+      const detailUrl = isNumeric
+        ? `${API_ENDPOINTS.PRODUCTS}${productSlug}/?lang=${currentLanguage}`
+        : `${API_ENDPOINTS.PRODUCTS}by-slug/${productSlug}/?lang=${currentLanguage}`;
+
       try {
         // Get product details
-        const productResponse = await fetch(`${API_ENDPOINTS.PRODUCTS}${productId}/?lang=${currentLanguage}`);
+        const productResponse = await fetch(detailUrl);
         if (productResponse.ok) {
           const productData = await productResponse.json();
 
+          // Keep backward compatibility for old id URLs — redirect to slug
+          if (isNumeric && productData?.slug) {
+            navigate(`/${currentLanguage}/products/${productData.slug}`, { replace: true });
+          }
+
           // 后端API已经自动合并了模板数据，直接使用
           setProduct(productData);
-          
+
           // Get other products in the same category
           if (productData.category?.id) {
             const relatedResponse = await fetch(`${API_ENDPOINTS.PRODUCTS}?category=${productData.category.id}&lang=${currentLanguage}&limit=4`);
@@ -208,18 +219,18 @@ const ProductDetail: React.FC = () => {
           }
         } else {
           console.error('Product not found');
-          navigate('/products');
+          navigate(`/${currentLanguage}/products`);
         }
       } catch (error) {
         console.error('Failed to fetch product details:', error);
-        navigate('/products');
+        navigate(`/${currentLanguage}/products`);
       } finally {
         setLoading(false);
       }
     };
 
     fetchProductAndRelated();
-  }, [productId, currentLanguage, navigate]);
+  }, [productSlug, currentLanguage, navigate]);
 
   // 所有 Hooks 必须在早期返回之前调用
   const surfaceTreatmentImageData = React.useMemo(() => {
@@ -442,7 +453,7 @@ const ProductDetail: React.FC = () => {
         <div className="max-w-7xl mx-auto px-8 py-12">
           <div className="text-center">
             <p className="text-gray-500 text-lg">Product not found</p>
-            <Link to="/products" className="text-blue-600 hover:text-blue-800 mt-2 inline-block">
+            <Link to={`/${currentLanguage}/products`} className="text-blue-600 hover:text-blue-800 mt-2 inline-block">
               Back to Products
             </Link>
           </div>
@@ -459,7 +470,7 @@ const ProductDetail: React.FC = () => {
           <nav className="flex" aria-label="Breadcrumb">
             <ol className="flex items-center space-x-4">
               <li>
-                <Link to="/" className="text-gray-500 hover:text-gray-700">
+                <Link to={`/${currentLanguage}`} className="text-gray-500 hover:text-gray-700">
                   Home
                 </Link>
               </li>
@@ -468,7 +479,7 @@ const ProductDetail: React.FC = () => {
                   <svg className="flex-shrink-0 h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                   </svg>
-                  <Link to="/products" className="ml-4 text-gray-500 hover:text-gray-700">
+                  <Link to={`/${currentLanguage}/products`} className="ml-4 text-gray-500 hover:text-gray-700">
                     Products
                   </Link>
                 </div>
@@ -1092,7 +1103,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                     <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{relatedProduct.name}</h3>
                     <div className="flex gap-2">
                       <Link
-                        to={`/products/${relatedProduct.id}`}
+                        to={`/${currentLanguage}/products/${relatedProduct.slug}`}
                         className="flex-1 bg-blue-600 text-white text-sm px-3 py-1 rounded hover:bg-blue-700 transition-colors text-center"
                       >
                         Read more

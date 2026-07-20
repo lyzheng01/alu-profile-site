@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { API_ENDPOINTS } from '../config/api';
 import { useTranslation } from '../contexts/TranslationContext';
 import { usePageTitle } from '../hooks/usePageTitle';
+import { useSeoMeta } from '../hooks/useSeoMeta';
+import { useStructuredData } from '../hooks/useStructuredData';
 
 interface CompanyInfo {
   id: number;
@@ -33,7 +35,7 @@ interface FactoryImage {
 }
 
 const About: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, currentLanguage } = useTranslation();
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo[]>([]);
   const [advantages, setAdvantages] = useState<Advantage[]>([]);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
@@ -42,6 +44,44 @@ const About: React.FC = () => {
 
   // 设置页面标题
   usePageTitle('about');
+
+  useSeoMeta({
+    title: 'About Us | LingYe Aluminum',
+    description: 'Professional aluminum profile manufacturer with 15 years of experience, serving 60+ countries worldwide.',
+    canonicalPath: `/${currentLanguage}/about`,
+    language: currentLanguage,
+  });
+
+  const organizationStructuredData = React.useMemo(() => ({
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'LingYe Aluminum',
+    url: 'https://lingyealu.cn',
+    logo: 'https://lingyealu.cn/logo.jpg?v=3',
+    description: 'Aluminum profile manufacturer for industrial and architectural applications.',
+    sameAs: [
+      'https://facebook.com/lingyealu',
+      'https://youtube.com/@lingyealu',
+      'https://linkedin.com/company/lingyealu',
+      'https://tiktok.com/@lingyealu'
+    ],
+  }), []);
+
+  useStructuredData('about-organization', organizationStructuredData);
+
+  const breadcrumbStructuredData = React.useMemo(() => {
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.cn';
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `${base}/${currentLanguage}` },
+        { '@type': 'ListItem', position: 2, name: 'About Us', item: `${base}/${currentLanguage}/about` },
+      ],
+    };
+  }, [currentLanguage]);
+
+  useStructuredData('about-breadcrumb', breadcrumbStructuredData);
 
   // 获取公司信息
   useEffect(() => {

@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 interface SeoMetaOptions {
   title?: string;
   description?: string;
+  keywords?: string;
   canonicalPath?: string;
   ogTitle?: string;
   ogDescription?: string;
@@ -10,6 +11,8 @@ interface SeoMetaOptions {
   language?: string;
   ogImage?: string;
 }
+
+const SUPPORTED_LANGUAGES = ['en', 'zh', 'es', 'pt'];
 
 const upsertMeta = (attr: 'name' | 'property', key: string, content?: string) => {
   if (!content || typeof document === 'undefined') return;
@@ -34,11 +37,38 @@ const upsertCanonical = (canonicalPath?: string) => {
   link.setAttribute('href', url);
 };
 
-export const useSeoMeta = ({ title, description, canonicalPath, ogTitle, ogDescription, robots, language, ogImage }: SeoMetaOptions) => {
+const resolveAlternateUrl = (lang: string, basePath: string): string => {
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.cn';
+  const segments = basePath.split('/').filter(Boolean);
+  if (segments.length > 0 && SUPPORTED_LANGUAGES.includes(segments[0])) {
+    segments[0] = lang;
+  } else {
+    segments.unshift(lang);
+  }
+  return `${origin}/${segments.join('/')}`;
+};
+
+const updateHreflang = (language: string, canonicalPath?: string) => {
+  if (typeof document === 'undefined' || typeof window === 'undefined') return;
+  const basePath = canonicalPath || window.location.pathname;
+  document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(el => el.remove());
+  const addLink = (hreflang: string, lang: string) => {
+    const link = document.createElement('link');
+    link.setAttribute('rel', 'alternate');
+    link.setAttribute('hreflang', hreflang);
+    link.setAttribute('href', resolveAlternateUrl(lang, basePath));
+    document.head.appendChild(link);
+  };
+  addLink('x-default', 'en');
+  SUPPORTED_LANGUAGES.forEach(lang => addLink(lang, lang));
+};
+
+export const useSeoMeta = ({ title, description, keywords, canonicalPath, ogTitle, ogDescription, robots, language, ogImage }: SeoMetaOptions) => {
   useEffect(() => {
     if (language) document.documentElement.lang = language;
     if (title) document.title = title;
     upsertMeta('name', 'description', description);
+    upsertMeta('name', 'keywords', keywords);
     upsertMeta('name', 'robots', robots);
     upsertMeta('property', 'og:title', ogTitle || title);
     upsertMeta('property', 'og:description', ogDescription || description);
@@ -48,5 +78,6 @@ export const useSeoMeta = ({ title, description, canonicalPath, ogTitle, ogDescr
     upsertMeta('name', 'twitter:description', ogDescription || description);
     upsertMeta('name', 'twitter:image', ogImage);
     upsertCanonical(canonicalPath);
-  }, [title, description, canonicalPath, ogTitle, ogDescription, robots, language, ogImage]);
+    updateHreflang(language || 'en', canonicalPath);
+  }, [title, description, keywords, canonicalPath, ogTitle, ogDescription, robots, language, ogImage]);
 };

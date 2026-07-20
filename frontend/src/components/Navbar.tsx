@@ -144,9 +144,9 @@ const Navbar: React.FC = () => {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to={`/${currentLanguage}`} className="flex items-center">
-              <div className="w-16 h-16 mr-3 bg-white rounded-xl flex items-center justify-center p-1 shadow-sm">
+              <div className="w-20 h-20 mr-3 bg-white rounded-xl flex items-center justify-center p-1.5 shadow-sm">
                 <img 
-                  src="/logo.png?v=4" 
+                  src="/logo.png?v=5" 
                   alt="lingye Logo" 
                   className="w-full h-full" 
                   style={{ 

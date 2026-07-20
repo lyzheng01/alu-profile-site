@@ -160,7 +160,7 @@ if DEBUG:
     MEDIA_URL = '/media/'
 else:
     # 生产环境使用完整域名
-    MEDIA_URL = 'http://lingyealu.cn/media/'
+    MEDIA_URL = 'https://lingyealu.cn/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 

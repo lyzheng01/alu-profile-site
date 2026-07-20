@@ -3,6 +3,8 @@ import FloatingContactButtons from '../components/FloatingContactButtons';
 import InquiryForm from '../components/InquiryForm';
 import { useTranslation } from '../contexts/TranslationContext';
 import { usePageTitle } from '../hooks/usePageTitle';
+import { useSeoMeta } from '../hooks/useSeoMeta';
+import { useStructuredData } from '../hooks/useStructuredData';
 
 const heroImages = [
   'https://images.unsplash.com/photo-1505692794400-25d77c2d0f66?auto=format&fit=crop&w=1600&q=80',
@@ -51,8 +53,43 @@ const manufacturingSteps = [
 ];
 
 const ProductShowcase: React.FC = () => {
-  const { t } = useTranslation();
+  const { currentLanguage } = useTranslation();
   usePageTitle('windowsDoors');
+
+  useSeoMeta({
+    title: 'Aluminium Windows & Doors System | LingYe Aluminum',
+    description: 'Custom-engineered thermal break aluminum profiles for windows, doors, curtain walls and villa folding doors. European-class quality control.',
+    canonicalPath: `/${currentLanguage}/products/windows-doors/showcase`,
+    ogImage: 'https://lingyealu.cn/logo.jpg?v=3',
+    language: currentLanguage,
+  });
+
+  const productStructuredData = React.useMemo(() => ({
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: 'Aluminium Windows & Doors System',
+    description: 'Custom-engineered thermal break aluminum profiles for windows, doors, curtain walls and villa folding doors.',
+    brand: { '@type': 'Brand', name: 'LingYe Aluminum' },
+    category: 'Aluminum Profiles for Windows and Doors',
+    image: ['https://lingyealu.cn/logo.jpg?v=3'],
+  }), []);
+
+  useStructuredData('showcase-product', productStructuredData);
+
+  const breadcrumbStructuredData = React.useMemo(() => {
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.cn';
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `${base}/${currentLanguage}` },
+        { '@type': 'ListItem', position: 2, name: 'Products', item: `${base}/${currentLanguage}/products` },
+        { '@type': 'ListItem', position: 3, name: 'Windows & Doors System', item: `${base}/${currentLanguage}/products/windows-doors/showcase` },
+      ],
+    };
+  }, [currentLanguage]);
+
+  useStructuredData('showcase-breadcrumb', breadcrumbStructuredData);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">

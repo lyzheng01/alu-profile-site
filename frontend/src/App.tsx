@@ -1,17 +1,17 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { TranslationProvider, useTranslation } from './contexts/TranslationContext';
 import Navbar from './components/Navbar';
-import Home from './pages/Home';
-import Products from './pages/Products';
-import ProductDetail from './pages/ProductDetail';
-import ProductShowcase from './pages/ProductShowcase';
-import News from './pages/News';
-import About from './pages/About';
-import NotFound from './pages/NotFound';
-import LongtailLanding from './pages/LongtailLanding';
-
 import Footer from './components/Footer';
+
+const Home = lazy(() => import('./pages/Home'));
+const Products = lazy(() => import('./pages/Products'));
+const ProductDetail = lazy(() => import('./pages/ProductDetail'));
+const ProductShowcase = lazy(() => import('./pages/ProductShowcase'));
+const News = lazy(() => import('./pages/News'));
+const About = lazy(() => import('./pages/About'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+const LongtailLanding = lazy(() => import('./pages/LongtailLanding'));
 
 // 支持的语言列表 - 精简为4种主要语言
 const supportedLanguages = ['en', 'zh', 'es', 'pt'];
@@ -39,6 +39,7 @@ const AppContent: React.FC = () => {
     <div className="App">
       <Navbar />
       <main>
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>}>
         <Routes>
           {/* 默认重定向到英语 */}
           <Route path="/" element={<Navigate to="/en" replace />} />
@@ -51,7 +52,7 @@ const AppContent: React.FC = () => {
             <Route key={`${lang}-products`} path={`/${lang}/products`} element={<Products />} />
           ))}
           {supportedLanguages.map(lang => (
-            <Route key={`${lang}-product-detail`} path={`/${lang}/products/:productId`} element={<ProductDetail />} />
+            <Route key={`${lang}-product-detail`} path={`/${lang}/products/:productSlug`} element={<ProductDetail />} />
           ))}
           {supportedLanguages.map(lang => (
             <Route
@@ -79,6 +80,7 @@ const AppContent: React.FC = () => {
           {/* 404 页面 */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </Suspense>
       </main>
       <Footer />
     </div>

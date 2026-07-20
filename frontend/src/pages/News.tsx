@@ -21,6 +21,9 @@ interface Article {
   updated_at: string;
   author: string;
   featured_image?: string;
+  meta_title?: string;
+  meta_description?: string;
+  meta_keywords?: string;
 }
 
 interface Tag {
@@ -41,9 +44,15 @@ const NewsDetail: React.FC = () => {
   useNewsDetailTitle(article?.title);
 
   useSeoMeta({
-    title: article ? `${article.title} | LingYe Aluminum` : undefined,
-    description: article?.summary || undefined,
+    title: article?.meta_title || (article ? `${article.title} | LingYe Aluminum` : undefined),
+    description: article?.meta_description || article?.summary || undefined,
+    keywords: article?.meta_keywords || undefined,
     canonicalPath: article?.slug ? `/${currentLanguage}/news/${article.slug}` : undefined,
+    ogTitle: article?.meta_title || article?.title || undefined,
+    ogDescription: article?.meta_description || article?.summary || undefined,
+    ogImage: article?.featured_image || undefined,
+    robots: !article && !loading ? 'noindex,follow' : undefined,
+    language: currentLanguage,
   });
 
   const articleStructuredData = React.useMemo(() => {
@@ -267,8 +276,36 @@ const NewsList: React.FC = () => {
   usePageTitle('news');
 
   useSeoMeta({
-    canonicalPath: `/${currentLanguage}/news`,
+    title: currentPage > 1 ? `News Page ${currentPage} | Aluminum Industry News | LingYe Aluminum` : undefined,
+    description: 'Read latest aluminum market trends, processing insights, and product updates from LingYe Aluminum.',
+    canonicalPath: `/${currentLanguage}/news${currentPage > 1 ? `?page=${currentPage}` : ''}`,
+    robots: currentPage > 1 ? 'noindex,follow' : undefined,
+    language: currentLanguage,
   });
+
+  const collectionStructuredData = React.useMemo(() => ({
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Aluminum Industry News | LingYe Aluminum',
+    description: 'Latest aluminum market trends, processing insights, and product updates.',
+    isPartOf: { '@type': 'WebSite', name: 'LingYe Aluminum', url: 'https://lingyealu.cn' },
+  }), []);
+
+  useStructuredData('news-list-collection', collectionStructuredData);
+
+  const breadcrumbStructuredData = React.useMemo(() => {
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.cn';
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `${base}/${currentLanguage}` },
+        { '@type': 'ListItem', position: 2, name: 'News', item: `${base}/${currentLanguage}/news` },
+      ],
+    };
+  }, [currentLanguage]);
+
+  useStructuredData('news-list-breadcrumb', breadcrumbStructuredData);
 
   // 获取新闻数据
   useEffect(() => {
