@@ -186,14 +186,19 @@ def _resize_and_compress(raw: bytes, max_width: int = 1536, quality: int = 82) -
     return buf.getvalue()
 
 
-def generate_images(slug: str) -> list[str]:
-    prompts = [
+def generate_images(slug: str, count: int = 4) -> list[str]:
+    all_prompts = [
         "Ultra-detailed industrial photo of aluminum profile cross-sections and extrusion die details on a clean inspection table, metallic texture, accurate geometry, manufacturing realism, no text, no watermark",
         "Wide-angle modern aluminum extrusion factory line with conveyors and QC inspection station, engineers checking profile dimensions, bright neutral lighting, photorealistic, no text, no watermark",
+        "Close-up of aluminum billet preparation area in extrusion plant, raw aluminum ingots being loaded, industrial setting, sharp focus, no text, no watermark",
+        "Photorealistic aluminum surface treatment facility with anodizing tanks and powder coating line, organized wet area with reflective surfaces, professional industrial photography, no text, no watermark",
+        "Factory floor quality control inspectors using digital measurement tools to check aluminum profile tolerances, calipers and gauges visible, bright workshop lighting, no text, no watermark",
+        "Stacked and shrink-wrapped aluminum profiles ready for container shipping, wooden pallets, protective corner guards, logistics warehouse background, no text, no watermark",
     ]
+    selected_prompts = all_prompts[:count]
 
     saved = []
-    for idx, prompt in enumerate(prompts, 1):
+    for idx, prompt in enumerate(selected_prompts, 1):
         img_bytes = call_image_api_grsai(prompt)
         img_bytes = _resize_and_compress(img_bytes)
         filename = f"{slug}-ai-{idx}.webp"
@@ -222,7 +227,7 @@ def publish() -> dict:
         keyword = topic.primary_keyword or topic.title
         article_data = generate_article(topic.title, keyword)
         slug = make_slug(article_data["title"])
-        image_paths = generate_images(slug)
+        image_paths = generate_images(slug, count=5)
 
         article, created = Article.objects.get_or_create(
             slug=slug,
@@ -248,17 +253,94 @@ def publish() -> dict:
             article.meta_keywords = article_data["meta_keywords"]
             article.published_at = article.published_at or timezone.now()
 
-        first_img_name = Path(image_paths[0]).name
-        with open(image_paths[0], "rb") as f:
-            article.featured_image.save(first_img_name, File(f), save=False)
+        # Save all images into content at section boundaries
+        img_alt_map = [
+            "Aluminum Profile Cross-Sections and Die Details",
+            "Modern Aluminum Extrusion Production Line",
+            "Aluminum Billet Preparation for Extrusion",
+            "Surface Treatment - Anodizing and Powder Coating",
+            "Quality Control Inspection of Aluminum Profiles",
+            "Packaged Aluminum Profiles Ready for Shipping",
+        ]
 
-        if len(image_paths) > 1:
-            img2_rel = f"/media/articles/{Path(image_paths[1]).name}"
-            img2_tag = f'<p style="text-align:center;margin:30px 0"><img src="{img2_rel}" alt="{article_data["title"]} - Factory Scene" style="max-width:100%;height:auto;border-radius:8px;"></p>'
-            content_parts = article.content.split("</h1>", 1)
-            if len(content_parts) == 2:
-                article.content = content_parts[0] + "</h1>" + img2_tag + content_parts[1]
+        content = article.content
+        # Split content into parts by h2 headings to find insertion points
+        h2_pattern = re.compile(r'<h2>\d+\.\s.*?</h2>')
+        parts = h2_pattern.split(content)
 
+        # Insert images after each major section (between h2 blocks)
+        img_insert_positions = []
+        for i, part in enumerate(parts):
+            if i < len(image_paths):
+                img_rel = f"/media/articles/{Path(image_paths[i]).name}"
+                img_tag = f'<p style="text-align:center;margin:30px 0"><img src="{img_rel}" alt="{img_alt_map[i]}" style="max-width:100%;height:auto;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);"></p>'
+                img_insert_positions.append((part, img_tag))
+
+        # Rebuild content: insert images after each h2 section, keeping FAQ/RFQ at end
+        # Find where FAQs start
+        faq_start = content.find("<h2>FAQs</h2>")
+        if faq_start == -1:
+            faq_start = content.find("Request for Quotation")
+
+        main_content = content[:faq_start] if faq_start > 0 else content
+        faq_section = content[faq_start:] if faq_start > 0 else ""
+
+        # Split main content into h2 sections
+        h2_matches = list(re.finditer(r'<h2>[\d\.]+\s[^<]+</h2>', main_content))
+        if h2_matches:
+            # Insert images between h2 sections
+            final_sections = []
+            for i, match in enumerate(h2_matches):
+                start = match.start()
+                end = match.end()
+                header = main_content[start:end]
+
+                # Get text between previous h2 header and this one
+                prev_end = end
+                if i == 0:
+                    # Content before first h2 (the <h1> title)
+                    intro = main_content[:start]
+                    final_sections.append(intro)
+                    # Insert featured image after intro
+                    if image_paths:
+                        img_rel = f"/media/articles/{Path(image_paths[0]).name}"
+                        img_tag = f'<div style="margin:24px 0;text-align:center;"><img src="{img_rel}" alt="{img_alt_map[0]}" style="max-width:100%;height:auto;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);"></div>'
+                        final_sections.append(img_tag)
+
+                # Get body text between current header and next header
+                if i + 1 < len(h2_matches):
+                    next_match = h2_matches[i + 1]
+                    body_text = main_content[end:next_match.start()]
+                    body_and_header = header + body_text
+                    final_sections.append(body_and_header)
+
+                    # Insert image after each section (except the last one before FAQ)
+                    if i + 2 < len(image_paths):
+                        img_idx = i + 1
+                        img_rel = f"/media/articles/{Path(image_paths[img_idx]).name}"
+                        img_tag = f'<div style="margin:24px 0;text-align:center;"><img src="{img_rel}" alt="{img_alt_map[img_idx]}" style="max-width:100%;height:auto;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);"></div>'
+                        final_sections.append(img_tag)
+                else:
+                    # Last h2 section - get to end of main content
+                    body_text = main_content[end:faq_start]
+                    final_sections.append(header + body_text)
+
+                # Also handle content between last h2 and FAQ
+                if i == len(h2_matches) - 1 and faq_section:
+                    pass  # already handled above
+
+            final_content = "".join(final_sections)
+            if faq_section:
+                final_content += faq_section
+            content = final_content
+
+        # Set featured image from first generated image
+        if image_paths:
+            first_img_name = Path(image_paths[0]).name
+            with open(image_paths[0], "rb") as f:
+                article.featured_image.save(first_img_name, File(f), save=False)
+
+        article.content = content
         article.save()
 
         topic.article = article

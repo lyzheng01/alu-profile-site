@@ -9,7 +9,6 @@ const NotFound: React.FC = () => {
   useSeoMeta({
     title: '404 | LingYe Aluminum',
     description: 'Page not found on LingYe Aluminum website.',
-    canonicalPath: `/${currentLanguage}/404`,
     robots: 'noindex,follow',
   });
 

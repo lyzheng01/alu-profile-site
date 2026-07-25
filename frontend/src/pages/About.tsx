@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { API_ENDPOINTS } from '../config/api';
 import { useTranslation } from '../contexts/TranslationContext';
-import { usePageTitle } from '../hooks/usePageTitle';
 import { useSeoMeta } from '../hooks/useSeoMeta';
 import { useStructuredData } from '../hooks/useStructuredData';
 
@@ -42,13 +41,13 @@ const About: React.FC = () => {
   const [factoryImages, setFactoryImages] = useState<FactoryImage[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // 设置页面标题
-  usePageTitle('about');
-
   useSeoMeta({
     title: 'About Us | LingYe Aluminum',
     description: 'Professional aluminum profile manufacturer with 15 years of experience, serving 60+ countries worldwide.',
     canonicalPath: `/${currentLanguage}/about`,
+    ogImage: 'https://lingyealu.cn/logo.jpg?v=3',
+    ogTitle: 'About Us | LingYe Aluminum',
+    ogDescription: 'Professional aluminum profile manufacturer with 15 years of experience, serving 60+ countries worldwide.',
     language: currentLanguage,
   });
 

@@ -6,22 +6,6 @@ import { useStructuredData } from '../hooks/useStructuredData';
 import { resolveMediaUrl } from '../utils/url';
 import NotFound from './NotFound';
 
-interface FaqItem {
-  question: string;
-  answer: string;
-}
-
-interface LandingPageData {
-  slug: string;
-  title: string;
-  h1: string;
-  description: string;
-  intro: string;
-  bullets: string[];
-  relatedLinks: Array<{ label: string; to: string }>;
-  faqs: FaqItem[];
-}
-
 interface LandingProduct {
   id: number;
   slug: string;
@@ -35,6 +19,39 @@ interface LandingProduct {
   }>;
 }
 
+const WHATSAPP_URL = 'https://wa.me/8618326081058?text=Hello! I am interested in your aluminum products.';
+const EMAIL_URL = 'mailto:iris@lingyealu.com?subject=Aluminum Products Inquiry&body=Hello! I am interested in your aluminum products. Please provide more information.';
+
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+interface TrustPoint {
+  icon: string;
+  text: string;
+}
+
+interface ProcessStep {
+  step: string;
+  title: string;
+  description: string;
+}
+
+interface LandingPageData {
+  slug: string;
+  title: string;
+  h1: string;
+  description: string;
+  intro: string;
+  bullets: string[];
+  trustPoints: TrustPoint[];
+  processSteps: ProcessStep[];
+  productSlugs: string[];
+  relatedLinks: Array<{ label: string; to: string }>;
+  faqs: FaqItem[];
+}
+
 const landingPages: Record<string, LandingPageData> = {
   'aluminum-profile-supplier-for-construction-projects': {
     slug: 'aluminum-profile-supplier-for-construction-projects',
@@ -43,13 +60,26 @@ const landingPages: Record<string, LandingPageData> = {
     description:
       'Reliable aluminum profile supplier for construction projects. Custom extrusion, stable quality, and global B2B delivery from LingYe Aluminum.',
     intro:
-      'LingYe Aluminum supports developers, contractors, and distributors with scalable aluminum profile supply for residential and commercial construction projects.',
+      'LingYe Aluminum supports developers, contractors, and distributors with scalable aluminum profile supply for residential and commercial construction projects worldwide. With years of export experience, we ensure every shipment meets specification and arrives on time.',
     bullets: [
       'Architectural sections for windows, doors, facades, and partition systems',
       'Multiple alloys and surface finishes for indoor and outdoor applications',
       'Stable production scheduling and export-ready packaging',
       'Technical support from drawing review to shipment planning',
     ],
+    trustPoints: [
+      { icon: 'Factory', text: 'In-house factory with 10+ extrusion lines' },
+      { icon: 'Certified', text: 'ISO 9001 quality certified' },
+      { icon: 'Export', text: 'Export-ready packaging to 30+ countries' },
+      { icon: 'Lead time', text: '7-15 days standard lead time' },
+    ],
+    processSteps: [
+      { step: '01', title: 'Submit requirements', description: 'Share drawings, alloy, finish, quantity, and destination port.' },
+      { step: '02', title: 'Engineering review', description: 'Our team reviews and confirms feasibility, tooling needs, and timeline.' },
+      { step: '03', title: 'Sample production', description: 'Trial samples produced and sent for approval before mass production.' },
+      { step: '04', title: 'Mass production & ship', description: 'Production, QC inspection, and export shipment to your site.' },
+    ],
+    productSlugs: ['wholesale-aluminium-tile-trim-l-shape-tile-trim', 'aluminium-skirting-boards', 'industrial-profile-extrude-aluminium-framing-40x40'],
     relatedLinks: [
       { label: 'Browse all aluminum products', to: '/en/products' },
       { label: 'Door and window profile showcase', to: '/en/products/windows-doors/showcase' },
@@ -72,6 +102,11 @@ const landingPages: Record<string, LandingPageData> = {
           'Yes. We provide anodizing, powder coating, and other treatments designed for durability in outdoor environments.',
       },
       {
+        question: 'What is the typical MOQ for construction profiles?',
+        answer:
+          'Our MOQ varies by profile complexity. We welcome pilot orders and scale up based on project needs.',
+      },
+      {
         question: 'What information is needed for a quick quote?',
         answer:
           'Please share drawings, alloy/temper, finish requirement, quantity, and destination port for accurate pricing.',
@@ -85,16 +120,29 @@ const landingPages: Record<string, LandingPageData> = {
     description:
       'China-based industrial aluminum extrusion manufacturer with OEM support, precision processing, and export-ready production.',
     intro:
-      'We provide industrial aluminum extrusion solutions for equipment frames, automation lines, transport components, and custom mechanical applications.',
+      'We provide industrial aluminum extrusion solutions for equipment frames, automation lines, transport components, and custom mechanical applications. Our facility is equipped to handle complex profiles with tight tolerances.',
     bullets: [
       'Custom extrusion tooling and profile development for OEM projects',
       'Secondary processing including cutting, drilling, and CNC options',
       'Anodizing and powder coating for corrosion resistance and appearance',
       'Quality checks for dimensional consistency and surface finish',
     ],
+    trustPoints: [
+      { icon: 'Capability', text: 'Full OEM/ODM capability' },
+      { icon: 'In-house', text: 'CNC and secondary processing in-house' },
+      { icon: 'Precision', text: 'Dimensional tolerance within +/-0.1mm' },
+      { icon: 'Global', text: 'Export to 30+ countries worldwide' },
+    ],
+    processSteps: [
+      { step: '01', title: 'Design & tooling', description: 'We develop extrusion dies and tooling based on your 2D/3D drawings.' },
+      { step: '02', title: 'Sample approval', description: 'First-article samples inspected and sent for your approval.' },
+      { step: '03', title: 'Mass production', description: 'Production run with in-process QC checks at each stage.' },
+      { step: '04', title: 'Finishing & shipment', description: 'Surface treatment, packaging, and logistics arranged.' },
+    ],
+    productSlugs: ['2020-3030-4040-t-slot-aluminium-profiles', '2020-t-slot-aluminium-extrusion-profile-industrial', 'industrial-profile-extrude-aluminium-framing-40x40'],
     relatedLinks: [
       { label: 'Explore industrial-ready products', to: '/en/products' },
-      { label: 'See profile categories and specs', to: '/en/products' },
+      { label: 'T-slot aluminum extrusion profiles', to: '/en/products/2020-3030-4040-t-slot-aluminium-profiles' },
       { label: 'Check latest company updates', to: '/en/news' },
     ],
     faqs: [
@@ -118,6 +166,11 @@ const landingPages: Record<string, LandingPageData> = {
         answer:
           'We apply incoming material checks, process controls, and final inspections for dimensions, surface quality, and packaging.',
       },
+      {
+        question: 'What is your typical lead time for industrial profiles?',
+        answer:
+          'Standard lead time is 7-15 days depending on complexity, quantity, and surface finish requirements.',
+      },
     ],
   },
   'custom-aluminum-profile-factory-for-oem-orders': {
@@ -127,13 +180,26 @@ const landingPages: Record<string, LandingPageData> = {
     description:
       'Custom aluminum profile factory for OEM/ODM projects. Send drawings and get fast feedback on tooling, finish, and lead time.',
     intro:
-      'From sample development to mass production, LingYe Aluminum helps OEM buyers launch custom aluminum profile products with predictable quality and lead time.',
+      'From sample development to mass production, LingYe Aluminum helps OEM buyers launch custom aluminum profile products with predictable quality and lead time. We serve as a true extension of your supply chain.',
     bullets: [
       'Fast quotation workflow based on 2D/3D drawings and specifications',
       'Flexible MOQ strategy for pilot and scale-up orders',
       'Material, temper, and finish selection based on target market needs',
       'Responsive communication for procurement and engineering teams',
     ],
+    trustPoints: [
+      { icon: 'Custom', text: 'Custom die design service' },
+      { icon: 'Samples', text: 'Free samples available within 7 days' },
+      { icon: 'Flexible', text: 'Flexible MOQ for test orders' },
+      { icon: 'Shipping', text: 'FOB/CIF shipping from Shenzhen/Guangzhou' },
+    ],
+    processSteps: [
+      { step: '01', title: 'Drawing submission', description: 'Send your 2D/3D drawings with alloy, temper, finish, and quantity details.' },
+      { step: '02', title: 'Quotation & timeline', description: 'We provide pricing, tooling cost, and production lead time within 48 hours.' },
+      { step: '03', title: 'Tooling & sampling', description: 'Die fabrication and sample production for your quality approval.' },
+      { step: '04', title: 'Production & delivery', description: 'Mass production with QC inspection, packaging, and on-time shipment.' },
+    ],
+    productSlugs: ['aluminium-heat-sink-custom-extruded-aluminum-heats', 'h-shaped-aluminum-extrusionaluminum-h-structural-p', 'square-aluminium-tube-profiles-china-aluminium-ext'],
     relatedLinks: [
       { label: 'Submit inquiry from product detail pages', to: '/en/products' },
       { label: 'View windows and doors profile showcase', to: '/en/products/windows-doors/showcase' },
@@ -160,6 +226,11 @@ const landingPages: Record<string, LandingPageData> = {
         answer:
           'We provide export-oriented packaging solutions to reduce damage risk and support efficient container loading.',
       },
+      {
+        question: 'What file formats do you accept for drawings?',
+        answer:
+          'We accept PDF, DWG, DXF, STEP, and IGES formats. Our engineering team can review and advise on your design.',
+      },
     ],
   },
 };
@@ -173,17 +244,24 @@ const LongtailLanding: React.FC = () => {
     title: page?.title,
     description: page?.description,
     canonicalPath: page ? `/en/${page.slug}` : undefined,
+    ogImage: 'https://lingyealu.cn/logo.jpg?v=3',
+    ogTitle: page?.title,
+    ogDescription: page?.description,
+    language: 'en',
   });
 
   useEffect(() => {
     const fetchRelatedProducts = async () => {
       if (!page) return;
       try {
-        const response = await fetch(`${API_ENDPOINTS.PRODUCTS}?lang=en&limit=6`);
+        const response = await fetch(`${API_ENDPOINTS.PRODUCTS}?lang=en&limit=20`);
         if (!response.ok) return;
         const data = await response.json();
-        const products = (data.results || data || []) as LandingProduct[];
-        setRelatedProducts(products.slice(0, 3));
+        const allProducts = (data.results || data || []) as LandingProduct[];
+        const slugs = page.productSlugs;
+        const matched = allProducts.filter(p => slugs.includes(p.slug));
+        const remaining = allProducts.filter(p => !slugs.includes(p.slug));
+        setRelatedProducts([...matched, ...remaining].slice(0, 3));
       } catch (error) {
         console.error('Failed to load related products:', error);
       }
@@ -262,17 +340,53 @@ const LongtailLanding: React.FC = () => {
           ))}
         </ul>
 
-        <div className="rounded-xl border border-blue-100 bg-blue-50 p-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {page.trustPoints.map((tp, idx) => (
+            <div key={idx} className="rounded-lg border border-gray-200 bg-white p-4 text-center">
+              <div className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-1">{tp.icon}</div>
+              <p className="text-sm text-gray-700 font-medium">{tp.text}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="rounded-xl border border-blue-100 bg-blue-50 p-6 mb-8">
           <h3 className="text-xl font-semibold text-gray-900 mb-2">Request a quotation</h3>
           <p className="text-gray-700 mb-4">
             Share your drawing, alloy, finish, quantity, and destination port. Our team will provide a practical quote quickly.
           </p>
-          <Link
-            to="/en/products"
-            className="inline-flex items-center px-5 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
-          >
-            Browse products
-          </Link>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              to="/en/products"
+              className="inline-flex items-center px-5 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
+            >
+              Browse products
+            </Link>
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-5 py-3 rounded-lg bg-green-500 text-white font-semibold hover:bg-green-600 transition-colors"
+            >
+              Chat on WhatsApp
+            </a>
+            <a
+              href={EMAIL_URL}
+              className="inline-flex items-center px-5 py-3 rounded-lg bg-red-500 text-white font-semibold hover:bg-red-600 transition-colors"
+            >
+              Send email
+            </a>
+          </div>
+        </div>
+
+        <h2 className="text-2xl font-semibold text-gray-900 mb-4">How it works</h2>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {page.processSteps.map((ps, idx) => (
+            <div key={idx} className="rounded-lg border border-gray-200 bg-white p-4">
+              <div className="text-sm font-bold text-blue-600 mb-1">{ps.step}</div>
+              <h3 className="font-semibold text-gray-900 mb-1">{ps.title}</h3>
+              <p className="text-sm text-gray-600">{ps.description}</p>
+            </div>
+          ))}
         </div>
 
         {relatedProducts.length > 0 && (

@@ -2,7 +2,6 @@ import React from 'react';
 import FloatingContactButtons from '../components/FloatingContactButtons';
 import InquiryForm from '../components/InquiryForm';
 import { useTranslation } from '../contexts/TranslationContext';
-import { usePageTitle } from '../hooks/usePageTitle';
 import { useSeoMeta } from '../hooks/useSeoMeta';
 import { useStructuredData } from '../hooks/useStructuredData';
 
@@ -54,7 +53,6 @@ const manufacturingSteps = [
 
 const ProductShowcase: React.FC = () => {
   const { currentLanguage } = useTranslation();
-  usePageTitle('windowsDoors');
 
   useSeoMeta({
     title: 'Aluminium Windows & Doors System | LingYe Aluminum',
@@ -126,7 +124,7 @@ const ProductShowcase: React.FC = () => {
               <div className="relative rounded-[32px] overflow-hidden shadow-2xl border border-white/40">
                 <div className="grid grid-cols-2 gap-2">
                   {heroImages.map((img, idx) => (
-                    <img key={idx} src={img} alt={`hero-${idx}`} className="w-full h-full object-cover" />
+                    <img key={idx} src={img} alt={`Aluminium window and door profile showcase ${idx + 1}`} className="w-full h-full object-cover" />
                   ))}
                 </div>
               </div>
@@ -139,7 +137,7 @@ const ProductShowcase: React.FC = () => {
         <section className="grid md:grid-cols-2 gap-10">
           {productImages.map((img, idx) => (
             <div key={idx} className="w-full bg-white rounded-3xl overflow-hidden shadow-lg border border-slate-100">
-              <img src={img} alt={`product-${idx}`} className="w-full h-[420px] object-cover" />
+              <img src={img} alt={`Aluminium extrusion profile product photo ${idx + 1}`} className="w-full h-[420px] object-cover" />
             </div>
           ))}
         </section>
@@ -219,7 +217,7 @@ const ProductShowcase: React.FC = () => {
             <div className="grid gap-4">
               {factoryImages.map((img, idx) => (
                 <div key={idx} className="w-full rounded-2xl overflow-hidden border border-slate-100">
-                  <img src={img} alt={`factory-${idx}`} className="w-full h-56 object-cover" />
+                  <img src={img} alt={`LingYe Aluminum factory and production facility ${idx + 1}`} className="w-full h-56 object-cover" />
                 </div>
               ))}
             </div>

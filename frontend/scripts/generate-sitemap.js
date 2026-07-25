@@ -17,6 +17,7 @@ const staticPaths = [
   ...LANGS.map((lang) => ({ path: `/${lang}/products`, changefreq: 'daily', priority: '0.8' })),
   ...LANGS.map((lang) => ({ path: `/${lang}/news`, changefreq: 'daily', priority: '0.7' })),
   ...LANGS.map((lang) => ({ path: `/${lang}/about`, changefreq: 'monthly', priority: '0.6' })),
+  ...LANGS.map((lang) => ({ path: `/${lang}/products/windows-doors/showcase`, changefreq: 'weekly', priority: '0.7' })),
   ...EN_LANDING_SLUGS.map((slug) => ({ path: `/en/${slug}`, changefreq: 'weekly', priority: '0.75' })),
 ];
 

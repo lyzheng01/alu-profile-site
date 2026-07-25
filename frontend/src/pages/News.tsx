@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { API_ENDPOINTS } from '../config/api';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from '../contexts/TranslationContext';
 import FloatingContactButtons from '../components/FloatingContactButtons';
-import { usePageTitle, useNewsDetailTitle } from '../hooks/usePageTitle';
 import { useSeoMeta } from '../hooks/useSeoMeta';
 import { useStructuredData } from '../hooks/useStructuredData';
 
@@ -41,8 +40,6 @@ const NewsDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   // 设置页面标题
-  useNewsDetailTitle(article?.title);
-
   useSeoMeta({
     title: article?.meta_title || (article ? `${article.title} | LingYe Aluminum` : undefined),
     description: article?.meta_description || article?.summary || undefined,
@@ -189,15 +186,15 @@ const NewsDetail: React.FC = () => {
     <div>
       <div className="max-w-4xl mx-auto px-8 py-12">
         {/* 返回按钮 */}
-        <button
-          onClick={() => navigate(`/${currentLanguage}/news`)}
+        <Link
+          to={`/${currentLanguage}/news`}
           className="flex items-center text-blue-600 hover:text-blue-800 mb-6 transition-colors"
         >
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
           Back to News
-        </button>
+        </Link>
 
         {/* 文章标题 */}
         <h1 className="text-4xl font-bold text-gray-800 mb-6">{article.title}</h1>
@@ -272,13 +269,12 @@ const NewsList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const articlesPerPage = 6;
 
-  // 设置页面标题
-  usePageTitle('news');
+  const canonicalQuery = currentPage > 1 ? `?page=${currentPage}` : selectedTag ? `?tag=${selectedTag}` : '';
 
   useSeoMeta({
     title: currentPage > 1 ? `News Page ${currentPage} | Aluminum Industry News | LingYe Aluminum` : undefined,
     description: 'Read latest aluminum market trends, processing insights, and product updates from LingYe Aluminum.',
-    canonicalPath: `/${currentLanguage}/news${currentPage > 1 ? `?page=${currentPage}` : ''}`,
+    canonicalPath: `/${currentLanguage}/news${canonicalQuery}`,
     robots: currentPage > 1 ? 'noindex,follow' : undefined,
     language: currentLanguage,
   });
@@ -431,10 +427,10 @@ const NewsList: React.FC = () => {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {currentArticles.map(article => (
-                <div
+                <Link
                   key={article.id}
-                  className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
-                  onClick={() => navigate(`/${currentLanguage}/news/${article.slug || article.id}`)}
+                  to={`/${currentLanguage}/news/${article.slug || article.id}`}
+                  className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer block"
                 >
                   {/* 文章图片 */}
                   <div className="h-48 bg-gray-200 overflow-hidden">
@@ -492,17 +488,11 @@ const NewsList: React.FC = () => {
                       </div>
                     )}
 
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/${currentLanguage}/news/${article.slug || article.id}`);
-                      }}
-                      className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                    >
+                    <span className="block w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors text-center">
                       {t('news_read_more', 'Read More')}
-                    </button>
+                    </span>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
 

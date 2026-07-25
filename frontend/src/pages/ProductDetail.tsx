@@ -3,7 +3,6 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { API_ENDPOINTS } from '../config/api';
 import FloatingContactButtons from '../components/FloatingContactButtons';
 import InquiryForm from '../components/InquiryForm';
-import { usePageTitle } from '../hooks/usePageTitle';
 import { useSeoMeta } from '../hooks/useSeoMeta';
 import { useStructuredData } from '../hooks/useStructuredData';
 // 模板系统已集成到后端API，前端直接使用API返回的数据即可
@@ -107,15 +106,18 @@ const ProductDetail: React.FC = () => {
     setCurrentLanguage(savedLanguage);
   }, []);
 
-  // Set page title
-  usePageTitle('products', product ? `${product.name} | LingYe Aluminum` : undefined);
-
   useSeoMeta({
     title: product ? `${product.name} | LingYe Aluminum` : undefined,
     description: product
       ? (product.description || `Explore ${product.name} from LingYe Aluminum with custom aluminum extrusion and global supply support.`)
       : undefined,
     canonicalPath: product?.slug ? `/${currentLanguage}/products/${product.slug}` : undefined,
+    ogImage: product?.images?.[0]?.image
+      ? (product.images[0].image.startsWith('http') ? product.images[0].image : `https://lingyealu.cn${product.images[0].image}`)
+      : 'https://lingyealu.cn/logo.jpg?v=3',
+    ogTitle: product ? `${product.name} | LingYe Aluminum` : undefined,
+    ogDescription: product?.description || undefined,
+    language: currentLanguage,
   });
 
   const productStructuredData = React.useMemo(() => {
@@ -524,12 +526,14 @@ const ProductDetail: React.FC = () => {
                   {/* Main image with navigation buttons */}
                   <div className="relative h-80 bg-gray-200 group sm:h-[24rem]">
                     <img
-                      src={product.images[currentImageIndex].image}
+                      src={resolveProductMediaUrl(product.images[currentImageIndex].image) || ''}
                       alt={product.name}
                       className="w-full h-full object-cover"
                       loading="eager"
                       fetchPriority="high"
                       decoding="async"
+                      width="800"
+                      height="600"
                     />
                     
                     {/* Previous/Next buttons - 只在有多张图片时显示 */}
@@ -586,11 +590,13 @@ const ProductDetail: React.FC = () => {
                             }`}
                           >
                             <img
-                              src={image.image}
+                              src={resolveProductMediaUrl(image.image) || ''}
                               alt={`${product.name} ${index + 1}`}
                               className="w-full h-full object-cover"
                               loading="lazy"
                               decoding="async"
+                              width="80"
+                              height="80"
                             />
                           </button>
                         ))}
@@ -836,7 +842,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                             }`}
                           >
                             <img
-                              src={image.image}
+                              src={resolveProductMediaUrl(image.image) || ''}
                               alt={`${product.name} view ${index + 1}`}
                               className="w-full h-auto object-contain"
                               loading={isFirstImage ? 'eager' : 'lazy'}
@@ -900,6 +906,8 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                             className="w-full h-auto max-h-[720px] object-contain"
                             loading="lazy"
                             decoding="async"
+                            width="800"
+                            height="600"
                             onError={(e) => {
                               console.error('Failed to load factory image:', imageUrl);
                               (e.target as HTMLImageElement).style.display = 'none';
@@ -929,6 +937,8 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                           className="w-full h-auto object-contain"
                           loading="lazy"
                           decoding="async"
+                          width="800"
+                          height="600"
                         />
                       </div>
                       {(surfaceTreatmentTitle || surfaceTreatmentDescription) && (
@@ -1089,11 +1099,13 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                   <div className="h-48 bg-gray-200 flex items-center justify-center">
                     {relatedProduct.images && relatedProduct.images.length > 0 ? (
                       <img
-                        src={relatedProduct.images[0].image}
+                        src={resolveProductMediaUrl(relatedProduct.images[0].image) || ''}
                         alt={relatedProduct.name}
                         className="w-full h-full object-cover"
                         loading="lazy"
                         decoding="async"
+                        width="400"
+                        height="300"
                       />
                     ) : (
                       <p className="text-gray-500 text-sm">No Image</p>

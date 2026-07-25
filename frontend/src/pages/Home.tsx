@@ -4,7 +4,6 @@ import FloatingContactButtons from '../components/FloatingContactButtons';
 import InquiryForm from '../components/InquiryForm';
 import { API_ENDPOINTS } from '../config/api';
 import { useTranslation } from '../contexts/TranslationContext';
-import { usePageTitle } from '../hooks/usePageTitle';
 import { useSeoMeta } from '../hooks/useSeoMeta';
 import { useStructuredData } from '../hooks/useStructuredData';
 import { resolveMediaUrl } from '../utils/url';
@@ -97,7 +96,6 @@ const Home: React.FC = () => {
   const [factoryImages, setFactoryImages] = useState<FactoryImage[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  usePageTitle('home');
   useSeoMeta({
     title: 'China Aluminum Profile Manufacturer | LingYe Aluminum',
     description:
@@ -341,8 +339,10 @@ const Home: React.FC = () => {
                     src={cleanMediaUrl(getCategoryCardImage(category))}
                     alt={category.name}
                     className="h-full w-full object-contain object-center transition duration-300 group-hover:scale-[1.03]"
-                    loading="eager"
+                    loading="lazy"
                     decoding="async"
+                    width="400"
+                    height="256"
                   />
                 </div>
                 <div className="border-t border-slate-100 p-5">
@@ -375,8 +375,10 @@ const Home: React.FC = () => {
                         src={cleanMediaUrl(primaryProduct.product_image) || temporaryAluslinkImages.product}
                         alt={primaryProduct.name}
                         className="h-full w-full object-cover"
-                        loading="eager"
+                        loading="lazy"
                         decoding="async"
+                        width="600"
+                        height="288"
                       />
                     </div>
                     <div className="p-7">
@@ -456,7 +458,7 @@ const Home: React.FC = () => {
                     ...temporaryAluslinkImages.factory,
                   ].map((image, index) => (
                     <div key={index} className="overflow-hidden rounded-lg bg-slate-100 shadow-[0_20px_55px_rgba(15,23,42,0.12)]">
-                      <img src={image} alt="Factory and production" className="h-64 w-full object-cover" loading="lazy" decoding="async" />
+                      <img src={image} alt={`LingYe Aluminum factory image ${index + 1}`} className="h-64 w-full object-cover" loading="lazy" decoding="async" />
                     </div>
                   ))}
                 </>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { API_ENDPOINTS } from '../config/api';
 import FloatingContactButtons from '../components/FloatingContactButtons';
-import { usePageTitle } from '../hooks/usePageTitle';
 import { useTranslation } from '../contexts/TranslationContext';
 import { resolveMediaUrl } from '../utils/url';
 import { useSeoMeta } from '../hooks/useSeoMeta';
@@ -86,9 +85,6 @@ const Products: React.FC = () => {
     setCurrentLanguage(savedLanguage);
   }, []);
 
-  // 设置页面标题
-  usePageTitle('products');
-
   useSeoMeta({
     canonicalPath: `/${currentLanguage}/products`,
     title: 'Aluminum Profile Product Catalog | LingYe Aluminum',
@@ -96,6 +92,7 @@ const Products: React.FC = () => {
       'Browse architectural, industrial, trim, tube, and custom aluminum extrusion profiles with alloy, temper, finish, and RFQ details for export buyers.',
     ogTitle: 'LingYe Aluminum Product Catalog',
     ogDescription: 'Find aluminum profiles for windows, doors, industrial framing, trim, tubes, and OEM extrusion projects.',
+    ogImage: 'https://lingyealu.cn/logo.jpg?v=3',
     language: currentLanguage,
   });
 

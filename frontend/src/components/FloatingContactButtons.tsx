@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { trackEvent } from '../utils/analytics';
 
 const FloatingContactButtons: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -6,14 +7,17 @@ const FloatingContactButtons: React.FC = () => {
   return (
     <>
       {/* 桌面端右侧悬浮联系按钮组 */}
-      <div className="fixed right-2 top-1/2 transform -translate-y-1/2 z-50 flex flex-col space-y-3 floating-contact-buttons">
+      <div className="fixed right-2 top-1/2 transform -translate-y-1/2 z-50 flex-col space-y-3 floating-contact-buttons hidden md:flex">
         {/* 电话按钮 */}
         <div className="relative group">
-                         <button 
-                 onClick={() => window.open('tel:+86-18326081058', '_self')}
-                 className="bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition-all duration-300 transform hover:scale-110 group-hover:shadow-xl floating-contact-button"
-                 title="Call Us"
-               >
+                 <button 
+                  onClick={() => {
+                    trackEvent('contact_click', { source: 'phone_float', page_path: window.location.pathname });
+                    window.open('tel:+86-18326081058', '_self');
+                  }}
+                  className="bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition-all duration-300 transform hover:scale-110 group-hover:shadow-xl floating-contact-button"
+                  title="Call Us"
+                >
                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                  </svg>
@@ -28,7 +32,10 @@ const FloatingContactButtons: React.FC = () => {
         {/* WhatsApp按钮 */}
         <div className="relative group">
           <button 
-            onClick={() => window.open('https://wa.me/8618326081058?text=Hello! I am interested in your aluminum products.', '_blank')}
+            onClick={() => {
+              trackEvent('contact_click', { source: 'whatsapp_float', page_path: window.location.pathname });
+              window.open('https://wa.me/8618326081058?text=Hello! I am interested in your aluminum products.', '_blank');
+            }}
             className="bg-green-400 text-white p-3 rounded-full shadow-lg hover:bg-green-500 transition-all duration-300 transform hover:scale-110 group-hover:shadow-xl floating-contact-button"
             title="WhatsApp"
           >
@@ -46,7 +53,10 @@ const FloatingContactButtons: React.FC = () => {
         {/* 邮箱按钮 */}
         <div className="relative group">
           <button 
-            onClick={() => window.open('mailto:iris@lingyealu.com?subject=Aluminum Products Inquiry&body=Hello! I am interested in your aluminum products. Please provide more information.', '_self')}
+            onClick={() => {
+              trackEvent('contact_click', { source: 'email_float', page_path: window.location.pathname });
+              window.open('mailto:iris@lingyealu.com?subject=Aluminum Products Inquiry&body=Hello! I am interested in your aluminum products. Please provide more information.', '_self');
+            }}
             className="bg-red-500 text-white p-3 rounded-full shadow-lg hover:bg-red-600 transition-all duration-300 transform hover:scale-110 group-hover:shadow-xl floating-contact-button"
             title="Email Us"
           >
@@ -99,6 +109,7 @@ const FloatingContactButtons: React.FC = () => {
             <div className="space-y-2">
                                  <button 
                      onClick={() => {
+                       trackEvent('contact_click', { source: 'phone_mobile', page_path: window.location.pathname });
                        window.open('tel:+86-18326081058', '_self');
                        setIsMobileMenuOpen(false);
                      }}
@@ -117,6 +128,7 @@ const FloatingContactButtons: React.FC = () => {
               
               <button 
                 onClick={() => {
+                  trackEvent('contact_click', { source: 'whatsapp_mobile', page_path: window.location.pathname });
                   window.open('https://wa.me/8618326081058?text=Hello! I am interested in your aluminum products.', '_blank');
                   setIsMobileMenuOpen(false);
                 }}
@@ -134,7 +146,10 @@ const FloatingContactButtons: React.FC = () => {
               </button>
               
               <button 
-                onClick={() => window.open('mailto:iris@lingyealu.com?subject=Aluminum Products Inquiry&body=Hello! I am interested in your aluminum products. Please provide more information.', '_self')}
+                onClick={() => {
+                  trackEvent('contact_click', { source: 'email_mobile', page_path: window.location.pathname });
+                  window.open('mailto:iris@lingyealu.com?subject=Aluminum Products Inquiry&body=Hello! I am interested in your aluminum products. Please provide more information.', '_self');
+                }}
                 className="w-full flex items-center space-x-3 px-3 py-2 text-left hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
