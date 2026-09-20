@@ -11,14 +11,15 @@ interface Article {
   slug: string;
   title: string;
   content: string;
-  summary: string;
+  excerpt?: string;
+  summary?: string;
   tags: Array<{
     id: number;
     name: string;
   }>;
   created_at: string;
   updated_at: string;
-  author: string;
+  author?: string;
   featured_image?: string;
   meta_title?: string;
   meta_description?: string;
@@ -201,7 +202,7 @@ const NewsDetail: React.FC = () => {
 
         {/* 文章元信息 */}
         <div className="flex items-center text-gray-500 text-sm mb-6">
-          <span>By {article.author}</span>
+          <span>LingYe Aluminum</span>
           <span className="mx-2">•</span>
           <span>{formatDate(article.created_at)}</span>
         </div>
@@ -235,10 +236,10 @@ const NewsDetail: React.FC = () => {
         )}
 
         {/* 文章摘要 */}
-        {article.summary && (
+        {(article.excerpt || article.summary) && (
           <div className="mb-8 p-6 bg-gray-50 rounded-lg">
             <h2 className="text-xl font-semibold text-gray-800 mb-3">Summary</h2>
-            <p className="text-gray-600 leading-relaxed">{article.summary}</p>
+            <p className="text-gray-600 leading-relaxed">{article.excerpt || article.summary}</p>
           </div>
         )}
 
@@ -261,7 +262,6 @@ const NewsDetail: React.FC = () => {
 // 新闻列表页面组件
 const NewsList: React.FC = () => {
   const { t, currentLanguage } = useTranslation();
-  const navigate = useNavigate();
   const [articles, setArticles] = useState<Article[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
@@ -454,7 +454,7 @@ const NewsList: React.FC = () => {
                   {/* 文章信息 */}
                   <div className="p-6">
                     <div className="flex items-center text-gray-500 text-sm mb-3">
-                      <span>{article.author}</span>
+                      <span>LingYe Aluminum</span>
                       <span className="mx-2">•</span>
                       <span>{formatDate(article.created_at)}</span>
                     </div>
@@ -464,7 +464,7 @@ const NewsList: React.FC = () => {
                     </h3>
                     
                                          <p className="text-gray-600 text-sm line-clamp-3 mb-4">
-                       {article.summary || (article.content ? article.content.substring(0, 150).replace(/\n/g, ' ') + '...' : 'No content available')}
+                       {article.excerpt || article.summary || (article.content ? article.content.replace(/<[^>]+>/g, ' ').substring(0, 150).replace(/\s+/g, ' ').trim() + '...' : 'No content available')}
                      </p>
 
                     {/* 标签 */}
