@@ -29,40 +29,13 @@ type CategoryItem = {
   image?: string;
 };
 
-type FactoryImage = {
-  title?: string;
-  image?: string;
+const catalogImages = {
+  hero: '/media/products/catalog/custom-profile2.jpg',
+  heroAlt: '/media/products/catalog/4040-aluminium-t-slot.png',
+  productLine: '/media/products/catalog/cnc-parts2.webp',
+  category: '/media/products/catalog/custom-profile2.jpg',
+  product: '/media/products/catalog/4040-aluminium-t-slot.png',
 };
-
-const temporaryAluslinkImages = {
-  hero: 'https://aluslink.com/wp-content/uploads/2025/08/aluminum-extrusions-inside-plant.jpg',
-  heroAlt: 'https://aluslink.com/wp-content/uploads/2026/04/2024010857569425.jpg',
-  productLine: 'https://aluslink.com/wp-content/uploads/2025/08/Aluminium-Home6--400x300.webp',
-  category: 'https://aluslink.com/wp-content/uploads/2024/09/400x400.png',
-  product: 'https://aluslink.com/wp-content/uploads/2024/09/4040-1-Aluminium-Extrusion-Profiel.png',
-  factory: [
-    'https://aluslink.com/wp-content/uploads/2024/11/DJI_0074-scaled.jpg',
-    'https://aluslink.com/wp-content/uploads/2024/11/71877.jpg',
-    'https://aluslink.com/wp-content/uploads/2025/08/aluminum-extrusions-inside-plant.jpg',
-  ],
-};
-
-const heroSlideContent = [
-  {
-    title: 'Precision Aluminum Extrusion Solutions',
-    description: 'High-quality aluminum profiles for industrial, architectural, and custom applications',
-  },
-  {
-    title: 'Custom Profiles, Reliable Manufacture',
-    description:
-      'From design to production, we deliver tailored aluminum extrusion solutions with consistent quality',
-  },
-  {
-    title: 'Your Trusted Aluminum Extrusion Partner',
-    description:
-      'Serving customers worldwide with durable products, competitive pricing, and on-time delivery',
-  },
-];
 
 const cleanEnglishCopy = (value?: string) =>
   (value || '')
@@ -80,21 +53,32 @@ const cleanMediaUrl = (value?: string) => {
   return resolved;
 };
 
-const categoryCardImages: Record<string, string> = {
-  '5': '/media/products/t-slot_aluminium_profile.jpg',
-  '6': '/media/products/chile_1.jpg',
-  '7': '/media/products/aluminium_square_tube.webp',
-};
-
 const getCategoryCardImage = (category: CategoryItem) =>
-  categoryCardImages[String(category.id)] || category.image || temporaryAluslinkImages.category;
+  category.image || catalogImages.category;
 
 const Home: React.FC = () => {
-  const { currentLanguage } = useTranslation();
+  const { currentLanguage, t } = useTranslation();
   const [featuredProducts, setFeaturedProducts] = useState<FeaturedProduct[]>([]);
   const [categories, setCategories] = useState<CategoryItem[]>([]);
-  const [factoryImages, setFactoryImages] = useState<FactoryImage[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  const heroSlideContent = useMemo(
+    () => [
+      {
+        title: t('home_hero_precision_title', 'Precision Aluminum Extrusion Solutions'),
+        description: t('home_hero_precision_desc', 'High-quality aluminum profiles for industrial, architectural, and custom applications'),
+      },
+      {
+        title: t('home_hero_custom_title', 'Custom Profiles, Reliable Manufacture'),
+        description: t('home_hero_custom_desc', 'From design to production, we deliver tailored aluminum extrusion solutions with consistent quality'),
+      },
+      {
+        title: t('home_hero_partner_title', 'Your Trusted Aluminum Extrusion Partner'),
+        description: t('home_hero_partner_desc', 'Serving customers worldwide with durable products, competitive pricing, and on-time delivery'),
+      },
+    ],
+    [t]
+  );
 
   useSeoMeta({
     title: 'China Aluminum Profile Manufacturer | LingYe Aluminum',
@@ -103,43 +87,39 @@ const Home: React.FC = () => {
     canonicalPath: `/${currentLanguage}`,
     ogTitle: 'LingYe Aluminum | China Aluminum Profile Manufacturer',
     ogDescription: 'Factory-direct aluminum extrusion, finishing, and export RFQ support for global buyers.',
-    ogImage: temporaryAluslinkImages.hero,
+    ogImage: catalogImages.hero,
     language: currentLanguage,
   });
 
   const stats = useMemo(
     () => [
-      { value: 10, suffix: '+', label: 'Years manufacturing' },
-      { value: 40, suffix: '+', label: 'Global Markets' },
-      { value: 20000, suffix: '', label: 'Annual Output(tons)' },
+      { value: 5, suffix: '', label: t('home_stat_categories', 'Product categories') },
+      { value: 20, suffix: '', label: t('home_stat_catalog', 'Catalog references') },
+      { value: 2, suffix: '', label: t('home_stat_regional', 'Regional window & door ranges') },
     ],
-    []
+    [t]
   );
 
   const faqItems = useMemo(
     () => [
       {
-        question: 'What information helps you quote faster?',
-        answer:
-          'Share drawings, alloy and temper, surface finish, quantity, and destination port. That lets us respond with a practical quotation quickly.',
+        question: t('home_faq_q1', 'What information helps you quote faster?'),
+        answer: t('home_faq_a1', 'Share drawings, alloy and temper, surface finish, quantity, and destination port. That lets us respond with a practical quotation quickly.'),
       },
       {
-        question: 'Can you support OEM and custom extrusion orders?',
-        answer:
-          'Yes. We support OEM and ODM projects with custom drawings, profile tooling evaluation, and production planning for export orders.',
+        question: t('home_faq_q2', 'Can you support OEM and custom extrusion orders?'),
+        answer: t('home_faq_a2', 'Yes. We support OEM and ODM projects with custom drawings, profile tooling evaluation, and production planning for export orders.'),
       },
       {
-        question: 'Which surface treatments are commonly available?',
-        answer:
-          'Typical options include anodizing, powder coating, electrophoresis, and wood-grain transfer based on end-use requirements.',
+        question: t('home_faq_q3', 'Which surface treatments are commonly available?'),
+        answer: t('home_faq_a3', 'Typical options include anodizing, powder coating, electrophoresis, and wood-grain transfer based on end-use requirements.'),
       },
       {
-        question: 'Do you only supply construction profiles?',
-        answer:
-          'No. We supply both architectural and industrial aluminum profiles, including window, door, trim, and custom mechanical applications.',
+        question: t('home_faq_q4', 'Do you only supply construction profiles?'),
+        answer: t('home_faq_a4', 'No. We supply both architectural and industrial aluminum profiles, including window, door, trim, and custom mechanical applications.'),
       },
     ],
-    []
+    [t]
   );
 
   const faqStructuredData = useMemo(
@@ -163,17 +143,10 @@ const Home: React.FC = () => {
   useEffect(() => {
     const fetchHomepageData = async () => {
       try {
-        const [factoryResponse, productsResponse, categoriesResponse] = await Promise.all([
-          fetch(API_ENDPOINTS.FACTORY_IMAGES),
+        const [productsResponse, categoriesResponse] = await Promise.all([
           fetch(`${API_ENDPOINTS.PRODUCTS}?featured=true&lang=${currentLanguage}`),
           fetch(`${API_ENDPOINTS.CATEGORIES}?lang=${currentLanguage}`),
         ]);
-
-        if (factoryResponse.ok) {
-          const factoryData = await factoryResponse.json();
-          const factoryList = factoryData.results || factoryData || [];
-          setFactoryImages(Array.isArray(factoryList) ? factoryList : []);
-        }
 
         if (productsResponse.ok) {
           const productData = await productsResponse.json();
@@ -195,7 +168,7 @@ const Home: React.FC = () => {
           const categoryData = await categoriesResponse.json();
           const categoryList = (categoryData.results || categoryData || []) as CategoryItem[];
           setCategories(
-            categoryList.slice(0, 4).map((category) => ({
+            categoryList.slice(0, 5).map((category) => ({
               ...category,
               name: cleanEnglishCopy((category as any).translated_name || category.name),
               description: cleanEnglishCopy((category as any).translated_description || category.description),
@@ -210,35 +183,15 @@ const Home: React.FC = () => {
     fetchHomepageData();
   }, [currentLanguage]);
 
-  const heroImage = useMemo(() => {
-    const preferredFactoryImage = factoryImages.find((item) => (item.title || '').includes('首页图片1'));
-    return cleanMediaUrl(preferredFactoryImage?.image) || temporaryAluslinkImages.hero;
-  }, [factoryImages]);
-
-  const slideImages = useMemo(() => {
-    const dynamicImages = factoryImages
-      .map((item) => cleanMediaUrl(item.image))
-      .filter(Boolean) as string[];
-
-    const fallbackImages = [
-      heroImage,
-      temporaryAluslinkImages.heroAlt,
-      temporaryAluslinkImages.productLine,
-    ];
-
-    return [...dynamicImages, ...fallbackImages].slice(0, 3);
-  }, [factoryImages, heroImage]);
+  const slideImages = useMemo(() => [catalogImages.hero, catalogImages.heroAlt, catalogImages.productLine], []);
 
   const galleryImages = useMemo(
-    () =>
-      factoryImages
-        .map((item) => ({
-          title: item.title || 'Factory image',
-          image: cleanMediaUrl(item.image),
-        }))
-        .filter((item) => item.image)
-        .slice(0, 3),
-    [factoryImages]
+    () => [
+      { title: t('home_gallery_custom', 'Custom extrusion profile reference'), image: '/media/products/catalog/custom-profile2.jpg' },
+      { title: t('home_gallery_tslot', 'T-slot framing profile reference'), image: '/media/products/catalog/4040-aluminium-t-slot.png' },
+      { title: t('home_gallery_cnc', 'CNC machined aluminium components'), image: '/media/products/catalog/cnc-parts2.webp' },
+    ],
+    [t]
   );
 
   const primaryProduct = featuredProducts[0];
@@ -314,16 +267,16 @@ const Home: React.FC = () => {
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl">
-              <h2 className="text-3xl font-semibold text-slate-900 md:text-4xl">Explore Core Product Categories</h2>
+              <h2 className="text-3xl font-semibold text-slate-900 md:text-4xl">{t('home_core_categories_title', 'Explore Core Product Categories')}</h2>
               <p className="mt-4 text-lg leading-8 text-slate-600">
-                Make category decisions easy for visitors who arrive from search results and need to confirm quickly whether you handle their application.
+                {t('home_core_categories_desc', 'Browse cabinet, industrial, T-slot, window and door, and standard profile ranges. Product dimensions and system compatibility are confirmed against project requirements.')}
               </p>
             </div>
             <Link
               to={`/${currentLanguage}/products`}
               className="inline-flex min-h-[48px] items-center justify-center rounded-md border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-sky-400 hover:text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
             >
-              Browse all product categories
+              {t('home_core_categories_cta', 'Browse all product categories')}
             </Link>
           </div>
 
@@ -358,10 +311,10 @@ const Home: React.FC = () => {
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid gap-10 lg:grid-cols-[1fr_1fr]">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-300">Featured supply</p>
-              <h2 className="mt-4 text-3xl font-semibold md:text-4xl">Recommended Profiles for High-Intent Buyers</h2>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-300">{t('home_featured_label', 'Featured supply')}</p>
+              <h2 className="mt-4 text-3xl font-semibold md:text-4xl">{t('home_featured_title', 'Recommended Profiles for High-Intent Buyers')}</h2>
               <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-300">
-                Highlighting a few strong products keeps the homepage commercially useful without turning it into an endless catalog.
+                {t('home_featured_desc', 'Highlighting a few strong products keeps the homepage commercially useful without turning it into an endless catalog.')}
               </p>
 
               {primaryProduct ? (
@@ -372,7 +325,7 @@ const Home: React.FC = () => {
                   <div className="grid md:grid-cols-[0.95fr_1.05fr]">
                     <div className="h-72 overflow-hidden">
                       <img
-                        src={cleanMediaUrl(primaryProduct.product_image) || temporaryAluslinkImages.product}
+                        src={cleanMediaUrl(primaryProduct.product_image) || catalogImages.product}
                         alt={primaryProduct.name}
                         className="h-full w-full object-cover"
                         loading="lazy"
@@ -382,20 +335,20 @@ const Home: React.FC = () => {
                       />
                     </div>
                     <div className="p-7">
-                      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-300">Featured Product</p>
+                      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-300">{t('home_featured_product_label', 'Featured Product')}</p>
                       <h3 className="mt-3 text-2xl font-semibold">{primaryProduct.name}</h3>
                       <p className="mt-4 text-base leading-7 text-slate-300 line-clamp-3">
-                        {primaryProduct.description || 'Explore a profile page built for procurement review, specification checks, and quotation requests.'}
+                        {primaryProduct.description || t('home_featured_product_fallback', 'Explore a profile page built for procurement review, specification checks, and quotation requests.')}
                       </p>
                       <span className="mt-6 inline-flex items-center text-sm font-semibold text-white">
-                        View product details
+                        {t('home_featured_product_cta', 'View product details')}
                       </span>
                     </div>
                   </div>
                 </Link>
               ) : (
                 <div className="mt-8 rounded-lg border border-dashed border-white/20 p-8 text-slate-300">
-                  Add featured products in the backend to make the homepage stronger for product discovery and quotation flow.
+                  {t('home_featured_empty', 'Add featured products in the backend to make the homepage stronger for product discovery and quotation flow.')}
                 </div>
               )}
             </div>
@@ -408,7 +361,7 @@ const Home: React.FC = () => {
                   className="grid min-h-[180px] gap-5 overflow-hidden rounded-lg border border-white/10 bg-white/5 p-5 transition hover:-translate-y-1 hover:bg-white/[0.08] md:grid-cols-[160px_1fr]"
                 >
                   <img
-                    src={cleanMediaUrl(product.product_image) || temporaryAluslinkImages.product}
+                    src={cleanMediaUrl(product.product_image) || catalogImages.product}
                     alt={product.name}
                     className="h-40 w-full rounded-md object-cover"
                     loading="lazy"
@@ -417,7 +370,7 @@ const Home: React.FC = () => {
                   <div>
                     <h3 className="text-xl font-semibold text-white">{product.name}</h3>
                     <p className="mt-3 text-sm leading-7 text-slate-300 line-clamp-3">
-                      {product.description || 'Built for aluminum buyers who need a clear product page, not just a name and one image.'}
+                      {product.description || t('home_secondary_product_fallback', 'Built for aluminum buyers who need a clear product page, not just a name and one image.')}
                     </p>
                   </div>
                 </Link>
@@ -432,37 +385,25 @@ const Home: React.FC = () => {
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700">Factory and fulfillment</p>
-              <h2 className="mt-4 text-3xl font-semibold text-slate-900 md:text-4xl">Manufacturing Capabilities Buyers Check First</h2>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700">{t('home_profile_references_label', 'Profile references')}</p>
+              <h2 className="mt-4 text-3xl font-semibold text-slate-900 md:text-4xl">{t('home_profile_finishes_title', 'Profile Finishes and Applications')}</h2>
               <p className="mt-4 text-lg leading-8 text-slate-600">
-                Show the production, finishing, packaging, and export readiness that serious B2B buyers need before they send drawings or project quantities.
+                {t('home_profile_finishes_desc', 'Explore example sections and finishes. These reference images help with initial product selection; final geometry and finish are confirmed for each project.')}
               </p>
             </div>
 
             <div className="grid gap-5 md:grid-cols-3">
-              {galleryImages.length > 0 ? (
-                galleryImages.map((item, index) => (
+              {galleryImages.map((item, index) => (
                   <div key={`${item.title}-${index}`} className="overflow-hidden rounded-lg bg-slate-100 shadow-[0_20px_55px_rgba(15,23,42,0.12)]">
                     <img
-                      src={item.image || heroImage}
+                      src={item.image}
                       alt={item.title}
                       className="h-64 w-full object-cover"
                       loading="lazy"
                       decoding="async"
                     />
                   </div>
-                ))
-              ) : (
-                <>
-                  {[
-                    ...temporaryAluslinkImages.factory,
-                  ].map((image, index) => (
-                    <div key={index} className="overflow-hidden rounded-lg bg-slate-100 shadow-[0_20px_55px_rgba(15,23,42,0.12)]">
-                      <img src={image} alt={`LingYe Aluminum factory image ${index + 1}`} className="h-64 w-full object-cover" loading="lazy" decoding="async" />
-                    </div>
-                  ))}
-                </>
-              )}
+                ))}
             </div>
           </div>
         </div>
@@ -471,8 +412,8 @@ const Home: React.FC = () => {
       <section className="bg-slate-50 py-16 md:py-20">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <div className="text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700">FAQ</p>
-            <h2 className="mt-4 text-3xl font-semibold text-slate-900 md:text-4xl">Common Questions from Aluminum Buyers</h2>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700">{t('home_faq_label', 'FAQ')}</p>
+            <h2 className="mt-4 text-3xl font-semibold text-slate-900 md:text-4xl">{t('home_faq_title', 'Common Questions from Aluminum Buyers')}</h2>
           </div>
           <div className="mt-10 space-y-4">
             {faqItems.map((item) => (
@@ -488,23 +429,23 @@ const Home: React.FC = () => {
       <section id="home-inquiry-form" className="bg-white py-16 md:py-20">
         <div className="mx-auto grid max-w-7xl gap-10 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700">Inquiry</p>
-            <h2 className="mt-4 text-3xl font-semibold text-slate-900 md:text-4xl">Start Your Quote With the Right Details</h2>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700">{t('home_inquiry_label', 'Inquiry')}</p>
+            <h2 className="mt-4 text-3xl font-semibold text-slate-900 md:text-4xl">{t('home_inquiry_title', 'Start Your Quote With the Right Details')}</h2>
             <p className="mt-4 text-lg leading-8 text-slate-600">
-              Share drawings, finish, quantity, destination port, and packaging needs. The form keeps the RFQ path visible for export buyers who are ready to compare suppliers.
+              {t('home_inquiry_desc', 'Share drawings, finish, quantity, destination port, and packaging needs. The form keeps the RFQ path visible for export buyers who are ready to compare suppliers.')}
             </p>
             <div className="mt-8 space-y-5 rounded-lg bg-slate-950 p-6 text-slate-100 shadow-[0_30px_80px_rgba(15,23,42,0.22)]">
               <div>
-                <h3 className="text-lg font-semibold text-white">Send these details for a faster reply</h3>
+                <h3 className="text-lg font-semibold text-white">{t('home_inquiry_details_title', 'Send these details for a faster reply')}</h3>
                 <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-300">
-                  <li>Profile drawing or reference photo</li>
-                  <li>Alloy, temper, and finish requirement</li>
-                  <li>Estimated quantity and destination port</li>
-                  <li>Packaging or machining expectations</li>
+                  <li>{t('home_inquiry_drawing', 'Profile drawing or reference photo')}</li>
+                  <li>{t('home_inquiry_material', 'Alloy, temper, and finish requirement')}</li>
+                  <li>{t('home_inquiry_quantity', 'Estimated quantity and destination port')}</li>
+                  <li>{t('home_inquiry_packaging', 'Packaging or machining expectations')}</li>
                 </ul>
               </div>
               <div className="rounded-md border border-white/10 bg-white/5 p-4 text-sm leading-6 text-slate-300">
-                Email, WhatsApp, and product links can work together, but the form should remain the clearest conversion path on the page.
+                {t('home_inquiry_helper', 'Email, WhatsApp, and product links can work together, but the form should remain the clearest conversion path on the page.')}
               </div>
             </div>
           </div>

@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from apps.products.services import translation_service
+from apps.products.services import SUPPORTED_FRONTEND_LANGUAGES, translation_service
 
 
 class Command(BaseCommand):
@@ -23,8 +23,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        # 支持的语言列表
-        supported_languages = ['en', 'es', 'pt', 'fr', 'de', 'it', 'ru', 'hi']
+        supported_languages = list(SUPPORTED_FRONTEND_LANGUAGES)
         
         if options['language']:
             # 翻译到指定语言
@@ -52,12 +51,14 @@ class Command(BaseCommand):
     def translate_frontend_content(self, target_lang, force=False):
         """翻译前端内容到指定语言"""
         try:
-            # 获取中文内容
-            zh_content = translation_service.get_frontend_content('', 'zh-CN')
-            
-            if not isinstance(zh_content, dict):
+            # English is the canonical source for the offline generation job.
+            source_content = translation_service._load_translations_from_file('frontend', 'en')
+            if not source_content:
+                source_content = translation_service.get_frontend_content('', 'en')
+
+            if not isinstance(source_content, dict):
                 self.stdout.write(
-                    self.style.ERROR('无法获取中文内容')
+                    self.style.ERROR('无法获取英文源内容')
                 )
                 return
             
@@ -72,9 +73,9 @@ class Command(BaseCommand):
             
             # 开始翻译
             translated_content = {}
-            total_keys = len(zh_content.keys())
+            total_keys = len(source_content.keys())
             
-            for i, key in enumerate(zh_content.keys(), 1):
+            for i, key in enumerate(source_content.keys(), 1):
                 self.stdout.write(f'翻译进度: {i}/{total_keys} - {key}')
                 translated_content[key] = translation_service.translate_frontend_content(key, target_lang)
                 
@@ -93,4 +94,4 @@ class Command(BaseCommand):
         except Exception as e:
             self.stdout.write(
                 self.style.ERROR(f'翻译前端内容到 {target_lang} 失败: {e}')
-            ) 
+            )

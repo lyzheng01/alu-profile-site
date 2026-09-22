@@ -11,6 +11,8 @@ from pathlib import Path
 from deep_translator import GoogleTranslator
 from .models import Product, ProductApplication, ProductFeature, ProductImage, ProductSpecification
 
+SUPPORTED_FRONTEND_LANGUAGES = ('en', 'zh', 'es', 'pt')
+
 
 def add_product_images(product, files):
     existing_count = product.images.count()
@@ -531,40 +533,27 @@ class TranslationService:
         return frontend_content.get(language, {}).get(content_key, content_key)
     
     def get_all_frontend_content(self, target_lang='zh'):
-        """获取所有前端内容的翻译"""
-        print(f"[DEBUG] get_all_frontend_content 被调用，target_lang: {target_lang}")
-        if target_lang in ['en', 'en-US', 'en-GB']:
-            # 返回英语内容字典
-            print(f"[DEBUG] 返回英语内容")
-            return self.get_frontend_content('', 'en')
-        
-        # 尝试从预翻译文件加载
-        print(f"[DEBUG] 尝试从文件加载 frontend_{target_lang}.json")
-        translations = self._load_translations_from_file('frontend', target_lang)
-        if translations:
-            print(f"[DEBUG] 成功从文件加载翻译，返回 {len(translations)} 个翻译项")
-            return translations
-        
-        # 如果没有预翻译文件，则实时翻译并保存
-        en_content = self.get_frontend_content('', 'en')
-        translated_content = {}
-        
-        # 确保en_content是字典
-        if isinstance(en_content, dict):
-            print(f"正在为前端内容创建{target_lang}翻译...")
-            for key in en_content.keys():
-                translated_content[key] = self.translate_frontend_content(key, target_lang)
-                time.sleep(0.1)  # 避免API限制
-            
-            # 保存到文件
-            self._save_translations_to_file('frontend', target_lang, translated_content)
-            print(f"前端内容{target_lang}翻译已保存到文件")
-        else:
-            # 如果en_content不是字典，返回空字典
-            print(f"警告: en_content不是字典类型: {type(en_content)}")
+        """读取前端翻译内容，不在用户请求期间调用外部翻译服务或写文件。"""
+        language = (target_lang or 'en').split('-', 1)[0].lower()
+        source = self._load_translations_from_file('frontend', 'en')
+        if not source:
+            source = self.get_frontend_content('', 'en')
+        if not isinstance(source, dict):
             return {}
-        
-        return translated_content
+
+        if language == 'en' or language not in SUPPORTED_FRONTEND_LANGUAGES:
+            return source
+
+        translations = self._load_translations_from_file('frontend', language)
+        if not translations:
+            return source
+
+        # Keep the response shape stable while preserving the English source as
+        # a per-key fallback for newly added UI strings.
+        return {
+            key: translations.get(key) or value
+            for key, value in source.items()
+        }
 
 
 @transaction.atomic

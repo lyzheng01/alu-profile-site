@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { translationService } from '../services/translationService';
+import { supportedLanguages, translationService } from '../services/translationService';
 
 interface TranslationContextType {
   currentLanguage: string;
@@ -18,22 +18,14 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [, forceUpdate] = React.useState({}); // 用于强制刷新
   const location = useLocation();
 
-  // 从URL获取语言代码
-  const getLanguageFromUrl = () => {
-    const pathSegments = location.pathname.split('/').filter(Boolean);
-    const firstSegment = pathSegments[0];
-    const supportedLanguages = ['en', 'zh', 'es', 'pt', 'fr', 'de', 'it', 'ru', 'hi'];
-    
-    if (supportedLanguages.includes(firstSegment)) {
-      return firstSegment;
-    }
-    return null;
-  };
-
   // 初始化时根据URL设置语言
   useEffect(() => {
     const initTranslations = async () => {
-      const urlLanguage = getLanguageFromUrl();
+      const pathSegments = location.pathname.split('/').filter(Boolean);
+      const firstSegment = pathSegments[0];
+      const urlLanguage = supportedLanguages.some((language) => language.code === firstSegment)
+        ? firstSegment
+        : null;
       const savedLanguage = localStorage.getItem('language') || 'en';
       const targetLanguage = urlLanguage || savedLanguage;
       
@@ -106,4 +98,4 @@ export const useTranslation = (): TranslationContextType => {
     throw new Error('useTranslation must be used within a TranslationProvider');
   }
   return context;
-}; 
+};
