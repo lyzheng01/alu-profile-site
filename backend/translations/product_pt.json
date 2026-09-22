@@ -86,5 +86,16 @@
   "name_22": "Extrusão de perfil industrial extrusão de alumínio de moldura de alumínio 40x40 T-SLOT - Cópia",
   "description_22": "Principais recursos e benefícios:\r\n\r\nResistência e durabilidade de nível industrial: Feito de liga de alumínio 6063-T5 de alta qualidade, o perfil de ranhura em T 4040 oferece excelente rigidez estrutural, resistência à corrosão e uma longa vida útil para estruturas estáveis e confiáveis.\r\n\r\nDesign modular e versátil: A seção transversal padronizada de 40 mm x 40 mm com ranhuras em T integradas em todos os quatro lados permite possibilidades ilimitadas de design modular. Construa facilmente estruturas, racks, proteções de segurança, sistemas de movimento linear e projetos personalizados.\r\n\r\nFácil montagem e reconfiguração: Não é necessária perfuração ou soldagem. Use porcas, suportes e fixadores padrão com ranhura em T para uma montagem rápida e fácil de usar. Modifique ou expanda sua estrutura a qualquer momento sem habilidades especializadas.\r\n\r\nCompatibilidade excepcional: Totalmente compatível com uma ampla gama de acessórios para ranhuras em T, tampas, painéis e rolamentos lineares. Integra-se perfeitamente em sistemas e equipamentos de automação existentes.\r\n\r\nAcabamento limpo e profissional: O tratamento de superfície anodizado melhora a aparência, oferece resistência a arranhões e permite o revestimento em pó opcional para combinar com qualquer espaço de trabalho ou marca.\r\n\r\nSolução econômica: reduza o tempo de prototipagem e produção com um sistema de estrutura reutilizável e de baixa manutenção que minimiza o desperdício de material e os custos de mão de obra.\r\n\r\nAplicações:\r\n\r\nEstruturas e proteções de máquinas\r\n\r\nEstações de trabalho industriais e mesas de montagem\r\n\r\nEquipamentos de automação e molduras para impressoras 3D\r\n\r\nGabinetes e gaiolas de segurança\r\n\r\nConfigurações de laboratório e testes\r\n\r\nSistemas de transporte e manuseio de materiais\r\n\r\nExpositores de varejo e estruturas de exposição",
   "features_22": null,
-  "applications_22": ""
+  "applications_22": "",
+  "name_5": "Perfis de alumínio para dissipadores de calor",
+  "description_5": "Perfis de alumínio para dissipação térmica eficiente em sistemas eletrônicos e industriais. A geometria final é confirmada conforme o desempenho térmico, a liga, o fluxo de ar e as condições de operação.",
+  "features_5": "Liga de alumínio de alta condutividade térmica\nAlta eficiência de dissipação de calor\nLeve, durável e resistente à corrosão\nSuporta extrusão, usinagem CNC e acabamentos personalizados",
+  "applications_5": "Dissipação térmica de LED\nCPU e módulos de potência\nEletrônica automotiva\nEquipamentos industriais",
+  "specifications_5": "A geometria das aletas, a liga, as dimensões e os requisitos térmicos são revisados conforme o desenho.",
+  "range_param_5": "Confirmado conforme o desenho ou a especificação",
+  "type_param_5": "Perfis de alumínio para dissipadores de calor",
+  "surface_treatment_5": "Confirmado conforme a especificação do projeto",
+  "colors_5": "Confirmado conforme a especificação do projeto",
+  "grade_5": "Séries 6063 e 6061",
+  "temper_5": "T5, T6"
 }

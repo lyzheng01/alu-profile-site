@@ -86,5 +86,16 @@
   "name_22": "Perfil industrial extruido de marco de aluminio extrusión de aluminio con ranura en T 40x40 - Copia",
   "description_22": "Características y beneficios clave:\r\n\r\nResistencia y durabilidad de grado industrial: fabricado con aleación de aluminio 6063-T5 de alta calidad, el perfil con ranura en T 4040 proporciona una excelente rigidez estructural, resistencia a la corrosión y una larga vida útil para estructuras estables y confiables.\r\n\r\nDiseño modular y versátil: la sección transversal estandarizada de 40 mm x 40 mm con ranuras en T integradas en los cuatro lados permite posibilidades ilimitadas de diseño modular. Construya fácilmente marcos, bastidores, protecciones de seguridad, sistemas de movimiento lineal y proyectos personalizados.\r\n\r\nFácil montaje y reconfiguración: no es necesario taladrar ni soldar. Utilice tuercas, soportes y sujetadores con ranura en T estándar para un montaje rápido y sencillo con herramientas. Modifique o amplíe su estructura en cualquier momento sin habilidades especializadas.\r\n\r\nCompatibilidad excepcional: Totalmente compatible con una amplia gama de accesorios de ranura en T, tapas de extremo, paneles y rodamientos lineales. Se integra perfectamente en sistemas y equipos de automatización existentes.\r\n\r\nAcabado limpio y profesional: el tratamiento de superficie anodizado mejora la apariencia, proporciona resistencia a los rayones y permite un recubrimiento en polvo opcional para combinar con cualquier espacio de trabajo o marca.\r\n\r\nSolución rentable: reduzca el tiempo de producción y creación de prototipos con un sistema de estructura reutilizable y de bajo mantenimiento que minimiza el desperdicio de material y los costos de mano de obra.\r\n\r\nAplicaciones:\r\n\r\nMarcos y protectores de máquinas\r\n\r\nEstaciones de trabajo industriales y mesas de montaje\r\n\r\nEquipos de automatización y marcos de impresoras 3D\r\n\r\nCerramientos y jaulas de seguridad\r\n\r\nConfiguraciones de laboratorio y pruebas\r\n\r\nManejo de materiales y sistemas transportadores\r\n\r\nExpositores minoristas y estructuras de exposición",
   "features_22": null,
-  "applications_22": ""
+  "applications_22": "",
+  "name_5": "Perfiles de aluminio para disipadores de calor",
+  "description_5": "Perfiles de aluminio para una disipación térmica eficiente en sistemas electrónicos e industriales. La geometría final se confirma según el rendimiento térmico, la aleación, el flujo de aire y las condiciones de trabajo.",
+  "features_5": "Aleación de aluminio de alta conductividad térmica\nDisipación térmica eficiente\nLigero, duradero y resistente a la corrosión\nAdmite extrusión, mecanizado CNC y acabados personalizados",
+  "applications_5": "Disipación térmica LED\nCPU y módulos de potencia\nElectrónica automotriz\nEquipos industriales",
+  "specifications_5": "La geometría de las aletas, la aleación, las dimensiones y los requisitos térmicos se revisan según el plano.",
+  "range_param_5": "Se confirma según el plano o la especificación",
+  "type_param_5": "Perfiles de aluminio para disipadores de calor",
+  "surface_treatment_5": "Se confirma según la especificación del proyecto",
+  "colors_5": "Se confirma según la especificación del proyecto",
+  "grade_5": "Series 6063 y 6061",
+  "temper_5": "T5, T6"
 }
