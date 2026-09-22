@@ -75,6 +75,12 @@
   "news_published": "Publicado",
   "news_author": "Autor",
   "news_tags": "Etiquetas",
+  "news_seo_title": "Noticias y novedades técnicas del aluminio | LingYe Aluminum",
+  "news_seo_description": "Conozca las tendencias del aluminio, la extrusión, los acabados, los perfiles T-Slot y la cooperación de proyectos.",
+  "news_collection_name": "Noticias de la industria del aluminio | LingYe Aluminum",
+  "news_collection_description": "Tendencias del aluminio, tecnología de procesamiento y novedades de productos.",
+  "news_breadcrumb_home": "Inicio",
+  "news_breadcrumb_title": "Noticias",
   
   "btn_view_details": "Ver Detalles",
   "btn_learn_more": "Saber Más",

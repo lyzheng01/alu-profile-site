@@ -43,11 +43,11 @@ const NewsDetail: React.FC = () => {
   // 设置页面标题
   useSeoMeta({
     title: article?.meta_title || (article ? `${article.title} | LingYe Aluminum` : undefined),
-    description: article?.meta_description || article?.summary || undefined,
+    description: article?.meta_description || article?.excerpt || article?.summary || undefined,
     keywords: article?.meta_keywords || undefined,
     canonicalPath: article?.slug ? `/${currentLanguage}/news/${article.slug}` : undefined,
     ogTitle: article?.meta_title || article?.title || undefined,
-    ogDescription: article?.meta_description || article?.summary || undefined,
+    ogDescription: article?.meta_description || article?.excerpt || article?.summary || undefined,
     ogImage: article?.featured_image || undefined,
     robots: !article && !loading ? 'noindex,follow' : undefined,
     language: currentLanguage,
@@ -59,7 +59,7 @@ const NewsDetail: React.FC = () => {
       '@context': 'https://schema.org',
       '@type': 'Article',
       headline: article.title,
-      description: article.summary || undefined,
+      description: article.meta_description || article.excerpt || article.summary || undefined,
       datePublished: article.created_at,
       dateModified: article.updated_at || article.created_at,
       author: {
@@ -87,13 +87,13 @@ const NewsDetail: React.FC = () => {
         {
           '@type': 'ListItem',
           position: 1,
-          name: 'Home',
+          name: t('news_breadcrumb_home', 'Home'),
           item: `${base}/${currentLanguage}`,
         },
         {
           '@type': 'ListItem',
           position: 2,
-          name: 'News',
+          name: t('news_breadcrumb_title', 'News'),
           item: `${base}/${currentLanguage}/news`,
         },
         {
@@ -104,7 +104,7 @@ const NewsDetail: React.FC = () => {
         },
       ],
     };
-  }, [article, currentLanguage]);
+  }, [article, currentLanguage, t]);
 
   useStructuredData('news-breadcrumb', breadcrumbStructuredData);
 
@@ -144,7 +144,8 @@ const NewsDetail: React.FC = () => {
   // 格式化日期
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
+    const locale = currentLanguage === 'zh' ? 'zh-CN' : currentLanguage === 'es' ? 'es-ES' : currentLanguage === 'pt' ? 'pt-BR' : 'en-US';
+    return date.toLocaleDateString(locale, {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -272,8 +273,8 @@ const NewsList: React.FC = () => {
   const canonicalQuery = currentPage > 1 ? `?page=${currentPage}` : selectedTag ? `?tag=${selectedTag}` : '';
 
   useSeoMeta({
-    title: currentPage > 1 ? `News Page ${currentPage} | Aluminum Industry News | LingYe Aluminum` : undefined,
-    description: 'Read latest aluminum market trends, processing insights, and product updates from LingYe Aluminum.',
+    title: currentPage > 1 ? `${t('news_seo_title', 'Aluminum Industry News')} - Page ${currentPage}` : t('news_seo_title', 'Aluminum Industry News'),
+    description: t('news_seo_description', 'Read latest aluminum market trends, processing insights, and product updates.'),
     canonicalPath: `/${currentLanguage}/news${canonicalQuery}`,
     robots: currentPage > 1 ? 'noindex,follow' : undefined,
     language: currentLanguage,
@@ -282,10 +283,10 @@ const NewsList: React.FC = () => {
   const collectionStructuredData = React.useMemo(() => ({
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: 'Aluminum Industry News | LingYe Aluminum',
-    description: 'Latest aluminum market trends, processing insights, and product updates.',
+    name: t('news_collection_name', 'Aluminum Industry News | LingYe Aluminum'),
+    description: t('news_collection_description', 'Latest aluminum market trends, processing insights, and product updates.'),
     isPartOf: { '@type': 'WebSite', name: 'LingYe Aluminum', url: 'https://lingyealuminum.com' },
-  }), []);
+  }), [t]);
 
   useStructuredData('news-list-collection', collectionStructuredData);
 
@@ -295,8 +296,8 @@ const NewsList: React.FC = () => {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: `${base}/${currentLanguage}` },
-        { '@type': 'ListItem', position: 2, name: 'News', item: `${base}/${currentLanguage}/news` },
+        { '@type': 'ListItem', position: 1, name: t('news_breadcrumb_home', 'Home'), item: `${base}/${currentLanguage}` },
+        { '@type': 'ListItem', position: 2, name: t('news_breadcrumb_title', 'News'), item: `${base}/${currentLanguage}/news` },
       ],
     };
   }, [currentLanguage]);
@@ -319,7 +320,7 @@ const NewsList: React.FC = () => {
 
     const fetchTags = async () => {
       try {
-        const response = await fetch(API_ENDPOINTS.TAGS);
+        const response = await fetch(`${API_ENDPOINTS.TAGS}?lang=${currentLanguage}`);
         if (response.ok) {
           const data = await response.json();
           setTags(data.results || data);
@@ -333,7 +334,7 @@ const NewsList: React.FC = () => {
 
     fetchArticles();
     fetchTags();
-  }, [currentLanguage]);
+  }, [currentLanguage, t]);
 
   // 过滤新闻（只按标签筛选，不搜索）
   const filteredArticles = articles.filter(article => {
@@ -351,7 +352,8 @@ const NewsList: React.FC = () => {
   // 格式化日期
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
+    const locale = currentLanguage === 'zh' ? 'zh-CN' : currentLanguage === 'es' ? 'es-ES' : currentLanguage === 'pt' ? 'pt-BR' : 'en-US';
+    return date.toLocaleDateString(locale, {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
