@@ -54,16 +54,16 @@ interface SubCategory {
 }
 
 const Products: React.FC = () => {
-  const { t } = useTranslation();
+  const translationContext = useTranslation();
+  const { t } = translationContext;
+  const currentLanguage = translationContext.currentLanguage || (
+    typeof window === 'undefined' ? 'en' : localStorage.getItem('language') || 'en'
+  );
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState<number | null>(null);
-  const [currentLanguage, setCurrentLanguage] = useState(() => {
-    if (typeof window === 'undefined') return 'zh';
-    return localStorage.getItem('language') || 'zh';
-  });
   const [searchParams, setSearchParams] = useSearchParams();
   const fallbackProductImage = 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=900&h=700&fit=crop';
   const cleanEnglishCopy = (value?: string) =>
@@ -78,12 +78,6 @@ const Products: React.FC = () => {
       .replace(/^http:\/\/lingyealu\.cn/i, 'https://lingyealuminum.com')
       .replace(/^https:\/\/lingyealu\.cn/i, 'https://lingyealuminum.com');
   };
-
-  // 获取当前语言
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem('language') || 'zh';
-    setCurrentLanguage(savedLanguage);
-  }, []);
 
   useSeoMeta({
     canonicalPath: `/${currentLanguage}/products`,

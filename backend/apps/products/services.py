@@ -104,7 +104,8 @@ class TranslationService:
         
         try:
             # 使用Google翻译API
-            translator = GoogleTranslator(source=source_lang, target=target_lang)
+            google_target_language = {'zh': 'zh-CN'}.get(target_lang, target_lang)
+            translator = GoogleTranslator(source=source_lang, target=google_target_language)
             translated_text = translator.translate(text)
             
             # 保存到缓存

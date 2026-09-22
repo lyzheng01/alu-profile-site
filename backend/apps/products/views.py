@@ -26,11 +26,11 @@ class CategoryViewSet(viewsets.ModelViewSet):
         include_subcategories = self.request.query_params.get('include_subcategories', 'false').lower() == 'true'
         
         if include_subcategories:
-            if language != 'zh':
+            if language != 'en':
                 return TranslatedCategoryWithSubcategoriesSerializer
             return CategoryWithSubcategoriesSerializer
         
-        if language != 'zh':
+        if language != 'en':
             return TranslatedCategorySerializer
         return CategorySerializer
     
@@ -51,7 +51,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
         
         # 检查是否需要翻译
         language = request.query_params.get('lang', 'zh')
-        if language != 'zh':
+        if language != 'en':
             serializer = TranslatedProductSerializer(
                 products, 
                 many=True, 
@@ -73,7 +73,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
         
         # 检查是否需要翻译
         language = request.query_params.get('lang', 'zh')
-        if language != 'zh':
+        if language != 'en':
             serializer = TranslatedSubCategorySerializer(
                 subcategories, 
                 many=True, 
@@ -94,7 +94,7 @@ class SubCategoryViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         """根据语言参数选择序列化器"""
         language = self.request.query_params.get('lang', 'zh')
-        if language != 'zh':
+        if language != 'en':
             return TranslatedSubCategorySerializer
         return SubCategorySerializer
     
@@ -115,7 +115,7 @@ class SubCategoryViewSet(viewsets.ModelViewSet):
         
         # 检查是否需要翻译
         language = request.query_params.get('lang', 'zh')
-        if language != 'zh':
+        if language != 'en':
             serializer = TranslatedProductSerializer(
                 products, 
                 many=True, 
@@ -138,11 +138,11 @@ class ProductViewSet(viewsets.ModelViewSet):
         language = self.request.query_params.get('lang', 'zh')
         
         if self.action == 'retrieve':
-            if language != 'zh':
+            if language != 'en':
                 return TranslatedProductDetailSerializer
             return ProductDetailSerializer
         
-        if language != 'zh':
+        if language != 'en':
             return TranslatedProductSerializer
         
         return super().get_serializer_class()
@@ -182,7 +182,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         
         # 检查是否需要翻译
         language = request.query_params.get('lang', 'zh')
-        if language != 'zh':
+        if language != 'en':
             serializer = TranslatedProductSerializer(
                 products, 
                 many=True, 
@@ -198,7 +198,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         """根据slug获取产品"""
         language = request.query_params.get('lang', 'zh')
         product = get_object_or_404(Product, slug=slug, is_active=True)
-        if language != 'zh':
+        if language != 'en':
             serializer = TranslatedProductDetailSerializer(product, context={'language': language})
         else:
             serializer = ProductDetailSerializer(product)
@@ -219,7 +219,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         
         # 检查是否需要翻译
         language = request.query_params.get('lang', 'zh')
-        if language != 'zh':
+        if language != 'en':
             serializer = TranslatedProductSerializer(
                 products, 
                 many=True, 

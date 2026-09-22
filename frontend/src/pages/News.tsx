@@ -113,8 +113,8 @@ const NewsDetail: React.FC = () => {
       try {
         const isNumeric = /^\d+$/.test(articleRef || '');
         const detailUrl = isNumeric
-          ? `${API_ENDPOINTS.ARTICLES}${articleRef}/`
-          : `${API_ENDPOINTS.ARTICLES}by-slug/${articleRef}/`;
+          ? `${API_ENDPOINTS.ARTICLES}${articleRef}/?lang=${currentLanguage}`
+          : `${API_ENDPOINTS.ARTICLES}by-slug/${articleRef}/?lang=${currentLanguage}`;
 
         const response = await fetch(detailUrl);
         if (response.ok) {
@@ -307,7 +307,7 @@ const NewsList: React.FC = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await fetch(API_ENDPOINTS.ARTICLES);
+        const response = await fetch(`${API_ENDPOINTS.ARTICLES}?lang=${currentLanguage}`);
         if (response.ok) {
           const data = await response.json();
           setArticles(data.results || data);
@@ -333,7 +333,7 @@ const NewsList: React.FC = () => {
 
     fetchArticles();
     fetchTags();
-  }, []);
+  }, [currentLanguage]);
 
   // 过滤新闻（只按标签筛选，不搜索）
   const filteredArticles = articles.filter(article => {

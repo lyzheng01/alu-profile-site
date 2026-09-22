@@ -41,25 +41,37 @@ class TranslatedArticleSerializer(serializers.ModelSerializer):
     translated_title = serializers.SerializerMethodField()
     translated_content = serializers.SerializerMethodField()
     translated_excerpt = serializers.SerializerMethodField()
+    title = serializers.SerializerMethodField()
+    content = serializers.SerializerMethodField()
+    excerpt = serializers.SerializerMethodField()
     
     class Meta:
         model = Article
         fields = [
-            'id', 'slug', 'translated_title', 'translated_content', 'translated_excerpt',
+            'id', 'slug', 'title', 'content', 'excerpt', 'translated_title', 'translated_content', 'translated_excerpt',
             'featured_image', 'tags', 'is_featured', 'views', 'created_at', 'published_at'
         ]
     
     def get_translated_title(self, obj):
         from apps.products.services import translation_service
         language = self.context.get('language', 'zh')
-        return translation_service.translate_text(obj.title, language)
+        return translation_service.get_translated_text('article', obj.id, 'title', language) or obj.title
+
+    def get_title(self, obj):
+        return self.get_translated_title(obj)
     
     def get_translated_content(self, obj):
         from apps.products.services import translation_service
         language = self.context.get('language', 'zh')
-        return translation_service.translate_text(obj.content, language)
+        return translation_service.get_translated_text('article', obj.id, 'content', language) or obj.content
+
+    def get_content(self, obj):
+        return self.get_translated_content(obj)
     
     def get_translated_excerpt(self, obj):
         from apps.products.services import translation_service
         language = self.context.get('language', 'zh')
-        return translation_service.translate_text(obj.excerpt, language) 
+        return translation_service.get_translated_text('article', obj.id, 'excerpt', language) or obj.excerpt
+
+    def get_excerpt(self, obj):
+        return self.get_translated_excerpt(obj)

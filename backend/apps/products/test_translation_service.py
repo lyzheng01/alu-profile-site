@@ -41,3 +41,12 @@ class FrontendTranslationServiceTests(SimpleTestCase):
             json.loads((Path(self.temp_dir.name) / 'frontend_es.json').read_text(encoding='utf-8')),
             {'nav_home': 'Inicio'},
         )
+
+    def test_chinese_translation_uses_google_supported_locale_code(self):
+        translator = mock.Mock()
+        translator.translate.return_value = '中文结果'
+        with mock.patch('apps.products.services.GoogleTranslator', return_value=translator) as factory:
+            result = self.service.translate_text('Industrial profile', 'zh')
+
+        self.assertEqual(result, '中文结果')
+        factory.assert_called_once_with(source='en', target='zh-CN')
