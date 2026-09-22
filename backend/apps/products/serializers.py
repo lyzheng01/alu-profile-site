@@ -173,6 +173,7 @@ class TranslatedProductSerializer(serializers.ModelSerializer):
     translated_description = serializers.SerializerMethodField()
     translated_features = serializers.SerializerMethodField()
     translated_applications = serializers.SerializerMethodField()
+    translated_specifications = serializers.SerializerMethodField()
     translated_range_param = serializers.SerializerMethodField()
     translated_type_param = serializers.SerializerMethodField()
     translated_surface_treatment = serializers.SerializerMethodField()
@@ -188,7 +189,7 @@ class TranslatedProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = [
             'id', 'category', 'category_id', 'subcategory', 'subcategory_id', 'translated_name', 'translated_description',
-            'translated_features', 'translated_applications', 'translated_range_param', 'translated_type_param',
+            'translated_features', 'translated_applications', 'translated_specifications', 'translated_range_param', 'translated_type_param',
             'translated_surface_treatment', 'translated_colors', 'translated_grade', 'translated_temper',
             'specifications', 'range_param', 'type_param', 'surface_treatment', 'colors', 'grade', 'temper',
             'slug', 'is_featured', 'is_active', 'order', 'created_at', 'updated_at', 'images',
@@ -211,6 +212,10 @@ class TranslatedProductSerializer(serializers.ModelSerializer):
     def get_translated_applications(self, obj):
         language = self.context.get('language', 'zh')
         return translation_service.get_translated_text('product', obj.id, 'applications', language) or obj.applications
+
+    def get_translated_specifications(self, obj):
+        language = self.context.get('language', 'zh')
+        return translation_service.get_translated_text('product', obj.id, 'specifications', language) or obj.specifications
 
     def _translated_parameter(self, obj, field_name):
         language = self.context.get('language', 'zh')
@@ -285,6 +290,7 @@ class TranslatedProductDetailSerializer(serializers.ModelSerializer):
     translated_description = serializers.SerializerMethodField()
     translated_features = serializers.SerializerMethodField()
     translated_applications = serializers.SerializerMethodField()
+    translated_specifications = serializers.SerializerMethodField()
     translated_range_param = serializers.SerializerMethodField()
     translated_type_param = serializers.SerializerMethodField()
     translated_surface_treatment = serializers.SerializerMethodField()
@@ -300,7 +306,7 @@ class TranslatedProductDetailSerializer(serializers.ModelSerializer):
         model = Product
         fields = [
             'id', 'category', 'category_id', 'subcategory', 'subcategory_id', 'translated_name', 'translated_description',
-            'translated_features', 'translated_applications', 'translated_range_param', 'translated_type_param',
+            'translated_features', 'translated_applications', 'translated_specifications', 'translated_range_param', 'translated_type_param',
             'translated_surface_treatment', 'translated_colors', 'translated_grade', 'translated_temper',
             'specifications', 'range_param', 'type_param', 'surface_treatment', 'colors', 'grade', 'temper',
             'slug', 'is_featured', 'is_active', 'order', 'created_at', 'updated_at', 'images',
@@ -323,6 +329,10 @@ class TranslatedProductDetailSerializer(serializers.ModelSerializer):
     def get_translated_applications(self, obj):
         language = self.context.get('language', 'zh')
         return translation_service.get_translated_text('product', obj.id, 'applications', language) or obj.applications
+
+    def get_translated_specifications(self, obj):
+        language = self.context.get('language', 'zh')
+        return translation_service.get_translated_text('product', obj.id, 'specifications', language) or obj.specifications
 
     def _translated_parameter(self, obj, field_name):
         language = self.context.get('language', 'zh')
@@ -360,6 +370,8 @@ class TranslatedProductDetailSerializer(serializers.ModelSerializer):
             data['features'] = data.pop('translated_features')
         if 'translated_applications' in data:
             data['applications'] = data.pop('translated_applications')
+        if 'translated_specifications' in data:
+            data['specifications'] = data.pop('translated_specifications')
         if 'translated_name' in data:
             data['name'] = data.pop('translated_name')
         for translated_key, source_key in (
