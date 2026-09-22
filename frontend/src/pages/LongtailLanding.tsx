@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { API_ENDPOINTS } from '../config/api';
 import { useSeoMeta } from '../hooks/useSeoMeta';
 import { useStructuredData } from '../hooks/useStructuredData';
+import { useTranslation } from '../contexts/TranslationContext';
 import { resolveMediaUrl } from '../utils/url';
 import NotFound from './NotFound';
 
@@ -238,6 +239,7 @@ const landingPages: Record<string, LandingPageData> = {
 const LongtailLanding: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const page = slug ? landingPages[slug] : undefined;
+  const { t, currentLanguage } = useTranslation();
   const [relatedProducts, setRelatedProducts] = useState<LandingProduct[]>([]);
 
   useSeoMeta({
@@ -254,7 +256,7 @@ const LongtailLanding: React.FC = () => {
     const fetchRelatedProducts = async () => {
       if (!page) return;
       try {
-        const response = await fetch(`${API_ENDPOINTS.PRODUCTS}?lang=en&limit=20`);
+        const response = await fetch(`${API_ENDPOINTS.PRODUCTS}?lang=${currentLanguage}&limit=20`);
         if (!response.ok) return;
         const data = await response.json();
         const allProducts = (data.results || data || []) as LandingProduct[];
@@ -268,7 +270,7 @@ const LongtailLanding: React.FC = () => {
     };
 
     fetchRelatedProducts();
-  }, [page]);
+  }, [page, currentLanguage]);
 
   const structuredData = React.useMemo(() => {
     if (!page) return null;
@@ -333,7 +335,7 @@ const LongtailLanding: React.FC = () => {
       <section className="max-w-5xl mx-auto px-6 py-12">
         <p className="text-gray-700 text-lg leading-relaxed mb-6">{page.intro}</p>
 
-        <h2 className="text-2xl font-semibold text-gray-900 mb-4">Why buyers choose LingYe Aluminum</h2>
+        <h2 className="text-2xl font-semibold text-gray-900 mb-4">{t('landing_why_choose', 'Why buyers choose LingYe Aluminum')}</h2>
         <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-8">
           {page.bullets.map((item, idx) => (
             <li key={idx}>{item}</li>
@@ -350,7 +352,7 @@ const LongtailLanding: React.FC = () => {
         </div>
 
         <div className="rounded-xl border border-blue-100 bg-blue-50 p-6 mb-8">
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">Request a quotation</h3>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('landing_request_quote', 'Request a quotation')}</h3>
           <p className="text-gray-700 mb-4">
             Share your drawing, alloy, finish, quantity, and destination port. Our team will provide a practical quote quickly.
           </p>
@@ -378,7 +380,7 @@ const LongtailLanding: React.FC = () => {
           </div>
         </div>
 
-        <h2 className="text-2xl font-semibold text-gray-900 mb-4">How it works</h2>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">{t('landing_how_it_works', 'How it works')}</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {page.processSteps.map((ps, idx) => (
             <div key={idx} className="rounded-lg border border-gray-200 bg-white p-4">
@@ -391,7 +393,7 @@ const LongtailLanding: React.FC = () => {
 
         {relatedProducts.length > 0 && (
           <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-4">Recommended products</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">{t('landing_recommended_products', 'Recommended products')}</h3>
             <div className="grid md:grid-cols-3 gap-4">
               {relatedProducts.map((product) => {
                 const title = product.translated_name || product.name || 'Aluminum Product';
@@ -413,7 +415,7 @@ const LongtailLanding: React.FC = () => {
                           decoding="async"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">No image</div>
+                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">{t('product_detail_no_image', 'No image')}</div>
                       )}
                     </div>
                     <div className="p-4">
@@ -428,7 +430,7 @@ const LongtailLanding: React.FC = () => {
         )}
 
         <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6">
-          <h3 className="text-xl font-semibold text-gray-900 mb-3">Related resources</h3>
+          <h3 className="text-xl font-semibold text-gray-900 mb-3">{t('landing_related_resources', 'Related resources')}</h3>
           <ul className="space-y-2">
             {page.relatedLinks.map((link) => (
               <li key={link.to + link.label}>

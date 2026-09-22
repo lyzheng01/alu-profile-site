@@ -99,9 +99,9 @@ const Footer: React.FC = () => {
           <div>
             <h4 className="font-semibold mb-4">{t('footer_contact', 'Contact Us')}</h4>
             <ul className="space-y-2 text-gray-400">
-              <li>Phone: +86 18326081058</li>
-              <li>Email: iris@lingyealu.com</li>
-              <li>Address: Hefei, Anhui, China</li>
+              <li>{t('contact_phone_label', 'Phone')}: +86 18326081058</li>
+              <li>{t('contact_email_label', 'Email')}: iris@lingyealu.com</li>
+              <li>{t('contact_address_label', 'Address')}: Hefei, Anhui, China</li>
             </ul>
           </div>
           <div>

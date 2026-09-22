@@ -87,28 +87,28 @@ const About: React.FC = () => {
     const fetchData = async () => {
       try {
         // 获取公司基本信息
-        const infoResponse = await fetch(API_ENDPOINTS.COMPANY_INFO);
+        const infoResponse = await fetch(`${API_ENDPOINTS.COMPANY_INFO}?lang=${currentLanguage}`);
         if (infoResponse.ok) {
           const infoData = await infoResponse.json();
           setCompanyInfo(infoData.results || infoData);
         }
 
         // 获取公司优势
-        const advantagesResponse = await fetch(API_ENDPOINTS.ADVANTAGES);
+        const advantagesResponse = await fetch(`${API_ENDPOINTS.ADVANTAGES}?lang=${currentLanguage}`);
         if (advantagesResponse.ok) {
           const advantagesData = await advantagesResponse.json();
           setAdvantages(advantagesData.results || advantagesData);
         }
 
         // 获取证书信息
-        const certificatesResponse = await fetch(API_ENDPOINTS.CERTIFICATES);
+        const certificatesResponse = await fetch(`${API_ENDPOINTS.CERTIFICATES}?lang=${currentLanguage}`);
         if (certificatesResponse.ok) {
           const certificatesData = await certificatesResponse.json();
           setCertificates(certificatesData.results || certificatesData);
         }
 
         // 获取工厂图片
-        const factoryResponse = await fetch(API_ENDPOINTS.FACTORY_IMAGES);
+        const factoryResponse = await fetch(`${API_ENDPOINTS.FACTORY_IMAGES}?lang=${currentLanguage}`);
         if (factoryResponse.ok) {
           const factoryData = await factoryResponse.json();
           setFactoryImages(factoryData.results || factoryData);
@@ -121,7 +121,7 @@ const About: React.FC = () => {
     };
 
     fetchData();
-  }, []);
+  }, [currentLanguage]);
 
   // 获取特定类型的公司信息
   const getCompanyInfo = (key: string) => {
@@ -135,7 +135,7 @@ const About: React.FC = () => {
         <div className="max-w-7xl mx-auto px-8 py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading...</p>
+            <p className="mt-4 text-gray-600">{t('status_loading', 'Loading...')}</p>
           </div>
         </div>
       </div>
@@ -180,19 +180,11 @@ const About: React.FC = () => {
             </div>
             <div className="relative">
               <div className="bg-gray-200 h-96 rounded-lg overflow-hidden">
-                {factoryImages.length > 0 ? (
-                  <img
-                    src={factoryImages[0].image}
-                    alt="Company Factory"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400">
-                    <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                )}
+                <img
+                  src={factoryImages[0]?.image || '/images/aluminium-profile-engineering.webp'}
+                  alt={factoryImages[0]?.title || 'Aluminium profile engineering workspace'}
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
           </div>

@@ -232,18 +232,18 @@ const Products: React.FC = () => {
         <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(2,6,23,0.92),rgba(12,74,110,0.74),rgba(15,23,42,0.70))]" />
         <div className="relative mx-auto max-w-7xl px-6 py-16 lg:px-8 lg:py-20">
           <div className="max-w-4xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-200">Product catalog</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-200">{t('products_catalog_label', 'Product catalog')}</p>
             <h1 className="mt-4 text-4xl font-semibold leading-tight md:text-5xl">
-              Aluminum Profile Product Center
+              {t('products_center_title', 'Aluminum Profile Product Center')}
             </h1>
             <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-100">
-              Find architectural, industrial, trim, tube, and custom extrusion profiles with the details buyers need before sending drawings or RFQs.
+              {t('products_center_desc', 'Find architectural, industrial, trim, tube, and custom extrusion profiles with the details buyers need before sending drawings or RFQs.')}
             </p>
           </div>
           <div className="mt-8 grid gap-4 text-sm text-slate-100 sm:grid-cols-3">
-            <div className="rounded-lg border border-white/15 bg-white/10 p-4 backdrop-blur">Custom extrusion and OEM projects</div>
-            <div className="rounded-lg border border-white/15 bg-white/10 p-4 backdrop-blur">Anodizing, powder coating, CNC support</div>
-            <div className="rounded-lg border border-white/15 bg-white/10 p-4 backdrop-blur">Export packaging and shipment planning</div>
+            <div className="rounded-lg border border-white/15 bg-white/10 p-4 backdrop-blur">{t('products_feature_custom', 'Custom extrusion and OEM projects')}</div>
+            <div className="rounded-lg border border-white/15 bg-white/10 p-4 backdrop-blur">{t('products_feature_finish', 'Anodizing, powder coating, CNC support')}</div>
+            <div className="rounded-lg border border-white/15 bg-white/10 p-4 backdrop-blur">{t('products_feature_export', 'Export packaging and shipment planning')}</div>
           </div>
         </div>
       </section>
@@ -252,8 +252,8 @@ const Products: React.FC = () => {
         <div className="mb-8 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h2 className="text-lg font-semibold text-slate-900">Browse by profile type</h2>
-              <p className="mt-1 text-sm text-slate-600">Use categories as a fast starting point, then open a product page for parameters and RFQ details.</p>
+              <h2 className="text-lg font-semibold text-slate-900">{t('products_browse_title', 'Browse by profile type')}</h2>
+              <p className="mt-1 text-sm text-slate-600">{t('products_browse_desc', 'Use categories as a fast starting point, then open a product page for parameters and RFQ details.')}</p>
             </div>
             <div className="flex flex-wrap gap-2">
               <button
@@ -265,7 +265,7 @@ const Products: React.FC = () => {
                     : 'border-slate-200 bg-white text-slate-700 hover:border-sky-400 hover:text-sky-700'
                 }`}
               >
-                All Products
+                {t('product_detail_all_products', 'All Products')}
               </button>
               {categories.map((category) => (
                 <button
@@ -342,13 +342,13 @@ const Products: React.FC = () => {
                     <dl className="mt-5 grid gap-3 text-sm">
                       {product.range_param && (
                         <div className="rounded-lg bg-slate-50 p-3">
-                          <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Range</dt>
+                          <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">{t('products_range', 'Range')}</dt>
                           <dd className="mt-1 text-slate-900">{product.range_param}</dd>
                         </div>
                       )}
                       {(product.grade || product.temper) && (
                         <div className="rounded-lg bg-slate-50 p-3">
-                          <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Alloy / Temper</dt>
+                          <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">{t('products_alloy_temper', 'Alloy / Temper')}</dt>
                           <dd className="mt-1 text-slate-900">{[product.grade, product.temper].filter(Boolean).join(' / ')}</dd>
                         </div>
                       )}
@@ -358,13 +358,13 @@ const Products: React.FC = () => {
                         to={`/${currentLanguage}/products/${product.slug}`}
                         className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-800 focus:outline-none focus:ring-2 focus:ring-sky-500"
                       >
-                        View Details
+                        {t('products_view_details', 'View Details')}
                       </Link>
                       <Link
                         to={`/${currentLanguage}/products/${product.id}#inquiry`}
                         className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-lg border border-sky-200 px-4 py-2 text-sm font-semibold text-sky-800 transition hover:border-sky-500 hover:bg-sky-50 focus:outline-none focus:ring-2 focus:ring-sky-500"
                       >
-                        Send RFQ
+                        {t('products_send_rfq', 'Send RFQ')}
                       </Link>
                     </div>
                   </div>
@@ -383,7 +383,7 @@ const Products: React.FC = () => {
 
         {currentLanguage === 'en' && (
           <div className="mt-10 rounded-xl border border-gray-200 bg-white p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">Buying Guides</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">{t('products_buying_guides', 'Buying Guides')}</h2>
             <div className="grid md:grid-cols-3 gap-3 text-sm">
               <Link className="text-blue-700 hover:text-blue-900 underline" to="/en/aluminum-profile-supplier-for-construction-projects">
                 Aluminum Profile Supplier for Construction Projects

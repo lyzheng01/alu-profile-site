@@ -169,13 +169,13 @@ const NewsDetail: React.FC = () => {
       <div>
         <div className="max-w-4xl mx-auto px-8 py-12">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-800 mb-4">Article Not Found</h1>
-            <p className="text-gray-600 mb-6">The article you're looking for doesn't exist.</p>
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">{t('news_article_not_found', 'Article Not Found')}</h1>
+            <p className="text-gray-600 mb-6">{t('news_article_missing', "The article you're looking for doesn't exist.")}</p>
             <button
               onClick={() => navigate(`/${currentLanguage}/news`)}
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
             >
-              Back to News
+              {t('news_back_to_news', 'Back to News')}
             </button>
           </div>
         </div>
@@ -194,7 +194,7 @@ const NewsDetail: React.FC = () => {
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Back to News
+          {t('news_back_to_news', 'Back to News')}
         </Link>
 
         {/* 文章标题 */}
@@ -238,7 +238,7 @@ const NewsDetail: React.FC = () => {
         {/* 文章摘要 */}
         {(article.excerpt || article.summary) && (
           <div className="mb-8 p-6 bg-gray-50 rounded-lg">
-            <h2 className="text-xl font-semibold text-gray-800 mb-3">Summary</h2>
+            <h2 className="text-xl font-semibold text-gray-800 mb-3">{t('news_summary', 'Summary')}</h2>
             <p className="text-gray-600 leading-relaxed">{article.excerpt || article.summary}</p>
           </div>
         )}
@@ -421,7 +421,7 @@ const NewsList: React.FC = () => {
                 {filteredArticles.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg">{t('status_no_data', 'No news data')}</p>
-            <p className="text-gray-400 mt-2">Please add news in the admin panel</p>
+            <p className="text-gray-400 mt-2">{t('news_admin_hint', 'Please add news in the admin panel')}</p>
           </div>
         ) : (
           <>
@@ -464,7 +464,7 @@ const NewsList: React.FC = () => {
                     </h3>
                     
                                          <p className="text-gray-600 text-sm line-clamp-3 mb-4">
-                       {article.excerpt || article.summary || (article.content ? article.content.replace(/<[^>]+>/g, ' ').substring(0, 150).replace(/\s+/g, ' ').trim() + '...' : 'No content available')}
+                       {article.excerpt || article.summary || (article.content ? article.content.replace(/<[^>]+>/g, ' ').substring(0, 150).replace(/\s+/g, ' ').trim() + '...' : t('news_no_content', 'No content available'))}
                      </p>
 
                     {/* 标签 */}
@@ -505,7 +505,7 @@ const NewsList: React.FC = () => {
                     disabled={currentPage === 1}
                     className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
                   >
-                    Previous
+                    {t('news_previous', 'Previous')}
                   </button>
                   
                   {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
@@ -527,7 +527,7 @@ const NewsList: React.FC = () => {
                     disabled={currentPage === totalPages}
                     className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
                   >
-                    Next
+                    {t('news_next', 'Next')}
                   </button>
                 </div>
               </div>
@@ -538,7 +538,7 @@ const NewsList: React.FC = () => {
         {/* 新闻统计 */}
         <div className="mt-12 text-center">
           <p className="text-gray-600">
-            Found <span className="font-semibold text-blue-600">{filteredArticles.length}</span> news articles
+            {t('news_found_articles', 'Found {count} news articles').replace('{count}', String(filteredArticles.length))}
           </p>
         </div>
       </div>

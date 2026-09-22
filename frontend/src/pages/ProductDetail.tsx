@@ -438,7 +438,7 @@ const ProductDetail: React.FC = () => {
         <div className="max-w-7xl mx-auto px-8 py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading...</p>
+            <p className="mt-4 text-gray-600">{t('status_loading', 'Loading...')}</p>
           </div>
         </div>
       </div>
@@ -646,47 +646,47 @@ const ProductDetail: React.FC = () => {
                   </div>
                   <div className="flex items-start gap-4 py-2 border-b border-gray-100">
                     <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_temper_state', 'Temper State')}:</span>
-                    <span className="text-gray-900 flex-1">T5, T6</span>
+                    <span className="text-gray-900 flex-1">{product.temper || t('product_detail_temper_default', 'T5, T6')}</span>
                   </div>
                   {product.oem_available !== undefined && (
                     <div className="flex items-start gap-4 py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">OEM:</span>
+                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_oem', 'OEM')}:</span>
                       <span className="text-gray-900 flex-1">{product.oem_available ? 'Available' : 'Not Available'}</span>
                     </div>
                   )}
                   {product.free_samples && (
                     <div className="flex items-start gap-4 py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Free Samples:</span>
+                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_free_samples', 'Free Samples')}:</span>
                       <span className="text-gray-900 flex-1">{product.free_samples}</span>
                     </div>
                   )}
                   {product.supply_ability && (
                     <div className="flex items-start gap-4 py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Supply Ability:</span>
+                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_supply_ability', 'Supply Ability')}:</span>
                       <span className="text-gray-900 flex-1">{product.supply_ability}</span>
                     </div>
                   )}
                   {product.payment_terms && (
                     <div className="flex items-start gap-4 py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Payment:</span>
+                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_payment', 'Payment')}:</span>
                       <span className="text-gray-900 flex-1">{product.payment_terms}</span>
                     </div>
                   )}
                   {product.product_origin && (
                     <div className="flex items-start gap-4 py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Product Origin:</span>
+                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_origin', 'Product Origin')}:</span>
                       <span className="text-gray-900 flex-1">{product.product_origin}</span>
                     </div>
                   )}
                   {product.shipping_port && (
                     <div className="flex items-start gap-4 py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Shipping Port:</span>
+                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_shipping_port', 'Shipping Port')}:</span>
                       <span className="text-gray-900 flex-1">{product.shipping_port}</span>
                     </div>
                   )}
                   {product.lead_time && (
                     <div className="flex items-start gap-4 py-2">
-                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Lead Time:</span>
+                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_lead_time', 'Lead Time')}:</span>
                       <span className="text-gray-900 flex-1">{product.lead_time}</span>
                     </div>
                   )}
@@ -698,8 +698,8 @@ const ProductDetail: React.FC = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
                     </div>
-                    <p className="text-gray-500 text-lg">No product parameter information</p>
-                    <p className="text-gray-400 text-sm mt-1">Please contact us for detailed technical specifications</p>
+                    <p className="text-gray-500 text-lg">{t('product_detail_no_parameters', 'No product parameter information')}</p>
+                    <p className="text-gray-400 text-sm mt-1">{t('product_detail_contact_specs', 'Please contact us for detailed technical specifications')}</p>
                   </div>
                 )}
               </div>
@@ -813,7 +813,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                       </div>
-                      <p className="text-gray-500 text-lg">No product feature data</p>
+                      <p className="text-gray-500 text-lg">{t('product_detail_no_features', 'No product feature data')}</p>
                     </div>
                   )}
                 </div>
@@ -1052,7 +1052,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
             {product.packaging_details && (
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                 <div className="p-6">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Packaging Details</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('product_detail_packaging', 'Packaging Details')}</h2>
                   <p className="text-gray-700 text-lg leading-relaxed">{product.packaging_details}</p>
                 </div>
               </div>
@@ -1104,7 +1104,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                         height="300"
                       />
                     ) : (
-                      <p className="text-gray-500 text-sm">No Image</p>
+                      <p className="text-gray-500 text-sm">{t('product_detail_no_image', 'No Image')}</p>
                     )}
                   </div>
                   <div className="p-4">

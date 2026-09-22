@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { API_ENDPOINTS } from '../config/api';
 import { trackEvent } from '../utils/analytics';
+import { useTranslation } from '../contexts/TranslationContext';
 
 interface InquiryFormProps {
   productName?: string;
@@ -9,6 +10,7 @@ interface InquiryFormProps {
 }
 
 const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onSuccess }) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -85,12 +87,12 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
       } else {
         const errorData = await response.json();
         setSubmitStatus('error');
-        setErrorMessage(errorData.message || 'Failed to submit inquiry. Please try again.');
+        setErrorMessage(errorData.message || t('inquiry_error_submit', 'Failed to submit inquiry. Please try again.'));
       }
     } catch (error) {
       console.error('Error submitting inquiry:', error);
       setSubmitStatus('error');
-      setErrorMessage('Network error. Please check your connection and try again.');
+      setErrorMessage(t('inquiry_error_network', 'Network error. Please check your connection and try again.'));
     } finally {
       setIsSubmitting(false);
     }
@@ -99,8 +101,8 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
-        <h2 className="text-2xl font-bold text-white">Get a Quote</h2>
-        <p className="text-blue-100 text-sm mt-1">Fill out the form below and we'll get back to you as soon as possible</p>
+        <h2 className="text-2xl font-bold text-white">{t('inquiry_title', 'Get a Quote')}</h2>
+        <p className="text-blue-100 text-sm mt-1">{t('inquiry_subtitle', "Fill out the form below and we'll get back to you as soon as possible")}</p>
       </div>
       
       <form onSubmit={handleSubmit} className="p-6">
@@ -108,7 +110,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
           {/* Name */}
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-              Name <span className="text-red-500">*</span>
+              {t('inquiry_name', 'Name')} <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -118,14 +120,14 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
               value={formData.name}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-              placeholder="Your full name"
+              placeholder={t('inquiry_name_placeholder', 'Your full name')}
             />
           </div>
 
           {/* Email */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-              Email <span className="text-red-500">*</span>
+              {t('inquiry_email', 'Email')} <span className="text-red-500">*</span>
             </label>
             <input
               type="email"
@@ -142,7 +144,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
           {/* Company */}
           <div>
             <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
-              Company Name
+              {t('inquiry_company', 'Company Name')}
             </label>
             <input
               type="text"
@@ -151,14 +153,14 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
               value={formData.company}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-              placeholder="Your company name"
+              placeholder={t('inquiry_company_placeholder', 'Your company name')}
             />
           </div>
 
           {/* Country */}
           <div>
             <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">
-              Country
+              {t('inquiry_country', 'Country')}
             </label>
             <input
               type="text"
@@ -167,7 +169,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
               value={formData.country}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-              placeholder="Your country"
+              placeholder={t('inquiry_country_placeholder', 'Your country')}
             />
           </div>
         </div>
@@ -175,7 +177,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
         {/* Subject */}
         <div className="mt-6">
           <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-            Subject <span className="text-red-500">*</span>
+            {t('inquiry_subject', 'Subject')} <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -185,14 +187,14 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
             value={formData.subject}
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-            placeholder="Inquiry subject"
+            placeholder={t('inquiry_subject_placeholder', 'Inquiry subject')}
           />
         </div>
 
         {/* Message */}
         <div className="mt-6">
           <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-            Your Message <span className="text-red-500">*</span>
+            {t('inquiry_message', 'Your Message')} <span className="text-red-500">*</span>
           </label>
           <textarea
             id="message"
@@ -202,11 +204,11 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
             value={formData.message}
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition resize-none"
-            placeholder="Please describe your inquiry in detail..."
+            placeholder={t('inquiry_message_placeholder', 'Please describe your inquiry in detail...')}
           />
           {productLink && (
             <p className="text-xs text-gray-500 mt-1">
-              Product link will be automatically attached to your message
+              {t('inquiry_product_link_notice', 'Product link will be automatically attached to your message')}
             </p>
           )}
         </div>
@@ -228,10 +230,10 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Submitting...
+                {t('inquiry_submitting', 'Submitting...')}
               </span>
             ) : (
-              'Submit Inquiry'
+              t('inquiry_submit', 'Submit Inquiry')
             )}
           </button>
         </div>
@@ -243,7 +245,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
               <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
-              <p className="text-green-800 font-medium">Inquiry submitted successfully! We'll get back to you soon.</p>
+              <p className="text-green-800 font-medium">{t('inquiry_success', "Inquiry submitted successfully! We'll get back to you soon.")}</p>
             </div>
           </div>
         )}
