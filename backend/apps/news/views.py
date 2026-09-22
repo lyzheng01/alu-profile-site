@@ -42,6 +42,11 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Article.objects.filter(status='published').order_by('-published_at', '-created_at')
     serializer_class = ArticleSerializer
     lookup_field = 'pk'
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['language'] = self.request.query_params.get('lang', 'zh')
+        return context
     
     def get_serializer_class(self):
         """根据action选择序列化器"""
