@@ -86,7 +86,7 @@ const Products: React.FC = () => {
       'Browse architectural, industrial, trim, tube, and custom aluminum extrusion profiles with alloy, temper, finish, and RFQ details for export buyers.',
     ogTitle: 'LingYe Aluminum Product Catalog',
     ogDescription: 'Find aluminum profiles for windows, doors, industrial framing, trim, tubes, and OEM extrusion projects.',
-    ogImage: 'https://lingyealu.cn/logo.jpg?v=3',
+    ogImage: 'https://lingyealuminum.com/logo.jpg?v=3',
     language: currentLanguage,
   });
 
@@ -95,13 +95,13 @@ const Products: React.FC = () => {
     '@type': 'CollectionPage',
     name: 'Aluminum Profile Product Catalog | LingYe Aluminum',
     description: 'Browse architectural, industrial, trim, tube, and custom aluminum extrusion profiles.',
-    isPartOf: { '@type': 'WebSite', name: 'LingYe Aluminum', url: 'https://lingyealu.cn' },
+    isPartOf: { '@type': 'WebSite', name: 'LingYe Aluminum', url: 'https://lingyealuminum.com' },
   }), []);
 
   useStructuredData('products-collection', collectionStructuredData);
 
   const breadcrumbStructuredData = React.useMemo(() => {
-    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.cn';
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealuminum.com';
     return {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',

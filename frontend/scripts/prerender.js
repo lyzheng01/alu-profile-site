@@ -9,7 +9,7 @@ const http = require('http');
 
 const BUILD_DIR = path.join(__dirname, '..', 'build');
 const PRERENDER_DIR = path.join(BUILD_DIR, 'prerendered');
-const API_BASE = process.env.PRERENDER_API_BASE || 'http://127.0.0.1:9001/api';
+const API_BASE = process.env.PRERENDER_API_BASE || 'https://lingyealuminum.com/api';
 const PORT = parseInt(process.env.PRERENDER_PORT || '3456', 10);
 const CONCURRENCY = 2;
 const RENDER_TIMEOUT = 15000;
@@ -126,7 +126,7 @@ const prerender = async () => {
       await page.goto(`${baseUrl}${route}`, { waitUntil: 'domcontentloaded', timeout: RENDER_TIMEOUT });
       await new Promise((r) => setTimeout(r, 2000));
       let html = await page.content();
-      html = html.replace(/http:\/\/127\.0\.0\.1:\d+/g, 'https://lingyealu.cn');
+      html = html.replace(/http:\/\/127\.0\.0\.1:\d+/g, 'https://lingyealuminum.com');
       const outDir = path.join(PRERENDER_DIR, route === '/' ? '' : route);
       fs.mkdirSync(outDir, { recursive: true });
       fs.writeFileSync(path.join(outDir, 'index.html'), html, 'utf8');

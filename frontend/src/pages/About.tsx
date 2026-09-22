@@ -45,7 +45,7 @@ const About: React.FC = () => {
     title: 'About Us | LingYe Aluminum',
     description: 'Professional aluminum profile manufacturer with 15 years of experience, serving 60+ countries worldwide.',
     canonicalPath: `/${currentLanguage}/about`,
-    ogImage: 'https://lingyealu.cn/logo.jpg?v=3',
+    ogImage: 'https://lingyealuminum.com/logo.jpg?v=3',
     ogTitle: 'About Us | LingYe Aluminum',
     ogDescription: 'Professional aluminum profile manufacturer with 15 years of experience, serving 60+ countries worldwide.',
     language: currentLanguage,
@@ -55,8 +55,8 @@ const About: React.FC = () => {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'LingYe Aluminum',
-    url: 'https://lingyealu.cn',
-    logo: 'https://lingyealu.cn/logo.jpg?v=3',
+    url: 'https://lingyealuminum.com',
+    logo: 'https://lingyealuminum.com/logo.jpg?v=3',
     description: 'Aluminum profile manufacturer for industrial and architectural applications.',
     sameAs: [
       'https://facebook.com/lingyealu',
@@ -69,7 +69,7 @@ const About: React.FC = () => {
   useStructuredData('about-organization', organizationStructuredData);
 
   const breadcrumbStructuredData = React.useMemo(() => {
-    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.cn';
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealuminum.com';
     return {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',

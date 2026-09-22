@@ -109,8 +109,8 @@ const ProductDetail: React.FC = () => {
       : undefined,
     canonicalPath: product?.slug ? `/${currentLanguage}/products/${product.slug}` : undefined,
     ogImage: product?.images?.[0]?.image
-      ? (product.images[0].image.startsWith('http') ? product.images[0].image : `https://lingyealu.cn${product.images[0].image}`)
-      : 'https://lingyealu.cn/logo.jpg?v=3',
+      ? (product.images[0].image.startsWith('http') ? product.images[0].image : `https://lingyealuminum.com${product.images[0].image}`)
+      : 'https://lingyealuminum.com/logo.jpg?v=3',
     ogTitle: product ? `${product.name} | LingYe Aluminum` : undefined,
     ogDescription: product?.description || undefined,
     language: currentLanguage,
@@ -152,7 +152,7 @@ const ProductDetail: React.FC = () => {
 
   const breadcrumbStructuredData = React.useMemo(() => {
     if (!product) return null;
-    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.cn';
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealuminum.com';
     return {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',

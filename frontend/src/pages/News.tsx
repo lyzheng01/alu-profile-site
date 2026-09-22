@@ -79,7 +79,7 @@ const NewsDetail: React.FC = () => {
 
   const breadcrumbStructuredData = React.useMemo(() => {
     if (!article) return null;
-    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.cn';
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealuminum.com';
     return {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
@@ -284,13 +284,13 @@ const NewsList: React.FC = () => {
     '@type': 'CollectionPage',
     name: 'Aluminum Industry News | LingYe Aluminum',
     description: 'Latest aluminum market trends, processing insights, and product updates.',
-    isPartOf: { '@type': 'WebSite', name: 'LingYe Aluminum', url: 'https://lingyealu.cn' },
+    isPartOf: { '@type': 'WebSite', name: 'LingYe Aluminum', url: 'https://lingyealuminum.com' },
   }), []);
 
   useStructuredData('news-list-collection', collectionStructuredData);
 
   const breadcrumbStructuredData = React.useMemo(() => {
-    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.cn';
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealuminum.com';
     return {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',

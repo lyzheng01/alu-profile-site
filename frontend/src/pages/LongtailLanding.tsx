@@ -246,7 +246,7 @@ const LongtailLanding: React.FC = () => {
     title: page?.title,
     description: page?.description,
     canonicalPath: page ? `/en/${page.slug}` : undefined,
-    ogImage: 'https://lingyealu.cn/logo.jpg?v=3',
+    ogImage: 'https://lingyealuminum.com/logo.jpg?v=3',
     ogTitle: page?.title,
     ogDescription: page?.description,
     language: 'en',
@@ -281,13 +281,13 @@ const LongtailLanding: React.FC = () => {
       description: page.description,
       brand: { '@type': 'Brand', name: 'LingYe Aluminum' },
       manufacturer: { '@type': 'Organization', name: 'LingYe Aluminum' },
-      url: typeof window !== 'undefined' ? window.location.href : `https://lingyealu.cn/en/${page.slug}`,
+      url: typeof window !== 'undefined' ? window.location.href : `https://lingyealuminum.com/en/${page.slug}`,
     };
   }, [page]);
 
   const breadcrumbData = React.useMemo(() => {
     if (!page) return null;
-    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.cn';
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealuminum.com';
     return {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',

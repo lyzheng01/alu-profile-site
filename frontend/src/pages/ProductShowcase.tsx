@@ -58,7 +58,7 @@ const ProductShowcase: React.FC = () => {
     title: 'Aluminium Windows & Doors System | LingYe Aluminum',
     description: 'Custom-engineered thermal break aluminum profiles for windows, doors, curtain walls and villa folding doors. European-class quality control.',
     canonicalPath: `/${currentLanguage}/products/windows-doors/showcase`,
-    ogImage: 'https://lingyealu.cn/logo.jpg?v=3',
+    ogImage: 'https://lingyealuminum.com/logo.jpg?v=3',
     language: currentLanguage,
   });
 
@@ -69,13 +69,13 @@ const ProductShowcase: React.FC = () => {
     description: 'Custom-engineered thermal break aluminum profiles for windows, doors, curtain walls and villa folding doors.',
     brand: { '@type': 'Brand', name: 'LingYe Aluminum' },
     category: 'Aluminum Profiles for Windows and Doors',
-    image: ['https://lingyealu.cn/logo.jpg?v=3'],
+    image: ['https://lingyealuminum.com/logo.jpg?v=3'],
   }), []);
 
   useStructuredData('showcase-product', productStructuredData);
 
   const breadcrumbStructuredData = React.useMemo(() => {
-    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.cn';
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealuminum.com';
     return {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',

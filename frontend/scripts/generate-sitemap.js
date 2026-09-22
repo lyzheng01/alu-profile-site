@@ -2,8 +2,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const SITE_URL = process.env.SITE_URL || 'https://lingyealu.cn';
-const API_BASE = process.env.SITEMAP_API_BASE || 'http://127.0.0.1:9001/api';
+const SITE_URL = process.env.SITE_URL || 'https://lingyealuminum.com';
+const API_BASE = process.env.SITEMAP_API_BASE || 'https://lingyealuminum.com/api';
 const LANGS = ['en', 'zh', 'es', 'pt'];
 const EN_LANDING_SLUGS = [
   'aluminum-profile-supplier-for-construction-projects',

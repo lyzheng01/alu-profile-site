@@ -26,7 +26,7 @@ test('updates html language, canonical, and social metadata for an English page'
 
   expect(document.documentElement.lang).toBe('en');
   expect(document.title).toBe('China Aluminum Profile Manufacturer | LingYe Aluminum');
-  expect(document.querySelector('link[rel="canonical"]')).toHaveAttribute('href', 'http://localhost/en');
+  expect(document.querySelector('link[rel="canonical"]')).toHaveAttribute('href', 'https://lingyealuminum.com/en');
   expect(document.querySelector('meta[property="og:title"]')).toHaveAttribute('content', 'LingYe Aluminum Manufacturer');
   expect(document.querySelector('meta[name="twitter:description"]')).toHaveAttribute(
     'content',
