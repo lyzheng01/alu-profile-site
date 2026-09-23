@@ -140,20 +140,17 @@ const Navbar: React.FC = () => {
     <nav className={`sticky top-0 z-50 border-b border-slate-200 bg-white transition-all duration-300
       ${isScrolled ? 'shadow-md shadow-slate-900/10' : 'shadow-none'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to={`/${currentLanguage}`} className="flex items-center">
-              <div className="w-14 h-14 mr-3 flex items-center justify-center">
+              <div className="w-20 h-20 flex items-center justify-center">
                 <img 
                   src="/logo-mark.svg"
                   alt="LingYe"
                   className="w-full h-full object-contain"
                 />
               </div>
-              <span className="text-xl font-bold text-slate-900 whitespace-nowrap">
-                LingYe Aluminum
-              </span>
             </Link>
           </div>
 
