@@ -137,8 +137,8 @@ const Navbar: React.FC = () => {
   ];
 
   return (
-    <nav className={`sticky top-0 z-50 border-b border-slate-800 bg-slate-950 transition-all duration-300 
-      ${isScrolled ? 'shadow-lg shadow-slate-950/20' : 'shadow-none'}`}>
+    <nav className={`sticky top-0 z-50 border-b border-slate-200 bg-white transition-all duration-300
+      ${isScrolled ? 'shadow-md shadow-slate-900/10' : 'shadow-none'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -146,13 +146,13 @@ const Navbar: React.FC = () => {
             <Link to={`/${currentLanguage}`} className="flex items-center">
               <div className="w-14 h-14 mr-3 flex items-center justify-center">
                 <img 
-                  src="/logo.png?v=5" 
-                  alt="lingye Logo" 
+                  src="/logo-mark.svg"
+                  alt="LingYe"
                   className="w-full h-full object-contain"
                 />
               </div>
-              <span className="text-xl font-bold text-white whitespace-nowrap">
-                {t('home_title', 'LingYe Aluminum')}
+              <span className="text-xl font-bold text-slate-900 whitespace-nowrap">
+                LingYe Aluminum
               </span>
             </Link>
           </div>
@@ -172,8 +172,8 @@ const Navbar: React.FC = () => {
                         onMouseEnter={() => setIsProductsMenuOpen(true)}
                         className={`px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center space-x-1 cursor-pointer ${
                           isActive
-                            ? 'text-white bg-sky-700'
-                            : 'text-white hover:text-white hover:bg-white/10'
+                            ? 'text-sky-800 bg-sky-100'
+                            : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                         }`}
                       >
                         <span>{link.text}</span>
@@ -190,7 +190,7 @@ const Navbar: React.FC = () => {
                       {/* Products Dropdown Menu */}
                       {isProductsMenuOpen && (
                         <div 
-                          className="absolute top-full left-0 mt-2 w-80 bg-slate-950 rounded-lg shadow-xl border border-white/10 py-2 z-50"
+                          className="absolute top-full left-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-slate-200 py-2 z-50"
                           onMouseEnter={() => setIsProductsMenuOpen(true)}
                           onMouseLeave={() => setIsProductsMenuOpen(false)}
                         >
@@ -199,7 +199,7 @@ const Navbar: React.FC = () => {
                               <Link
                                 to={`/${currentLanguage}/products?category=${category.id}`}
                                 onClick={() => setIsProductsMenuOpen(false)}
-                                className="block px-4 py-2 text-sm text-white hover:text-white hover:bg-white/10 transition-colors font-medium"
+                                className="block px-4 py-2 text-sm text-slate-800 hover:text-slate-950 hover:bg-slate-100 transition-colors font-medium"
                               >
                                 {category.name}
                               </Link>
@@ -210,7 +210,7 @@ const Navbar: React.FC = () => {
                                       key={subcategory.id}
                                       to={`/${currentLanguage}/products?category=${category.id}&subcategory=${subcategory.id}`}
                                       onClick={() => setIsProductsMenuOpen(false)}
-                                      className="block px-4 py-1 text-xs text-sky-200 hover:text-white hover:bg-white/10 transition-colors"
+                                      className="block px-4 py-1 text-xs text-slate-500 hover:text-sky-800 hover:bg-sky-50 transition-colors"
                                     >
                                       • {subcategory.name}
                                     </Link>
@@ -232,8 +232,8 @@ const Navbar: React.FC = () => {
                     to={link.to}
                     className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                       isActive
-                        ? 'text-white bg-sky-700'
-                        : 'text-white hover:text-white hover:bg-white/10'
+                        ? 'text-sky-800 bg-sky-100'
+                        : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                     }`}
                   >
                     {link.text}
@@ -248,13 +248,13 @@ const Navbar: React.FC = () => {
             <button
               onClick={() => setIsLanguageMenuOpen(!isLanguageMenuOpen)}
               disabled={isLoading}
-              className="flex min-h-[44px] items-center space-x-2 rounded-lg bg-white/10 px-3 py-2 text-white transition-colors hover:bg-white/15 disabled:opacity-50 sm:px-4"
+              className="flex min-h-[44px] items-center space-x-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-700 transition-colors hover:bg-slate-50 disabled:opacity-50 sm:px-4"
             >
               <span className="text-sm font-medium">
                 {supportedLanguages.find(lang => lang.code === currentLanguage)?.nativeName || '中文'}
               </span>
               {isLoading && (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-slate-500 border-t-transparent rounded-full animate-spin"></div>
               )}
               <svg
                 className={`w-4 h-4 transition-transform ${isLanguageMenuOpen ? 'rotate-180' : ''}`}
@@ -268,21 +268,21 @@ const Navbar: React.FC = () => {
 
             {/* Language Dropdown */}
             {isLanguageMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-slate-950 rounded-lg shadow-lg border border-white/10 py-2 z-50">
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-2 z-50">
                 {supportedLanguages.map((language) => (
                   <button
                     key={language.code}
                     onClick={() => handleLanguageChange(language.code)}
                     disabled={isLoading}
                     className={`w-full text-left px-4 py-2 text-sm hover:bg-blue-600 transition-colors ${
-                      currentLanguage === language.code ? 'bg-sky-700 text-white' : 'text-white hover:bg-white/10'
+                      currentLanguage === language.code ? 'bg-sky-100 text-sky-900' : 'text-slate-700 hover:bg-slate-100'
                     } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
                     <div className="flex items-center space-x-2">
                       <span className="text-lg">{getLanguageFlag(language.code)}</span>
                       <div>
                         <div className="font-medium">{language.nativeName}</div>
-                        <div className="text-xs text-sky-200">{language.name}</div>
+                        <div className="text-xs text-slate-500">{language.name}</div>
                       </div>
                     </div>
                   </button>
@@ -298,7 +298,7 @@ const Navbar: React.FC = () => {
               aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={isMobileMenuOpen}
               onClick={() => setIsMobileMenuOpen((open) => !open)}
-              className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-white transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/70"
+              className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-slate-700 transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500/70"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {isMobileMenuOpen ? (
@@ -327,8 +327,8 @@ const Navbar: React.FC = () => {
                     onClick={() => setIsProductsMenuOpen(!isProductsMenuOpen)}
                     className={`w-full text-left px-3 py-2 rounded-md text-base font-medium flex items-center justify-between ${
                       isActive
-                        ? 'text-white bg-sky-700'
-                        : 'text-white hover:text-white hover:bg-white/10'
+                        ? 'text-sky-800 bg-sky-100'
+                        : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                     }`}
                   >
                     <span>{link.text}</span>
@@ -344,7 +344,7 @@ const Navbar: React.FC = () => {
                   
                   {/* Mobile Products Dropdown */}
                   {isProductsMenuOpen && (
-                    <div className="mt-2 ml-4 bg-white/10 rounded-lg p-2">
+                    <div className="mt-2 ml-4 bg-slate-50 rounded-lg p-2">
                       {productCategories.map((category) => (
                         <div key={category.id}>
                           <Link
@@ -353,7 +353,7 @@ const Navbar: React.FC = () => {
                               setIsProductsMenuOpen(false);
                               setIsMobileMenuOpen(false);
                             }}
-                            className="block px-3 py-2 text-sm text-white hover:text-white hover:bg-white/10 rounded transition-colors font-medium"
+                            className="block px-3 py-2 text-sm text-slate-800 hover:text-slate-950 hover:bg-slate-100 rounded transition-colors font-medium"
                           >
                             {category.name}
                           </Link>
@@ -367,7 +367,7 @@ const Navbar: React.FC = () => {
                                     setIsProductsMenuOpen(false);
                                     setIsMobileMenuOpen(false);
                                   }}
-                                  className="block px-3 py-1 text-xs text-sky-200 hover:text-white hover:bg-white/10 rounded transition-colors"
+                                  className="block px-3 py-1 text-xs text-slate-500 hover:text-sky-800 hover:bg-sky-50 rounded transition-colors"
                                 >
                                   • {subcategory.name}
                                 </Link>
@@ -389,8 +389,8 @@ const Navbar: React.FC = () => {
                 to={link.to}
                 className={`block px-3 py-2 rounded-md text-base font-medium ${
                   isActive
-                    ? 'text-white bg-sky-700'
-                    : 'text-white hover:text-white hover:bg-white/10'
+                    ? 'text-sky-800 bg-sky-100'
+                    : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
