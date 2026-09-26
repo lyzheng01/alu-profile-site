@@ -2,6 +2,7 @@ import '@testing-library/jest-dom';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { API_ENDPOINTS } from '../config/api';
 import Home from './Home';
 
 jest.mock('../contexts/TranslationContext', () => ({
@@ -40,16 +41,6 @@ test('renders the new B2B homepage structure and requests featured products', as
       ok: true,
       json: async () => ({
         results: [
-          { title: '首页图片1', image: '/media/factory-1.jpg' },
-          { title: '首页图片3', image: '/media/factory-3.jpg' },
-          { title: 'Banner 3', image: '/media/banner-3.jpg' },
-        ],
-      }),
-    })
-    .mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
-        results: [
           {
             id: 1,
             name: 'Thermal Break Window Profile',
@@ -80,6 +71,11 @@ test('renders the new B2B homepage structure and requests featured products', as
   );
 
   const heroHeading = await screen.findByRole('heading', { name: /Precision Aluminum Extrusion Solutions/i });
+  const factoryShowcase = await screen.findByTestId('factory-showcase');
+  const homeText = document.body.textContent || '';
+  expect(homeText.indexOf('Recommended Profiles for High-Intent Buyers')).toBeLessThan(homeText.indexOf('Factory Showcase'));
+  expect(homeText.indexOf('Factory Showcase')).toBeLessThan(homeText.indexOf('Profile Finishes and Applications'));
+  expect(factoryShowcase).toBeInTheDocument();
   expect(heroHeading).toBeInTheDocument();
   expect(heroHeading).toHaveClass('text-4xl', 'sm:text-5xl', 'md:text-6xl');
   const heroSection = heroHeading.closest('section');
@@ -108,46 +104,77 @@ test('renders the new B2B homepage structure and requests featured products', as
   expect(screen.getByTestId('home-stats-grid')).toHaveClass('sm:grid-cols-3');
   const statCards = screen.getAllByTestId('home-stat-card');
   expect(statCards).toHaveLength(3);
-  expect(statCards[0]).toHaveTextContent('10+');
-  expect(statCards[0]).toHaveTextContent(/Years manufacturing/i);
-  expect(statCards[1]).toHaveTextContent('40+');
-  expect(statCards[1]).toHaveTextContent(/Global Markets/i);
-  expect(statCards[2]).toHaveTextContent('20000');
-  expect(statCards[2]).toHaveTextContent(/Annual Output\(tons\)/i);
+  expect(statCards[0]).toHaveTextContent('5');
+  expect(statCards[0]).toHaveTextContent(/Product categories/i);
+  expect(statCards[1]).toHaveTextContent('20');
+  expect(statCards[1]).toHaveTextContent(/Catalog references/i);
+  expect(statCards[2]).toHaveTextContent('2');
+  expect(statCards[2]).toHaveTextContent(/Regional window & door ranges/i);
   expect(screen.queryByText(/Extrusion and finishing lines/i)).not.toBeInTheDocument();
   expect(screen.queryByText(/Days standard lead time/i)).not.toBeInTheDocument();
   expect(screen.getByRole('heading', { name: /Explore Core Product Categories/i })).toBeInTheDocument();
   expect(screen.queryByText(/^Category navigation$/i)).not.toBeInTheDocument();
   const categoryImage = await screen.findByAltText('Construction Profiles');
-  expect(categoryImage).toHaveAttribute('src', expect.stringContaining('/media/products/chile_1.jpg'));
+  expect(categoryImage).toHaveAttribute('src', expect.stringContaining('/media/category-1.jpg'));
   expect(categoryImage).toHaveClass('object-contain', 'object-center');
-  expect(categoryImage).toHaveAttribute('loading', 'eager');
+  expect(categoryImage).toHaveAttribute('loading', 'lazy');
   const categoryLink = screen.getByRole('link', { name: /Construction Profiles/i });
   expect(categoryLink.parentElement).toHaveClass('md:grid-cols-3');
   expect(screen.getByText('Construction Profiles')).toBeInTheDocument();
   expect(screen.queryByText('Built for doors, windows, and facade projects.')).not.toBeInTheDocument();
   expect(screen.queryByText('View Category')).not.toBeInTheDocument();
-  expect(screen.getByRole('heading', { name: /Browse by Profile Application/i })).toBeInTheDocument();
-  expect(screen.queryByText(/^Profile applications$/i)).not.toBeInTheDocument();
-  expect(screen.getByText(/Window, door, industrial frame, tube, and structural profile/i)).toBeInTheDocument();
-  const windowProfilesLink = screen.getByRole('link', { name: /Window & Door Profiles/i });
-  expect(windowProfilesLink).toHaveAttribute(
-    'href',
-    '/en/products?category=6&subcategory=1'
-  );
-  expect(screen.getByRole('link', { name: /Industrial T-Slot Framing/i })).toHaveAttribute(
-    'href',
-    '/en/products?category=5'
-  );
-  expect(screen.getByRole('link', { name: /Tube & Structural Profiles/i })).toHaveAttribute(
-    'href',
-    '/en/products?category=7'
-  );
-  expect(windowProfilesLink.querySelector('img')).toHaveClass('object-contain', 'object-center');
-  expect(screen.getByRole('heading', { name: /Manufacturing Capabilities Buyers Check First/i })).toBeInTheDocument();
+  expect(screen.queryByRole('heading', { name: /Browse by Profile Application/i })).not.toBeInTheDocument();
+  expect(screen.queryByRole('link', { name: /Window & Door Profiles/i })).not.toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: /Profile Finishes and Applications/i })).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: /Start Your Quote With the Right Details/i })).toBeInTheDocument();
 
   await waitFor(() => {
     expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/api/products/?featured=true&lang=en'));
   });
+  expect(mockFetch).not.toHaveBeenCalledWith(API_ENDPOINTS.FACTORY_IMAGES);
+});
+
+test('uses three factory photos instead of product photos in the homepage hero carousel', async () => {
+  mockFetch.mockResolvedValue({ ok: true, json: async () => ({ results: [] }) });
+
+  render(
+    <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <Home />
+    </MemoryRouter>
+  );
+
+  const heroHeading = await screen.findByRole('heading', { name: /Precision Aluminum Extrusion Solutions/i });
+  const heroSection = heroHeading.closest('section');
+  const slideLayers = Array.from(heroSection?.querySelectorAll('div[style*="background-image"]') || []);
+
+  expect(screen.getAllByRole('button', { name: /Go to slide/ })).toHaveLength(3);
+  expect(slideLayers).toHaveLength(3);
+  expect(slideLayers.map((layer) => layer.getAttribute('style')).join(' ')).toContain('/images/factory-extrusion-lines.webp');
+  expect(slideLayers.map((layer) => layer.getAttribute('style')).join(' ')).toContain('/images/factory-crane-clean.webp');
+  expect(slideLayers.map((layer) => layer.getAttribute('style')).join(' ')).toContain('/images/factory-quality-inspection.webp');
+  expect(slideLayers.map((layer) => layer.getAttribute('style')).join(' ')).not.toContain('/media/products/');
+});
+
+test('shows the complete five-category catalog without unverified factory statistics', async () => {
+  mockFetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ results: [] }) })
+    .mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        results: ['Cabinet Profiles', 'Industrial Profiles', 'T-Slot Profiles', 'Windows & Doors', 'Standard Profiles'].map(
+          (name, id) => ({ id: id + 1, name, image: `/media/category-${id + 1}.jpg` })
+        ),
+      }),
+    });
+
+  render(
+    <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <Home />
+    </MemoryRouter>
+  );
+
+  await screen.findByRole('link', { name: /Standard Profiles/i });
+  expect(screen.getAllByRole('link').filter((link) => /Profiles|Windows & Doors/.test(link.textContent || '')).length).toBeGreaterThanOrEqual(5);
+  expect(screen.queryByText(/Years manufacturing|Global Markets|Annual Output/i)).not.toBeInTheDocument();
+  expect(screen.queryByText(/LingYe Aluminum factory image/i)).not.toBeInTheDocument();
 });

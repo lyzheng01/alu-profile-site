@@ -1,6 +1,7 @@
 import React from 'react';
 import FloatingContactButtons from '../components/FloatingContactButtons';
 import InquiryForm from '../components/InquiryForm';
+import FactoryShowcase from '../components/FactoryShowcase';
 import { useTranslation } from '../contexts/TranslationContext';
 import { useSeoMeta } from '../hooks/useSeoMeta';
 import { useStructuredData } from '../hooks/useStructuredData';
@@ -17,9 +18,7 @@ const productImages = [
 ];
 
 const factoryImages = [
-  'https://images.unsplash.com/photo-1502767089025-6572583495b0?auto=format&fit=crop&w=1600&q=80',
-  'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=80',
-  'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1600&q=80',
+  { src: '/images/quality-control-process-clean.webp', alt: 'Aluminum profile quality control process', fit: 'contain' },
 ];
 
 const finishes = [
@@ -177,6 +176,15 @@ const ProductShowcase: React.FC = () => {
 
         <section className="space-y-8">
           <h2 className="text-2xl font-bold text-slate-900">Finishes & Textures</h2>
+          <div className="mx-auto max-w-4xl overflow-hidden rounded-xl bg-slate-950">
+            <img
+              src="/images/surface-treatment-options-clean.webp"
+              alt="Aluminum surface finish samples"
+              className="mx-auto max-h-[720px] w-full object-contain"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {finishes.map((finish) => (
               <div key={finish.title} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -216,13 +224,15 @@ const ProductShowcase: React.FC = () => {
             </div>
             <div className="grid gap-4">
               {factoryImages.map((img, idx) => (
-                <div key={idx} className="w-full rounded-2xl overflow-hidden border border-slate-100">
-                  <img src={img} alt={`LingYe Aluminum factory and production facility ${idx + 1}`} className="w-full h-56 object-cover" />
+                <div key={img.src} className="w-full h-56 rounded-2xl overflow-hidden border border-slate-100 bg-white">
+                  <img src={img.src} alt={img.alt} className={`w-full h-full ${img.fit === 'contain' ? 'object-contain' : 'object-cover'}`} loading="lazy" decoding="async" />
                 </div>
               ))}
             </div>
           </div>
         </section>
+
+        <FactoryShowcase className="-mx-6 lg:-mx-12" />
 
         <section className="space-y-6">
           <h2 className="text-2xl font-bold text-slate-900">Manufacturing Journey</h2>

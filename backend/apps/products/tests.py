@@ -1,3 +1,4 @@
+import tempfile
 from django.contrib.admin.sites import AdminSite
 from django.contrib.auth import get_user_model
 from django.contrib.messages.storage.fallback import FallbackStorage
@@ -5,7 +6,7 @@ from django.contrib.sessions.middleware import SessionMiddleware
 from django.core.management import call_command
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template.loader import render_to_string
-from django.test import RequestFactory, TestCase
+from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
 from unittest import mock
 
@@ -247,3 +248,26 @@ class ProductTemplateSeedCommandTests(TestCase):
         self.assertIn('Tile Trim and Decorative Aluminium Profile', names)
         self.assertIn('Tube and Common Aluminium Profile', names)
         self.assertIn('Custom OEM Aluminium Extrusion', names)
+
+
+class SeedLingyeCatalogCommandTests(TestCase):
+    def test_seed_lingye_catalog_creates_five_categories_and_twenty_products_idempotently(self):
+        with tempfile.TemporaryDirectory() as media_root, override_settings(MEDIA_ROOT=media_root):
+            call_command('seed_lingye_catalog')
+
+            self.assertEqual(Category.objects.count(), 5)
+            self.assertEqual(Product.objects.count(), 20)
+            self.assertEqual(ProductImage.objects.count(), 20)
+            self.assertEqual(Product.objects.values_list('features', flat=True).distinct().count(), 20)
+            self.assertEqual(
+                set(Category.objects.values_list('slug', flat=True)),
+                {'cabinet-profiles', 'industrial-profiles', 't-slot-profiles', 'windows-doors', 'standard-aluminium-profiles'},
+            )
+            self.assertTrue(Product.objects.filter(slug='south-america-window-door-extrusions').exists())
+            self.assertTrue(Product.objects.filter(slug='africa-window-door-extrusions').exists())
+
+            call_command('seed_lingye_catalog')
+
+            self.assertEqual(Category.objects.count(), 5)
+            self.assertEqual(Product.objects.count(), 20)
+            self.assertEqual(ProductImage.objects.count(), 20)

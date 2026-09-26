@@ -1,0 +1,18 @@
+[Unit]
+Description=Lingye Aluminum Django API
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/www/wwwroot/Aluminum/backend
+EnvironmentFile=/etc/sysconfig/aluminum
+ExecStart=/www/server/pyporject_evn/aluminum_venv/bin/gunicorn aluminum.wsgi:application --workers 3 --bind 127.0.0.1:8010 --timeout 120
+Restart=on-failure
+RestartSec=5
+PrivateTmp=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

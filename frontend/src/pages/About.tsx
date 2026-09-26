@@ -181,8 +181,8 @@ const About: React.FC = () => {
             <div className="relative">
               <div className="bg-gray-200 h-96 rounded-lg overflow-hidden">
                 <img
-                  src={factoryImages[0]?.image || '/images/aluminium-profile-engineering.webp'}
-                  alt={factoryImages[0]?.title || 'Aluminium profile engineering workspace'}
+                  src="/images/factory-extrusion-lines.webp"
+                  alt="Aluminium extrusion production line"
                   className="w-full h-full object-cover"
                 />
               </div>

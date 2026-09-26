@@ -322,5 +322,8 @@
   "product_detail_payment": "Condiciones de pago",
   "product_detail_shipping_port": "Puerto de envío",
   "product_detail_supply_ability": "Capacidad de suministro",
-  "product_detail_temper_default": "T5, T6"
+  "product_detail_temper_default": "T5, T6",
+  "factory_showcase_about_cta": "Conozca nuestra fábrica",
+  "factory_extrusion_line_alt": "Línea de extrusión de perfiles de aluminio",
+  "factory_crane_alt": "Puente grúa en la fábrica de extrusión de aluminio"
 }

@@ -20,18 +20,29 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-your-secret-key-here'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-local-development-only')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['lingyealu.cn', 'www.lingyealu.cn', '127.0.0.1', 'localhost', '129.226.155.118', '*']
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.environ.get(
+        'DJANGO_ALLOWED_HOSTS',
+        'lingyealuminum.com,www.lingyealuminum.com,lingyealu.cn,www.lingyealu.cn,127.0.0.1,localhost',
+    ).split(',')
+    if host.strip()
+]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://lingyealu.cn',
     'https://www.lingyealu.cn',
     'https://lingyealu.com',
     'https://www.lingyealu.com',
+    'https://lingyealuminum.com',
+    'https://www.lingyealuminum.com',
+    'http://lingyealuminum.com',
+    'http://www.lingyealuminum.com',
 ]
 
 # Application definition
@@ -89,7 +100,7 @@ WSGI_APPLICATION = 'aluminum.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': os.environ.get('DJANGO_DB_PATH', BASE_DIR / 'db.sqlite3'),
         'OPTIONS': {
             'timeout': 20,  # 连接超时时间
             'check_same_thread': False,  # 允许多线程访问
@@ -159,8 +170,7 @@ STATICFILES_DIRS = [
 if DEBUG:
     MEDIA_URL = '/media/'
 else:
-    # 生产环境使用完整域名
-    MEDIA_URL = 'https://lingyealu.cn/media/'
+    MEDIA_URL = os.environ.get('MEDIA_URL', 'https://lingyealuminum.com/media/')
 
 MEDIA_ROOT = BASE_DIR / 'media'
 

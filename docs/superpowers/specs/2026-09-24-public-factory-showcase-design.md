@@ -8,7 +8,7 @@ Add one reusable factory-image module to the homepage and product-related experi
 
 - Render the same shared module on `/products`, `/products/:productSlug`, and `/products/windows-doors/showcase` for every supported language.
 - Render it on the homepage after featured products and before profile finish references, so the content flow moves from product discovery to manufacturing proof and then product detail references.
-- On product routes, place it after the page's primary product content and before its final contact/conversion area where one exists; otherwise place it before the footer.
+- On product routes, place it after the page's primary product content and before its final contact/conversion area where one exists; on the product detail page, preserve the existing inquiry form placement and put the module after the related-products area before the footer.
 - Keep product-specific `factory_images` on product details intact. The shared module is supplementary and must not replace data-backed galleries.
 - Use local, approved, clean imagery only. Exclude video frames with TÜV Rheinland branding, dates, or third-party signage. Do not use the generatively reconstructed inspector image as documentary factory evidence.
 - Localize module headings, supporting copy, and image alt text through the existing translation mechanism.

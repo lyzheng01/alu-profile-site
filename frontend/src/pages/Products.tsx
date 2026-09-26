@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { API_ENDPOINTS } from '../config/api';
 import FloatingContactButtons from '../components/FloatingContactButtons';
+import FactoryShowcase from '../components/FactoryShowcase';
 import { useTranslation } from '../contexts/TranslationContext';
 import { resolveMediaUrl } from '../utils/url';
 import { useSeoMeta } from '../hooks/useSeoMeta';
@@ -398,6 +399,8 @@ const Products: React.FC = () => {
           </div>
         )}
       </div>
+
+      <FactoryShowcase />
 
       {/* 悬浮联系按钮 */}
       <FloatingContactButtons />

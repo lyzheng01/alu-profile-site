@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { API_ENDPOINTS } from '../config/api';
 import FloatingContactButtons from '../components/FloatingContactButtons';
 import InquiryForm from '../components/InquiryForm';
+import FactoryShowcase from '../components/FactoryShowcase';
 import { useSeoMeta } from '../hooks/useSeoMeta';
 import { useStructuredData } from '../hooks/useStructuredData';
 import { useTranslation } from '../contexts/TranslationContext';
@@ -1123,6 +1124,8 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
             </div>
           </div>
         )}
+
+        <FactoryShowcase className="-mx-8" />
 
         {/* Inquiry Form placeholder removed - now inside right column */}
       </div>

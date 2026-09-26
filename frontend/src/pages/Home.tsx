@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import FloatingContactButtons from '../components/FloatingContactButtons';
+import FactoryShowcase from '../components/FactoryShowcase';
 import InquiryForm from '../components/InquiryForm';
 import { API_ENDPOINTS } from '../config/api';
 import { useTranslation } from '../contexts/TranslationContext';
@@ -183,7 +184,14 @@ const Home: React.FC = () => {
     fetchHomepageData();
   }, [currentLanguage]);
 
-  const slideImages = useMemo(() => [catalogImages.hero, catalogImages.heroAlt, catalogImages.productLine], []);
+  const slideImages = useMemo(
+    () => [
+      '/images/factory-extrusion-lines.webp',
+      '/images/factory-crane-clean.webp',
+      '/images/factory-quality-inspection.webp',
+    ],
+    []
+  );
 
   const galleryImages = useMemo(
     () => [
@@ -380,6 +388,8 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
+
+      <FactoryShowcase />
 
       <section className="bg-white py-16 md:py-20">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">

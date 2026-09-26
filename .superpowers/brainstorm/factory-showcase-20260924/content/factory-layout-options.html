@@ -1,0 +1,56 @@
+<h2>Factory Showcase: How Many Photos?</h2>
+<p class="subtitle">Compare the image count and layout. The two tiles marked CANDIDATE are extra desktop photos for review, not yet approved for the live site.</p>
+
+<style>
+  .layout-options { display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:1rem; }
+  .layout-option { background:var(--bg-secondary); border:2px solid var(--border); border-radius:12px; padding:1rem; cursor:pointer; }
+  .layout-option:hover { border-color:var(--accent); }
+  .layout-option.selected { border-color:var(--selected-border); background:var(--selected-bg); }
+  .layout-option h3 { margin:0 0 .25rem; }
+  .layout-option p { color:var(--text-secondary); font-size:.85rem; margin:0 0 .8rem; }
+  .photo-grid { display:grid; gap:6px; overflow:hidden; border-radius:6px; }
+  .photo-grid.two { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .photo-grid.four { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .photo-grid.feature { grid-template-columns:1.3fr 1fr; grid-template-rows:repeat(2,105px); }
+  .photo-grid img { width:100%; height:145px; display:block; object-fit:cover; background:#dce3e8; }
+  .photo-grid.four img { height:105px; }
+  .photo-grid.feature img { height:100%; }
+  .photo-grid.feature img:first-child { grid-row:span 2; }
+  .photo-label { display:block; color:var(--text-secondary); font-size:.68rem; padding-top:3px; }
+  .photo { min-width:0; }
+  .candidate-note { color:#825b00; font-weight:600; }
+  @media(max-width:640px) { #claude-content { padding:1rem; } .photo-grid.two img {height:115px;} }
+</style>
+
+<div class="layout-options">
+  <div class="layout-option" data-choice="two-large" onclick="toggleSelect(this)">
+    <h3>2 张大图</h3>
+    <p>只用当前两张干净工厂照片，视觉更舒展。</p>
+    <div class="photo-grid two">
+      <div class="photo"><img src="http://localhost:4002/images/factory-extrusion-lines.webp" alt="铝型材挤压线"><span class="photo-label">挤压生产线</span></div>
+      <div class="photo"><img src="http://localhost:4002/images/factory-crane-clean.webp" alt="行车与铝材"><span class="photo-label">行车与型材</span></div>
+    </div>
+  </div>
+
+  <div class="layout-option" data-choice="four-grid" onclick="toggleSelect(this)">
+    <h3>4 张均匀宫格</h3>
+    <p>一眼看到更多场景；额外两张是候选图，需审核后才采用。</p>
+    <div class="photo-grid four">
+      <div class="photo"><img src="http://localhost:4002/images/factory-extrusion-lines.webp" alt="铝型材挤压线"><span class="photo-label">挤压生产线</span></div>
+      <div class="photo"><img src="http://localhost:4002/images/factory-crane-clean.webp" alt="行车与铝材"><span class="photo-label">行车与型材</span></div>
+      <div class="photo"><img src="/files/factory-profile-lines-candidate.png" alt="去人物后的型材生产现场候选"><span class="photo-label candidate-note">候选：型材生产（去人物版）</span></div>
+      <div class="photo"><img src="/files/factory-exterior-candidate.png" alt="厂区全景候选"><span class="photo-label candidate-note">候选：厂区全景（处理版）</span></div>
+    </div>
+  </div>
+
+  <div class="layout-option" data-choice="feature-plus-three" onclick="toggleSelect(this)">
+    <h3>1 张主图 + 3 张辅助图</h3>
+    <p>主图更突出，辅助图补充设备和厂区信息；仍需确认两张候选素材。</p>
+    <div class="photo-grid feature">
+      <div class="photo"><img src="http://localhost:4002/images/factory-extrusion-lines.webp" alt="铝型材挤压线"><span class="photo-label">挤压生产线</span></div>
+      <div class="photo"><img src="http://localhost:4002/images/factory-crane-clean.webp" alt="行车与铝材"><span class="photo-label">行车与型材</span></div>
+      <div class="photo"><img src="/files/factory-profile-lines-candidate.png" alt="型材生产现场候选"><span class="photo-label candidate-note">候选：型材生产</span></div>
+      <div class="photo"><img src="/files/factory-exterior-candidate.png" alt="厂区全景候选"><span class="photo-label candidate-note">候选：厂区全景</span></div>
+    </div>
+  </div>
+</div>

@@ -83,6 +83,7 @@ test('renders a procurement-oriented product catalog with category filters and R
   expect(screen.getByText(/40x40 T-SLOT aluminium profiles/i)).toBeInTheDocument();
   expect(screen.getByText(/6063 Series \/ T5/i)).toBeInTheDocument();
   expect(screen.getByRole('link', { name: /Send RFQ/i })).toBeInTheDocument();
+  expect(await screen.findByTestId('factory-showcase')).toBeInTheDocument();
 
   await waitFor(() => {
     expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/api/products/?lang=en'));
