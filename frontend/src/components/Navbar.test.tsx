@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Navbar from './Navbar';
 
@@ -33,10 +33,63 @@ test('uses document-flow sticky positioning instead of overlaying page content',
 
   const navigation = screen.getByRole('navigation');
   expect(navigation).toHaveClass('sticky', 'top-0');
-  expect(navigation).toHaveClass('bg-slate-950');
+  expect(navigation).toHaveClass('bg-white');
   expect(navigation).not.toHaveClass('fixed');
-  expect(navigation.className).not.toContain('bg-slate-950/94');
+  expect(navigation.className).not.toContain('bg-white/94');
   await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+});
+
+test('shows the LingYe Aluminum brand name beside the logo mark', async () => {
+  render(
+    <MemoryRouter initialEntries={['/en']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <Navbar />
+    </MemoryRouter>
+  );
+
+  expect(screen.getByRole('link', { name: /LingYe Aluminum/i })).toBeInTheDocument();
+});
+
+test('opens and closes the desktop products menu on click', async () => {
+  render(
+    <MemoryRouter initialEntries={['/en']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <Navbar />
+    </MemoryRouter>
+  );
+
+  const productsToggle = screen.getAllByText('Products')[0].parentElement;
+  expect(productsToggle).toHaveAttribute('aria-expanded', 'false');
+
+  fireEvent.click(productsToggle!);
+  expect(productsToggle).toHaveAttribute('aria-expanded', 'true');
+
+  fireEvent.click(productsToggle!);
+  expect(productsToggle).toHaveAttribute('aria-expanded', 'false');
+});
+
+test('requests and renders product category labels in the active language', async () => {
+  global.fetch = jest.fn().mockResolvedValue({
+    json: async () => ({
+      results: [
+        { id: 2, name: 'Industrial Aluminium Profiles' },
+        { id: 3, translated_name: 'T-slot Aluminium Profiles' },
+      ],
+    }),
+  }) as unknown as typeof fetch;
+
+  render(
+    <MemoryRouter initialEntries={['/en']} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <Navbar />
+    </MemoryRouter>
+  );
+
+  fireEvent.click(screen.getAllByText('Products')[0].parentElement!);
+
+  const dropdown = screen.getByRole('navigation').querySelector('#desktop-products-dropdown');
+  expect(await within(dropdown as HTMLElement).findByText('Industrial Aluminium Profiles')).toBeInTheDocument();
+  expect(within(dropdown as HTMLElement).getByText('T-slot Aluminium Profiles')).toBeInTheDocument();
+  expect(global.fetch).toHaveBeenCalledWith(
+    expect.stringContaining('/api/categories/?lang=en&include_subcategories=true')
+  );
 });
 
 test('keeps mobile navigation collapsed until the menu button is clicked', async () => {

@@ -22,11 +22,23 @@ const Navbar: React.FC = () => {
 
   // 获取产品分类数据（包含子分类）
   useEffect(() => {
-    fetch(`${API_ENDPOINTS.CATEGORIES}?include_subcategories=true`)
+    fetch(`${API_ENDPOINTS.CATEGORIES}?lang=${currentLanguage}&include_subcategories=true`)
       .then(res => res.json())
       .then(data => {
         const categories = data.results || data;
-        setProductCategories(categories);
+        setProductCategories(categories.map((category: {
+          id: number;
+          name?: string;
+          translated_name?: string;
+          subcategories?: Array<{ id: number; name?: string; translated_name?: string }>;
+        }) => ({
+          ...category,
+          name: category.translated_name || category.name || '',
+          subcategories: category.subcategories?.map((subcategory) => ({
+            ...subcategory,
+            name: subcategory.translated_name || subcategory.name || '',
+          })),
+        })));
       })
       .catch(error => {
         console.error('获取产品分类失败:', error);
@@ -74,7 +86,7 @@ const Navbar: React.FC = () => {
           }
         ]);
       });
-  }, [t]);
+  }, [currentLanguage, t]);
 
   // 监听滚动事件
   useEffect(() => {
@@ -143,14 +155,17 @@ const Navbar: React.FC = () => {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link to={`/${currentLanguage}`} className="flex items-center">
-              <div className="w-20 h-20 flex items-center justify-center">
+            <Link to={`/${currentLanguage}`} className="flex items-center gap-3">
+              <div className="w-16 h-16 flex items-center justify-center">
                 <img 
                   src="/logo-mark.svg"
-                  alt="LingYe"
+                  alt=""
                   className="w-full h-full object-contain"
                 />
               </div>
+              <span className="hidden sm:block whitespace-nowrap text-lg font-bold text-slate-900">
+                LingYe Aluminum
+              </span>
             </Link>
           </div>
 
@@ -165,9 +180,13 @@ const Navbar: React.FC = () => {
                 if (link.text === t('nav_products', 'Products')) {
                   return (
                     <div key={link.to} className="relative" ref={productsMenuRef}>
-                      <div
-                        onMouseEnter={() => setIsProductsMenuOpen(true)}
-                        className={`px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center space-x-1 cursor-pointer ${
+                      <button
+                        type="button"
+                        aria-haspopup="true"
+                        aria-expanded={isProductsMenuOpen}
+                        aria-controls="desktop-products-dropdown"
+                        onClick={() => setIsProductsMenuOpen((open) => !open)}
+                        className={`px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center space-x-1 ${
                           isActive
                             ? 'text-sky-800 bg-sky-100'
                             : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
@@ -182,11 +201,12 @@ const Navbar: React.FC = () => {
                         >
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                         </svg>
-                      </div>
+                      </button>
                       
                       {/* Products Dropdown Menu */}
                       {isProductsMenuOpen && (
                         <div 
+                          id="desktop-products-dropdown"
                           className="absolute top-full left-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-slate-200 py-2 z-50"
                           onMouseEnter={() => setIsProductsMenuOpen(true)}
                           onMouseLeave={() => setIsProductsMenuOpen(false)}
