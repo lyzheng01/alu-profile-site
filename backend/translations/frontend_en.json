@@ -1,6 +1,6 @@
 {
   "home_title": "LingYe Aluminum",
-  "home_subtitle": "Providing high-quality aluminum profile solutions to meet your various needs. 20 years of professional experience, exporting to 30+ countries worldwide, a trustworthy partner.",
+  "home_subtitle": "Explore aluminum profile ranges and discuss custom project requirements with LingYe Aluminum.",
   "home_cta_button": "Inquire Now",
   "home_why_choose_title": "Why Choose Us",
   "home_why_choose_subtitle": "We have a professional team and advanced technology",
@@ -17,16 +17,16 @@
   "slide_1_subtitle": "High-quality solutions for your needs",
   "slide_1_cta": "Learn More",
   "slide_2_title": "Global Export Experience",
-  "slide_2_subtitle": "Serving 30+ countries worldwide",
+  "slide_2_subtitle": "Aluminum profile options for international projects",
   "slide_2_cta": "View Products",
   "slide_3_title": "Advanced Technology",
   "slide_3_subtitle": "Innovative manufacturing processes",
   "slide_3_cta": "Contact Us",
   
-  "advantage_1_title": "Full-Service Production Capabilities",
-  "advantage_1_desc": "Extrusion, anodizing, powder coating, CNC machining, cutting, punching — all processes completed in-house for stable quality and fast delivery.",
+  "advantage_1_title": "Project Requirement Coordination",
+  "advantage_1_desc": "Discuss extrusion, surface finishing, cutting, or CNC requirements for your project; confirm available processes during quotation.",
   "advantage_2_title": "Global Export",
-  "advantage_2_desc": "Serving customers in 30+ countries with reliable delivery",
+  "advantage_2_desc": "Project communication and order coordination for international buyers",
   "advantage_3_title": "Fast Delivery",
   "advantage_3_desc": "Efficient supply chain management for quick response",
   "advantage_4_title": "Technical Support",
@@ -51,9 +51,11 @@
   "page_contact_subtitle": "Always ready to provide professional service support",
   
   "about_title": "About Us",
-  "about_subtitle": "Professional aluminum profile manufacturer, your trusted partner",
+  "about_meta_title": "About LingYe Aluminum | Projects and Capabilities",
+  "about_meta_description": "Learn how LingYe coordinates aluminum profile requirements, manufacturing resources, and export project inquiries.",
+  "about_subtitle": "Aluminum profile solutions with project-specific coordination",
   "about_company_intro": "Company Introduction",
-  "about_company_intro_content": "We are a professional aluminum profile manufacturer with 15 years of industry experience. We are committed to providing customers with high-quality aluminum products and excellent service.",
+  "about_company_intro_content": "LingYe helps buyers discuss architectural and industrial aluminum profile requirements, coordinate manufacturing resources, and move export inquiries forward.",
   "about_company_mission": "Our mission is to create greater value for customers through innovative technology and quality service, and to become a leader in the aluminum profile industry.",
   "about_company_vision": "We are committed to sustainable development, focusing on environmental protection and quality, providing customers with the best products and services.",
   "about_years_experience": "Years of Experience",
@@ -127,11 +129,11 @@
   "contact_technical_support": "Technical Support",
   "contact_sales_inquiry": "Sales Inquiry",
   
-  "factory_showcase": "Factory Showcase",
-  "factory_subtitle": "Advanced production equipment and modern factory",
+  "factory_showcase": "Manufacturing Capabilities",
+  "factory_subtitle": "Production scenes and manufacturing resources for project-specific aluminum profile requirements.",
   
-  "footer_brand": "Aluminum Expert",
-  "footer_slogan": "Professional aluminum profile manufacturer, providing high-quality aluminum solutions",
+  "footer_brand": "LingYe Aluminum",
+  "footer_slogan": "Aluminum profile solutions for global projects",
   "footer_products": "Products",
   "footer_product_arch": "Architectural Aluminum Profiles",
   "footer_product_industry": "Industrial Aluminum Profiles",
@@ -139,8 +141,8 @@
   "footer_product_decor": "Decorative Aluminum Profiles",
   "footer_contact": "Contact Us",
   "footer_follow": "Follow Us",
-  "footer_copyright": "© 2024 Aluminum Expert. All rights reserved.",
-  "footer_slogan2": "Professional aluminum profile manufacturer | High-quality aluminum solutions",
+  "footer_copyright": "© LingYe Aluminum. All rights reserved.",
+  "footer_slogan2": "Custom profile requirements and export project support",
   "footer_address": "Address",
   "footer_phone": "Phone",
   "footer_email": "Email",
@@ -197,12 +199,19 @@
   "home_north_america": "North America",
   "home_south_america": "South America",
   "home_australia": "Australia",
-  "home_hero_precision_title": "Precision Aluminum Extrusion Solutions",
-  "home_hero_precision_desc": "High-quality aluminum profiles for industrial, architectural, and custom applications",
-  "home_hero_custom_title": "Custom Profiles, Reliable Manufacture",
-  "home_hero_custom_desc": "From design to production, we deliver tailored aluminum extrusion solutions with consistent quality",
-  "home_hero_partner_title": "Your Trusted Aluminum Extrusion Partner",
-  "home_hero_partner_desc": "Serving customers worldwide with durable products, competitive pricing, and on-time delivery",
+  "home_hero_precision_title": "Aluminum Profile Solutions for Your Project",
+  "home_hero_precision_desc": "Custom extrusion, finishing options, and project support for architectural and industrial applications.",
+  "home_hero_primary_cta": "Send a drawing",
+  "home_hero_secondary_cta": "Browse products",
+  "home_hero_slide_controls": "Hero image controls",
+  "home_value_categories": "Five core profile categories",
+  "home_value_custom": "Drawing-based custom requirements",
+  "home_value_finishing": "Surface finishing and processing options",
+  "home_value_project_support": "Project inquiry and export coordination",
+  "home_hero_custom_title": "Aluminum Profile Solutions for Your Project",
+  "home_hero_custom_desc": "Custom profile requirements and production resources coordinated around your application.",
+  "home_hero_partner_title": "Aluminum Profile Solutions for Your Project",
+  "home_hero_partner_desc": "Discuss profile selection, finishing options, and order requirements for your project.",
   "home_stat_categories": "Product categories",
   "home_stat_catalog": "Catalog references",
   "home_stat_regional": "Regional window & door ranges",
@@ -211,11 +220,11 @@
   "home_core_categories_cta": "Browse all product categories",
   "home_featured_label": "Featured supply",
   "home_featured_title": "Recommended Profiles for High-Intent Buyers",
-  "home_featured_desc": "Highlighting a few strong products keeps the homepage commercially useful without turning it into an endless catalog.",
+  "home_featured_desc": "Review selected profile references, then share your drawing or target application for project-specific guidance.",
   "home_featured_product_label": "Featured Product",
   "home_featured_product_fallback": "Explore a profile page built for procurement review, specification checks, and quotation requests.",
   "home_featured_product_cta": "View product details",
-  "home_featured_empty": "Add featured products in the backend to make the homepage stronger for product discovery and quotation flow.",
+  "home_featured_empty": "Explore the full product range or send your drawing to discuss a suitable profile.",
   "home_secondary_product_fallback": "Built for aluminum buyers who need a clear product page, not just a name and one image.",
   "home_profile_references_label": "Profile references",
   "home_profile_finishes_title": "Profile Finishes and Applications",
@@ -235,13 +244,13 @@
   "home_faq_a4": "No. We supply both architectural and industrial aluminum profiles, including window, door, trim, and custom mechanical applications.",
   "home_inquiry_label": "Inquiry",
   "home_inquiry_title": "Start Your Quote With the Right Details",
-  "home_inquiry_desc": "Share drawings, finish, quantity, destination port, and packaging needs. The form keeps the RFQ path visible for export buyers who are ready to compare suppliers.",
+  "home_inquiry_desc": "Share a drawing or reference, material and finish needs, estimated quantity, and destination. We will review the details with you.",
   "home_inquiry_details_title": "Send these details for a faster reply",
   "home_inquiry_drawing": "Profile drawing or reference photo",
   "home_inquiry_material": "Alloy, temper, and finish requirement",
   "home_inquiry_quantity": "Estimated quantity and destination port",
   "home_inquiry_packaging": "Packaging or machining expectations",
-  "home_inquiry_helper": "Email, WhatsApp, and product links can work together, but the form should remain the clearest conversion path on the page.",
+  "home_inquiry_helper": "If a specification is not final, send the information you have and note what still needs confirmation.",
   "products_catalog_label": "Product catalog",
   "products_center_title": "Aluminum Products Center",
   "products_center_desc": "Browse architectural, industrial, trim, tube, and custom extrusion profiles with the specifications buyers need before ordering.",
@@ -327,13 +336,13 @@
   ,"product_detail_specification_name": "Specification Name"
   ,"product_detail_specification_value": "Specification Value"
   ,"product_detail_display": "Product Display"
-  ,"product_detail_factory": "Our Factory"
+  ,"product_detail_factory": "Production Scenes"
   ,"product_detail_surface_title": "Surface Treatment"
   ,"product_detail_technical_specs": "Technical Specifications"
   ,"product_detail_applications": "Applications"
   ,"product_detail_related_guides": "Related Buying Guides"
   ,"product_detail_related_products": "Related Products"
-  ,"factory_showcase_about_cta": "Explore our factory"
+  ,"factory_showcase_about_cta": "Learn about our approach"
   ,"factory_extrusion_line_alt": "Aluminum extrusion production line"
   ,"factory_crane_alt": "Aluminum extrusion factory crane"
 }

@@ -18,8 +18,8 @@ test('renders localized factory context with the approved images and About link'
     </MemoryRouter>
   );
 
-  expect(screen.getByRole('heading', { name: 'Factory Showcase' })).toBeInTheDocument();
-  expect(screen.getByText('Advanced production equipment and modern factory')).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: 'Manufacturing Capabilities' })).toBeInTheDocument();
+  expect(screen.getByText('Production scenes and manufacturing resources for project-specific aluminum profile requirements.')).toBeInTheDocument();
   expect(screen.getByRole('img', { name: 'Aluminum extrusion production line' })).toHaveAttribute(
     'src',
     '/images/factory-extrusion-lines.webp'
@@ -28,5 +28,6 @@ test('renders localized factory context with the approved images and About link'
     'src',
     '/images/factory-crane-clean.webp'
   );
-  expect(screen.getByRole('link', { name: 'Explore our factory' })).toHaveAttribute('href', '/en/about');
+  expect(screen.getByRole('link', { name: 'Learn about our approach' })).toHaveAttribute('href', '/en/about');
+  expect(screen.queryByText(/our factory|factory showcase/i)).not.toBeInTheDocument();
 });

@@ -32,7 +32,10 @@
 ### 全站品牌身份与 SEO 文案
 
 - 扫描并修订指向 Lingye 自身的页面 H1/H2、可见营销文案、title、meta description、Open Graph、Twitter metadata 和默认 HTML metadata 中的 manufacturer/factory-direct/our factory 声明。
-- 覆盖首页、About、产品列表、产品详情及相关 SEO landing 模板和全局 title/description 配置；同时检查页脚品牌 slogan、About 公司介绍、产品详情的 “Our Factory” 标题及 “Factory-Direct Pricing”等指向 Lingye 自身的营销说法。保留产品名称、行业说明、买家指南中的通用行业术语。
+- 覆盖首页、About、产品列表、产品详情、门窗产品展示页及相关 SEO landing 模板和全局 title/description 配置；同时检查页脚品牌 slogan、About 公司介绍/Organization 结构化数据、产品详情和展示页的 Product manufacturer 结构化字段、“Our Factory”标题及“Factory-Direct Pricing”等指向 Lingye 自身的营销说法。Product manufacturer 字段不再把 LingYe Aluminum 声明为生产方；保留 Brand 字段。
+- 对产品详情 fallback 和 SEO landing 中的产能、精度、交期、认证、出口国家数量、厂内工序等明确数字或所有权声明，若无当前可验证来源则移除，不以另一个未经证实的数字替代。线上 Company Info/Advantages API 当前为空，About 页面默认翻译 fallback 也必须更新。
+- About 页当前会在 Company Info API 无数据时显示 15 年、60+ 国家、年产 50,000 吨的硬编码统计；本期移除这些默认伪统计。仅在 API 返回非空且可管理的数据时显示数据项。
+- 门窗展示页中的挤压机吨位、阳极氧化槽数量和未证实的质控级别若没有来源则移除；保留面向买家的选型与需求沟通流程。
 - 保留现有路由与 SEO landing URL，避免因改写文案造成外链失效。
 - 根据实际翻译加载机制同时修订前端 fallback、`frontend/src/utils/titleManager.ts` 页面标题/描述配置和 `backend/translations/frontend_*.json` 资源；支持的翻译 JSON 至少包含英语、西班牙语、葡萄牙语和中文。对标题配置包含的阿拉伯语、印地语也需改正。线上若使用数据库中覆盖文件的文案，需明确记录必须同步更新对应线上翻译记录，部署不得只发布前端构建产物。
 
@@ -54,6 +57,7 @@
 - 复用现有 React 路由、翻译 context、metadata hook、共享 FactoryShowcase、InquiryForm 和 Tailwind 设计规范。
 - 首屏 CTA 指向现有首页询价锚点或产品列表，不新增后端接口或数据库字段。
 - 只编辑与本设计直接相关的首页、共享展示模块、品牌 SEO 文案配置/模板、翻译 JSON 和对应测试；不顺手重写全站 SEO 架构。
+- 生产检查发现 Nginx 只会读取 `frontend/build` 下 URL 对应的静态文件，而原预渲染器把页面写到 Nginx 不读取的 `build/prerendered/`。本次将预渲染输出改为 URL 对应的静态目录（例如 `build/en/about/index.html`），使现有 `try_files` 能直接返回页面级 metadata；不改 Nginx 配置。
 - 线上数据库覆盖文案的同步需要列入部署步骤，并以部署后 API/页面核验确认生效。
 
 ## 验收标准
@@ -62,13 +66,14 @@
 - 三张工厂轮播背景图继续正常切换，内容不再通过轮播宣称自有制造身份。
 - 五类产品、精选产品、Factory Showcase、FAQ、询价表单和现有图片仍可正常访问；首屏 CTA 能到达正确目标。
 - 首页、About、产品列表、产品详情及相关 SEO landing 页面、页脚和全局 metadata 不再以 Lingye 为主语声称 manufacturer/factory-direct/our factory 或等价表达；通用行业知识及既有 URL 保持。
+- 生产 URL 对应的静态 HTML 返回各自页面标题与描述，不再对所有 URL 返回通用首页 HTML metadata。
 - 英语、西班牙语、葡萄牙语、中文、阿拉伯语、印地语相关标题/元数据准确且无旧归属说法；API 覆盖文案同步后验证线上响应。
 - 增加/更新首页 CTA、metadata、共享工厂模块和身份文案的单元/集成测试；运行相关前端测试和生产构建。
 - 部署前后分别记录构建结果、翻译 API 结果、关键页面 metadata 和响应状态；部署仅在实现、测试和页面检查通过后进行。
 
 ## 未纳入本期
 
-- 全站技术 SEO 架构重做、prerender/Nginx 修复、站点速度优化、GSC 指标实验。
+- 全站技术 SEO 架构重做、Nginx 配置重构、站点速度优化、GSC 指标实验。
 - 产品规格或数据库产品数据编辑、询价表单字段重构、产品图片替换。
 - 改写 SEO landing URL、创建重定向、增加未核实的产能/工厂/客户案例数据。
 

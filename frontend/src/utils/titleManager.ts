@@ -11,20 +11,20 @@ export interface PageTitleConfig {
 // Page title configuration.
 export const PAGE_TITLES: Record<string, PageTitleConfig> = {
   home: {
-    en: 'LingYe Aluminum | Aluminum Profile Manufacturer',
-    zh: 'LingYe Aluminum | 铝型材制造商',
-    es: 'LingYe Aluminum | Fabricante de perfiles de aluminio',
-    pt: 'LingYe Aluminum | Fabricante de perfis de aluminio',
-    ar: 'LingYe Aluminum | مصنع مقاطع الألمنيوم',
-    hi: 'LingYe Aluminum | Aluminium Profile Manufacturer'
+    en: 'Aluminum Profile Solutions | LingYe Aluminum',
+    zh: '铝型材项目方案 | 凌烨铝业',
+    es: 'Soluciones de perfiles de aluminio | LingYe Aluminum',
+    pt: 'Soluções em perfis de alumínio | LingYe Aluminum',
+    ar: 'حلول مقاطع الألمنيوم | LingYe Aluminum',
+    hi: 'Aluminium Profile Solutions | LingYe Aluminum'
   },
   about: {
-    en: 'About LingYe Aluminum | Factory and Capabilities',
-    zh: '关于 LingYe Aluminum | 工厂与产能',
-    es: 'Sobre LingYe Aluminum | Fábrica y capacidades',
-    pt: 'Sobre a LingYe Aluminum | Fabrica e capacidade',
-    ar: 'حول LingYe Aluminum | المصنع والقدرات',
-    hi: 'About LingYe Aluminum | Factory and Capabilities'
+    en: 'About LingYe Aluminum | Projects and Capabilities',
+    zh: '关于凌烨铝业 | 项目配合与产品方案',
+    es: 'Sobre LingYe Aluminum | Proyectos y capacidades',
+    pt: 'Sobre a LingYe Aluminum | Projetos e soluções',
+    ar: 'حول LingYe Aluminum | المشاريع والحلول',
+    hi: 'About LingYe Aluminum | Projects and Solutions'
   },
   products: {
     en: 'Aluminum Products | Industrial and Architectural Profiles',
@@ -62,20 +62,20 @@ export const PAGE_TITLES: Record<string, PageTitleConfig> = {
 
 export const PAGE_DESCRIPTIONS: Record<string, PageTitleConfig> = {
   home: {
-    en: 'Professional aluminum profile manufacturer providing industrial extrusions, architectural profiles, and global B2B supply.',
-    zh: '专业铝型材制造商，提供工业挤压型材、建筑铝材和全球 B2B 供货。',
-    es: 'Fabricante profesional de perfiles de aluminio para extrusion industrial, perfiles arquitectonicos y suministro B2B global.',
-    pt: 'Fabricante profissional de perfis de aluminio para extrusoes industriais, perfis arquitetonicos e fornecimento B2B global.',
-    ar: 'شركة متخصصة في تصنيع مقاطع الالمنيوم للتطبيقات الصناعية والمعمارية والتوريد العالمي B2B.',
-    hi: 'Professional aluminum profile manufacturer for industrial extrusions, architectural profiles, and global B2B supply.'
+    en: 'Explore aluminum profile references for architectural and industrial applications. Discuss drawings, finishes, and project requirements with LingYe Aluminum.',
+    zh: '浏览建筑与工业铝型材参考，沟通图纸、表面处理和项目需求。',
+    es: 'Explore perfiles de aluminio para aplicaciones arquitectónicas e industriales. Consulte planos, acabados y requisitos de proyecto con LingYe Aluminum.',
+    pt: 'Explore perfis de alumínio para aplicações arquitetônicas e industriais. Converse sobre desenhos, acabamentos e requisitos de projeto com a LingYe Aluminum.',
+    ar: 'استكشف مقاطع الألمنيوم للتطبيقات المعمارية والصناعية، وناقش الرسومات والتشطيبات ومتطلبات المشروع مع LingYe Aluminum.',
+    hi: 'Explore aluminum profile references for architectural and industrial applications. Discuss drawings, finishes, and project requirements with LingYe Aluminum.'
   },
   about: {
-    en: 'Learn about LingYe Aluminum production capacity, quality control, export experience, and OEM/ODM services.',
-    zh: '了解 LingYe Aluminum 的产能、质控体系、出口经验和 OEM/ODM 服务。',
-    es: 'Conozca la capacidad de produccion, control de calidad, experiencia de exportacion y servicios OEM/ODM de LingYe Aluminum.',
-    pt: 'Conheca a capacidade produtiva, controle de qualidade, experiencia em exportacao e servicos OEM/ODM da LingYe Aluminum.',
-    ar: 'تعرف على قدرة الانتاج وضبط الجودة وخبرة التصدير وخدمات OEM/ODM لدى LingYe Aluminum.',
-    hi: 'Learn about LingYe Aluminum capacity, quality control, export experience, and OEM/ODM services.'
+    en: 'Learn how LingYe coordinates aluminum profile requirements, manufacturing resources, and export project inquiries.',
+    zh: '了解凌烨如何沟通铝型材需求、协调制造资源并跟进出口项目询价。',
+    es: 'Conozca cómo LingYe coordina requisitos de perfiles de aluminio, recursos de fabricación y consultas de proyectos de exportación.',
+    pt: 'Saiba como a LingYe coordena requisitos de perfis de alumínio, recursos de fabricação e consultas de projetos de exportação.',
+    ar: 'تعرف على كيفية تنسيق LingYe لمتطلبات مقاطع الألمنيوم وموارد التصنيع واستفسارات مشاريع التصدير.',
+    hi: 'Learn how LingYe coordinates aluminum profile requirements, manufacturing resources, and export project inquiries.'
   },
   products: {
     en: 'Browse aluminum profiles for windows, doors, decoration, and industrial applications with custom extrusion options.',

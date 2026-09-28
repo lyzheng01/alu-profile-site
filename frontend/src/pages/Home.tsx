@@ -63,40 +63,50 @@ const Home: React.FC = () => {
   const [categories, setCategories] = useState<CategoryItem[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const heroSlideContent = useMemo(
-    () => [
-      {
-        title: t('home_hero_precision_title', 'Precision Aluminum Extrusion Solutions'),
-        description: t('home_hero_precision_desc', 'High-quality aluminum profiles for industrial, architectural, and custom applications'),
-      },
-      {
-        title: t('home_hero_custom_title', 'Custom Profiles, Reliable Manufacture'),
-        description: t('home_hero_custom_desc', 'From design to production, we deliver tailored aluminum extrusion solutions with consistent quality'),
-      },
-      {
-        title: t('home_hero_partner_title', 'Your Trusted Aluminum Extrusion Partner'),
-        description: t('home_hero_partner_desc', 'Serving customers worldwide with durable products, competitive pricing, and on-time delivery'),
-      },
-    ],
-    [t]
+  const heroTitle = t('home_hero_precision_title', 'Aluminum Profile Solutions for Your Project');
+  const heroDescription = t(
+    'home_hero_precision_desc',
+    'Custom extrusion, finishing options, and project support for architectural and industrial applications.'
   );
 
+  const homeSeo = {
+    en: {
+      title: 'Aluminum Profile Solutions for Global Projects | LingYe Aluminum',
+      description: 'Explore aluminum profile ranges and coordinate custom requirements, finishing options, and export inquiries with LingYe Aluminum.',
+    },
+    zh: {
+      title: '铝型材项目解决方案 | LingYe Aluminum',
+      description: '了解建筑与工业铝型材产品，并沟通定制需求、表面处理选项及出口项目询价。',
+    },
+    es: {
+      title: 'Soluciones de perfiles de aluminio para proyectos | LingYe Aluminum',
+      description: 'Explore perfiles de aluminio y consulte requisitos personalizados, acabados y pedidos de exportación con LingYe Aluminum.',
+    },
+    pt: {
+      title: 'Soluções em perfis de alumínio para projetos | LingYe Aluminum',
+      description: 'Explore perfis de alumínio e consulte requisitos personalizados, acabamentos e pedidos de exportação com a LingYe Aluminum.',
+    },
+  }[currentLanguage as 'en' | 'zh' | 'es' | 'pt'] || {
+    title: 'Aluminum Profile Solutions for Global Projects | LingYe Aluminum',
+    description: 'Explore aluminum profile ranges and coordinate custom requirements, finishing options, and export inquiries with LingYe Aluminum.',
+  };
+
   useSeoMeta({
-    title: 'China Aluminum Profile Manufacturer | LingYe Aluminum',
-    description:
-      'LingYe Aluminum supplies architectural and industrial aluminum profiles, custom extrusion, surface finishing, OEM drawing support, and export packaging for global B2B buyers.',
+    title: homeSeo.title,
+    description: homeSeo.description,
     canonicalPath: `/${currentLanguage}`,
-    ogTitle: 'LingYe Aluminum | China Aluminum Profile Manufacturer',
-    ogDescription: 'Factory-direct aluminum extrusion, finishing, and export RFQ support for global buyers.',
+    ogTitle: homeSeo.title,
+    ogDescription: homeSeo.description,
     ogImage: catalogImages.hero,
     language: currentLanguage,
   });
 
-  const stats = useMemo(
+  const capabilityPoints = useMemo(
     () => [
-      { value: 5, suffix: '', label: t('home_stat_categories', 'Product categories') },
-      { value: 20, suffix: '', label: t('home_stat_catalog', 'Catalog references') },
-      { value: 2, suffix: '', label: t('home_stat_regional', 'Regional window & door ranges') },
+      t('home_value_categories', 'Five core profile categories'),
+      t('home_value_custom', 'Drawing-based custom requirements'),
+      t('home_value_finishing', 'Surface finishing and processing options'),
+      t('home_value_project_support', 'Project inquiry and export coordination'),
     ],
     [t]
   );
@@ -204,7 +214,6 @@ const Home: React.FC = () => {
 
   const primaryProduct = featuredProducts[0];
   const secondaryProducts = featuredProducts.slice(1, 4);
-  const currentHeroContent = heroSlideContent[currentSlide] || heroSlideContent[0];
 
   useEffect(() => {
     if (slideImages.length <= 1) return undefined;
@@ -233,15 +242,30 @@ const Home: React.FC = () => {
           <div className="w-full max-w-[20rem] min-w-0 sm:max-w-2xl lg:max-w-3xl">
             <div className="min-w-0">
               <h1 className="max-w-full break-words text-4xl font-semibold leading-tight text-white drop-shadow-[0_8px_32px_rgba(15,23,42,0.75)] sm:text-5xl md:text-6xl">
-                {currentHeroContent.title}
+                {heroTitle}
               </h1>
               <p className="mt-4 max-w-[20rem] break-words text-base leading-7 text-sky-50/95 sm:max-w-xl md:text-lg">
-                {currentHeroContent.description}
+                {heroDescription}
               </p>
             </div>
           </div>
 
-          <div className="mt-8 flex items-center gap-3">
+          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+            <a
+              href="#home-inquiry-form"
+              className="inline-flex min-h-12 items-center justify-center rounded-md bg-amber-400 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-amber-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-slate-900"
+            >
+              {t('home_hero_primary_cta', 'Send a drawing')}
+            </a>
+            <Link
+              to={`/${currentLanguage}/products`}
+              className="inline-flex min-h-12 items-center justify-center rounded-md border border-white/70 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white"
+            >
+              {t('home_hero_secondary_cta', 'Browse products')}
+            </Link>
+          </div>
+
+          <div className="mt-7 flex items-center gap-3" aria-label={t('home_hero_slide_controls', 'Hero image controls')}>
             {slideImages.map((_, index) => (
               <button
                 key={index}
@@ -257,16 +281,12 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      <section className="border-b border-slate-200 bg-white px-4 py-8 sm:px-6 lg:px-8">
-        <div data-testid="home-stats-grid" className="grid w-full max-w-[22rem] grid-cols-1 gap-3 sm:mx-auto sm:max-w-7xl sm:grid-cols-3 sm:gap-4">
-          {stats.map((item) => (
-            <div key={item.label} data-testid="home-stat-card" className="rounded-lg border border-slate-200 bg-slate-50 p-5 text-center shadow-sm">
-              <div className="text-3xl font-semibold text-sky-700 md:text-4xl">
-                <span>{item.value}</span>
-                <span>{item.suffix}</span>
-              </div>
-              <p className="mt-2 text-sm leading-6 text-slate-600">{item.label}</p>
-            </div>
+      <section className="border-b border-slate-200 bg-white px-4 py-5 sm:px-6 lg:px-8">
+        <div data-testid="home-capability-strip" className="mx-auto grid max-w-7xl grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-4 sm:gap-6">
+          {capabilityPoints.map((point) => (
+            <p key={point} className="border-l-2 border-amber-400 pl-3 text-sm font-medium leading-6 text-slate-700">
+              {point}
+            </p>
           ))}
         </div>
       </section>
@@ -322,7 +342,7 @@ const Home: React.FC = () => {
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-300">{t('home_featured_label', 'Featured supply')}</p>
               <h2 className="mt-4 text-3xl font-semibold md:text-4xl">{t('home_featured_title', 'Recommended Profiles for High-Intent Buyers')}</h2>
               <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-300">
-                {t('home_featured_desc', 'Highlighting a few strong products keeps the homepage commercially useful without turning it into an endless catalog.')}
+                {t('home_featured_desc', 'Review selected profile references, then share your drawing or target application for project-specific guidance.')}
               </p>
 
               {primaryProduct ? (
@@ -356,7 +376,7 @@ const Home: React.FC = () => {
                 </Link>
               ) : (
                 <div className="mt-8 rounded-lg border border-dashed border-white/20 p-8 text-slate-300">
-                  {t('home_featured_empty', 'Add featured products in the backend to make the homepage stronger for product discovery and quotation flow.')}
+                  {t('home_featured_empty', 'Explore the full product range or send your drawing to discuss a suitable profile.')}
                 </div>
               )}
             </div>
@@ -442,7 +462,7 @@ const Home: React.FC = () => {
             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700">{t('home_inquiry_label', 'Inquiry')}</p>
             <h2 className="mt-4 text-3xl font-semibold text-slate-900 md:text-4xl">{t('home_inquiry_title', 'Start Your Quote With the Right Details')}</h2>
             <p className="mt-4 text-lg leading-8 text-slate-600">
-              {t('home_inquiry_desc', 'Share drawings, finish, quantity, destination port, and packaging needs. The form keeps the RFQ path visible for export buyers who are ready to compare suppliers.')}
+              {t('home_inquiry_desc', 'Share a drawing or reference, material and finish needs, estimated quantity, and destination. We will review the details with you.')}
             </p>
             <div className="mt-8 space-y-5 rounded-lg bg-slate-950 p-6 text-slate-100 shadow-[0_30px_80px_rgba(15,23,42,0.22)]">
               <div>
@@ -455,7 +475,7 @@ const Home: React.FC = () => {
                 </ul>
               </div>
               <div className="rounded-md border border-white/10 bg-white/5 p-4 text-sm leading-6 text-slate-300">
-                {t('home_inquiry_helper', 'Email, WhatsApp, and product links can work together, but the form should remain the clearest conversion path on the page.')}
+                {t('home_inquiry_helper', 'If a specification is not final, send the information you have and note what still needs confirmation.')}
               </div>
             </div>
           </div>

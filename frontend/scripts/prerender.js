@@ -8,7 +8,7 @@ const path = require('path');
 const http = require('http');
 
 const BUILD_DIR = path.join(__dirname, '..', 'build');
-const PRERENDER_DIR = path.join(BUILD_DIR, 'prerendered');
+const PRERENDER_DIR = BUILD_DIR;
 const API_BASE = process.env.PRERENDER_API_BASE || 'https://lingyealuminum.com/api';
 const PORT = parseInt(process.env.PRERENDER_PORT || '3456', 10);
 const CONCURRENCY = 2;
@@ -136,7 +136,9 @@ const prerender = async () => {
   };
 
   // Filter already-rendered
+  const forceRender = process.env.PRERENDER_FORCE === '1';
   const todo = routes.filter((r) => {
+    if (forceRender || r === '/') return true;
     const f = path.join(PRERENDER_DIR, r === '/' ? '' : r, 'index.html');
     return !fs.existsSync(f);
   });

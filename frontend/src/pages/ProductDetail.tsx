@@ -139,10 +139,6 @@ const ProductDetail: React.FC = () => {
         '@type': 'Brand',
         name: 'LingYe Aluminum',
       },
-      manufacturer: {
-        '@type': 'Organization',
-        name: 'LingYe Aluminum',
-      },
       category: product.category?.name || undefined,
       sku: String(product.id),
       url: typeof window !== 'undefined' ? window.location.href : undefined,
@@ -401,36 +397,7 @@ const ProductDetail: React.FC = () => {
         })
         .filter((item): item is WhyChooseUsItem => Boolean(item && item.title));
     }
-    return [
-      { 
-        title: '10+ Years Aluminium Manufacturing Experience', 
-        description: 'We specialize in aluminium extrusion, machining, finishing, and custom profile production with over a decade of industry expertise.' 
-      },
-      { 
-        title: 'Full-Service Production Capabilities', 
-        description: 'Extrusion, anodizing, powder coating, CNC machining, cutting, punching, assembly — all processes completed in-house for stable quality and fast delivery.' 
-      },
-      { 
-        title: 'High-Quality Aluminium Materials', 
-        description: 'We use premium 6063-T5, 6061-T6, and other alloys with strict control over hardness, flatness, anodizing thickness, and dimensional tolerance.' 
-      },
-      { 
-        title: 'Custom Profiles & OEM/ODM Support', 
-        description: 'Send us your drawings or samples — we provide custom molds, extrusion, and finishing solutions for industrial, construction, and consumer applications.' 
-      },
-      { 
-        title: 'Reliable Lead Time & Large Production Capacity', 
-        description: 'Multiple extrusion lines and automated equipment ensure consistent supply, quick turnaround, and on-time delivery for global customers.' 
-      },
-      { 
-        title: 'Competitive Factory-Direct Pricing', 
-        description: 'We offer cost-effective aluminium solutions with stable long-term supply for distributors and project buyers.' 
-      },
-      { 
-        title: 'Global Export Experience', 
-        description: 'We ship to Europe, North America, Southeast America, Asia, Africa, etc., providing professional packaging, documentation, and logistics support.' 
-      },
-    ];
+    return [];
   }, [featureString]);
 
   if (loading) {
@@ -950,7 +917,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                   </div>
                 )}
 
-                <div className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 border border-blue-100 rounded-2xl p-8 shadow-lg">
+                {whyChooseUsItems.length > 0 && <div className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 border border-blue-100 rounded-2xl p-8 shadow-lg">
                   <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
                     <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -989,7 +956,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                       </div>
                     ))}
                   </div>
-                </div>
+                </div>}
               </div>
             )}
 
@@ -1077,10 +1044,10 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                 Aluminum Profile Supplier for Construction Projects
               </Link>
               <Link className="text-blue-700 hover:text-blue-900 underline" to="/en/industrial-aluminum-extrusion-manufacturer-in-china">
-                Industrial Aluminum Extrusion Manufacturer in China
+                Industrial Aluminum Profiles for Equipment and Automation
               </Link>
               <Link className="text-blue-700 hover:text-blue-900 underline" to="/en/custom-aluminum-profile-factory-for-oem-orders">
-                Custom Aluminum Profile Factory for OEM Orders
+                Custom Aluminum Profiles for OEM Projects
               </Link>
             </div>
           </div>

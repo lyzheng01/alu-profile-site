@@ -42,12 +42,18 @@ const About: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useSeoMeta({
-    title: 'About Us | LingYe Aluminum',
-    description: 'Professional aluminum profile manufacturer with 15 years of experience, serving 60+ countries worldwide.',
+    title: t('about_meta_title', 'About LingYe Aluminum | Projects and Capabilities'),
+    description: t(
+      'about_meta_description',
+      'Learn how LingYe coordinates aluminum profile requirements, manufacturing resources, and export project inquiries.'
+    ),
     canonicalPath: `/${currentLanguage}/about`,
     ogImage: 'https://lingyealuminum.com/logo.jpg?v=3',
-    ogTitle: 'About Us | LingYe Aluminum',
-    ogDescription: 'Professional aluminum profile manufacturer with 15 years of experience, serving 60+ countries worldwide.',
+    ogTitle: t('about_meta_title', 'About LingYe Aluminum | Projects and Capabilities'),
+    ogDescription: t(
+      'about_meta_description',
+      'Learn how LingYe coordinates aluminum profile requirements, manufacturing resources, and export project inquiries.'
+    ),
     language: currentLanguage,
   });
 
@@ -57,7 +63,7 @@ const About: React.FC = () => {
     name: 'LingYe Aluminum',
     url: 'https://lingyealuminum.com',
     logo: 'https://lingyealuminum.com/logo.jpg?v=3',
-    description: 'Aluminum profile manufacturer for industrial and architectural applications.',
+    description: 'Aluminum profile solutions for industrial and architectural applications.',
     sameAs: [
       'https://facebook.com/lingyealu',
       'https://youtube.com/@lingyealu',
@@ -129,6 +135,14 @@ const About: React.FC = () => {
     return info ? info.value : '';
   };
 
+  const companyMetrics = [
+    { key: 'years_experience', label: t('about_years_experience', 'Years of Experience') },
+    { key: 'export_countries', label: t('about_export_countries', 'Export Countries') },
+    { key: 'annual_production', label: t('about_annual_production', 'Annual Production (tons)') },
+  ]
+    .map(metric => ({ ...metric, value: getCompanyInfo(metric.key) }))
+    .filter(metric => metric.value);
+
   if (loading) {
     return (
       <div>
@@ -152,7 +166,7 @@ const About: React.FC = () => {
               {t('about_title', 'About Us')}
             </h1>
             <p className="text-xl opacity-90 max-w-3xl mx-auto">
-              {t('about_subtitle', 'Professional aluminum profile manufacturer, your trusted partner')}
+              {t('about_subtitle', 'Aluminum profile solutions with project-specific coordination')}
             </p>
           </div>
         </div>
@@ -168,7 +182,7 @@ const About: React.FC = () => {
               </h2>
               <div className="prose text-gray-600 leading-relaxed">
                 <p className="mb-4">
-                  {getCompanyInfo('company_introduction') || t('about_company_intro_content', 'We are a professional aluminum profile manufacturer with 15 years of industry experience. We are committed to providing customers with high-quality aluminum products and solutions, with products exported to more than 60 countries and regions worldwide.')}
+                  {getCompanyInfo('company_introduction') || t('about_company_intro_content', 'LingYe helps buyers discuss architectural and industrial aluminum profile requirements, coordinate manufacturing resources, and move export inquiries forward.')}
                 </p>
                 <p className="mb-4">
                   {getCompanyInfo('company_mission') || t('about_company_mission', 'Our mission is to create greater value for customers through innovative technology and quality service, and to become a leader in the aluminum profile industry.')}
@@ -190,35 +204,18 @@ const About: React.FC = () => {
           </div>
         </div>
 
-        {/* 公司数据 */}
-        <div className="mb-16">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600 mb-2">
-                {getCompanyInfo('years_experience') || '15'}
-              </div>
-              <div className="text-gray-600">
-                {t('about_years_experience', 'Years of Experience')}
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600 mb-2">
-                {getCompanyInfo('export_countries') || '60+'}
-              </div>
-              <div className="text-gray-600">
-                {t('about_export_countries', 'Export Countries')}
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600 mb-2">
-                {getCompanyInfo('annual_production') || '50000'}
-              </div>
-              <div className="text-gray-600">
-                {t('about_annual_production', 'Annual Production (tons)')}
-              </div>
+        {companyMetrics.length > 0 && (
+          <div className="mb-16">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+              {companyMetrics.map(metric => (
+                <div key={metric.key} className="text-center">
+                  <div className="mb-2 text-4xl font-bold text-blue-600">{metric.value}</div>
+                  <div className="text-gray-600">{metric.label}</div>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
+        )}
 
         {/* 公司优势 */}
         {advantages.length > 0 && (

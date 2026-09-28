@@ -82,9 +82,9 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-8">
         <div className="grid md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-xl font-bold mb-4">{t('footer_brand', 'Aluminum Expert')}</h3>
+            <h3 className="text-xl font-bold mb-4">{t('footer_brand', 'LingYe Aluminum')}</h3>
             <p className="text-gray-400">
-              {t('footer_slogan', 'Professional aluminum profile manufacturer, providing high-quality aluminum solutions')}
+              {t('footer_slogan', 'Aluminum profile solutions for global projects')}
             </p>
           </div>
           <div>
@@ -159,8 +159,8 @@ const Footer: React.FC = () => {
         )}
         
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-          <p>{t('footer_copyright', '© 2024 Aluminum Expert. All rights reserved.')}</p>
-          <p className="mt-2">{t('footer_slogan2', 'Professional aluminum profile manufacturer | High-quality aluminum solutions')}</p>
+          <p>{t('footer_copyright', '© LingYe Aluminum. All rights reserved.')}</p>
+          <p className="mt-2">{t('footer_slogan2', 'Custom profile requirements and export project support')}</p>
         </div>
       </div>
     </footer>

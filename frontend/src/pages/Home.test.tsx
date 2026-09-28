@@ -70,11 +70,11 @@ test('renders the new B2B homepage structure and requests featured products', as
     </MemoryRouter>
   );
 
-  const heroHeading = await screen.findByRole('heading', { name: /Precision Aluminum Extrusion Solutions/i });
+  const heroHeading = await screen.findByRole('heading', { name: /Aluminum Profile Solutions for Your Project/i });
   const factoryShowcase = await screen.findByTestId('factory-showcase');
   const homeText = document.body.textContent || '';
-  expect(homeText.indexOf('Recommended Profiles for High-Intent Buyers')).toBeLessThan(homeText.indexOf('Factory Showcase'));
-  expect(homeText.indexOf('Factory Showcase')).toBeLessThan(homeText.indexOf('Profile Finishes and Applications'));
+  expect(homeText.indexOf('Recommended Profiles for High-Intent Buyers')).toBeLessThan(homeText.indexOf('Manufacturing Capabilities'));
+  expect(homeText.indexOf('Manufacturing Capabilities')).toBeLessThan(homeText.indexOf('Profile Finishes and Applications'));
   expect(factoryShowcase).toBeInTheDocument();
   expect(heroHeading).toBeInTheDocument();
   expect(heroHeading).toHaveClass('text-4xl', 'sm:text-5xl', 'md:text-6xl');
@@ -83,33 +83,27 @@ test('renders the new B2B homepage structure and requests featured products', as
   const heroContent = heroHeading.parentElement?.parentElement?.parentElement;
   expect(heroContent).toHaveClass('pt-10', 'lg:pt-16');
   expect(heroContent).not.toHaveClass('pt-20', 'lg:pt-28');
-  expect(screen.getByText(/High-quality aluminum profiles for industrial, architectural, and custom applications/i)).toBeInTheDocument();
+  expect(screen.getByText(/Custom extrusion, finishing options, and project support/i)).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: /Send a drawing/i })).toHaveAttribute('href', '#home-inquiry-form');
+  expect(screen.getByRole('link', { name: /Browse products/i })).toHaveAttribute('href', '/en/products');
   fireEvent.click(screen.getByLabelText('Go to slide 2'));
-  expect(screen.getByRole('heading', { name: /Custom Profiles, Reliable Manufacture/i })).toBeInTheDocument();
-  expect(screen.getByText(/From design to production, we deliver tailored aluminum extrusion solutions with consistent quality/i)).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: /Aluminum Profile Solutions for Your Project/i })).toBeInTheDocument();
   fireEvent.click(screen.getByLabelText('Go to slide 3'));
-  expect(screen.getByRole('heading', { name: /Your Trusted Aluminum Extrusion Partner/i })).toBeInTheDocument();
-  expect(screen.getByText(/Serving customers worldwide with durable products, competitive pricing, and on-time delivery/i)).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: /Aluminum Profile Solutions for Your Project/i })).toBeInTheDocument();
   expect(screen.queryByText('支持 OEM 和 ODM 铝型材定制')).not.toBeInTheDocument();
   expect(screen.queryByText('建筑与工业型材稳定供应')).not.toBeInTheDocument();
   expect(screen.queryByText('快速响应出口询价需求')).not.toBeInTheDocument();
   expect(screen.queryByText(/Aluminum extrusion, finishing, and export support from China/i)).not.toBeInTheDocument();
   expect(screen.queryByText(/Aluminum extrusion and export support/i)).not.toBeInTheDocument();
-  expect(screen.queryByText(/6061 \/ 6063 alloy support/i)).not.toBeInTheDocument();
-  expect(screen.queryByText(/Surface finishing/i)).not.toBeInTheDocument();
-  expect(screen.queryByText(/OEM drawing review/i)).not.toBeInTheDocument();
-  expect(screen.queryByText(/Export packaging/i)).not.toBeInTheDocument();
-  expect(screen.queryByRole('button', { name: /Get a Quote/i })).not.toBeInTheDocument();
-  expect(screen.queryByRole('link', { name: /View Products/i })).not.toBeInTheDocument();
-  expect(screen.getByTestId('home-stats-grid')).toHaveClass('sm:grid-cols-3');
-  const statCards = screen.getAllByTestId('home-stat-card');
-  expect(statCards).toHaveLength(3);
-  expect(statCards[0]).toHaveTextContent('5');
-  expect(statCards[0]).toHaveTextContent(/Product categories/i);
-  expect(statCards[1]).toHaveTextContent('20');
-  expect(statCards[1]).toHaveTextContent(/Catalog references/i);
-  expect(statCards[2]).toHaveTextContent('2');
-  expect(statCards[2]).toHaveTextContent(/Regional window & door ranges/i);
+  expect(screen.getByTestId('home-capability-strip')).toBeInTheDocument();
+  expect(screen.getByText(/Five core profile categories/i)).toBeInTheDocument();
+  expect(screen.getByText(/Drawing-based custom requirements/i)).toBeInTheDocument();
+  expect(screen.getByText(/Surface finishing and processing options/i)).toBeInTheDocument();
+  expect(screen.getByText(/Project inquiry and export coordination/i)).toBeInTheDocument();
+  expect(screen.queryByText(/Catalog references/i)).not.toBeInTheDocument();
+  expect(screen.queryByText(/Regional window & door ranges/i)).not.toBeInTheDocument();
+  expect(screen.queryByText(/keeps the homepage commercially useful/i)).not.toBeInTheDocument();
+  expect(screen.queryByText(/form keeps the RFQ path visible/i)).not.toBeInTheDocument();
   expect(screen.queryByText(/Extrusion and finishing lines/i)).not.toBeInTheDocument();
   expect(screen.queryByText(/Days standard lead time/i)).not.toBeInTheDocument();
   expect(screen.getByRole('heading', { name: /Explore Core Product Categories/i })).toBeInTheDocument();
@@ -143,7 +137,7 @@ test('uses three factory photos instead of product photos in the homepage hero c
     </MemoryRouter>
   );
 
-  const heroHeading = await screen.findByRole('heading', { name: /Precision Aluminum Extrusion Solutions/i });
+  const heroHeading = await screen.findByRole('heading', { name: /Aluminum Profile Solutions for Your Project/i });
   const heroSection = heroHeading.closest('section');
   const slideLayers = Array.from(heroSection?.querySelectorAll('div[style*="background-image"]') || []);
 

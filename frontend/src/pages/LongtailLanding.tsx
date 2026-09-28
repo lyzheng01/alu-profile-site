@@ -59,26 +59,26 @@ const landingPages: Record<string, LandingPageData> = {
     title: 'Aluminum Profile Supplier for Construction Projects | LingYe Aluminum',
     h1: 'Aluminum Profile Supplier for Construction Projects',
     description:
-      'Reliable aluminum profile supplier for construction projects. Custom extrusion, stable quality, and global B2B delivery from LingYe Aluminum.',
+      'Aluminum profile references for construction projects. Share drawings, finish requirements, quantity, and destination to discuss a project-specific quotation.',
     intro:
-      'LingYe Aluminum supports developers, contractors, and distributors with scalable aluminum profile supply for residential and commercial construction projects worldwide. With years of export experience, we ensure every shipment meets specification and arrives on time.',
+      'LingYe helps buyers discuss aluminum profile requirements for residential and commercial construction applications, coordinate manufacturing resources, and clarify export order details.',
     bullets: [
       'Architectural sections for windows, doors, facades, and partition systems',
       'Multiple alloys and surface finishes for indoor and outdoor applications',
-      'Stable production scheduling and export-ready packaging',
-      'Technical support from drawing review to shipment planning',
+      'Order and packaging requirements discussed for each project',
+      'Drawing and shipment requirements coordinated during quotation',
     ],
     trustPoints: [
-      { icon: 'Factory', text: 'In-house factory with 10+ extrusion lines' },
-      { icon: 'Certified', text: 'ISO 9001 quality certified' },
-      { icon: 'Export', text: 'Export-ready packaging to 30+ countries' },
-      { icon: 'Lead time', text: '7-15 days standard lead time' },
+      { icon: 'Application', text: 'Profile options for construction applications' },
+      { icon: 'Drawing', text: 'Requirements reviewed against project drawings' },
+      { icon: 'Finish', text: 'Finish options confirmed for each order' },
+      { icon: 'Export', text: 'Export order details coordinated by project' },
     ],
     processSteps: [
       { step: '01', title: 'Submit requirements', description: 'Share drawings, alloy, finish, quantity, and destination port.' },
-      { step: '02', title: 'Engineering review', description: 'Our team reviews and confirms feasibility, tooling needs, and timeline.' },
-      { step: '03', title: 'Sample production', description: 'Trial samples produced and sent for approval before mass production.' },
-      { step: '04', title: 'Mass production & ship', description: 'Production, QC inspection, and export shipment to your site.' },
+      { step: '02', title: 'Project review', description: 'Discuss profile geometry, material, finish, and open questions.' },
+      { step: '03', title: 'Options confirmation', description: 'Confirm available tooling, sample, and processing options during quotation.' },
+      { step: '04', title: 'Order coordination', description: 'Agree on order details, packaging, and export documentation requirements.' },
     ],
     productSlugs: ['wholesale-aluminium-tile-trim-l-shape-tile-trim', 'aluminium-skirting-boards', 'industrial-profile-extrude-aluminium-framing-40x40'],
     relatedLinks: [
@@ -88,24 +88,24 @@ const landingPages: Record<string, LandingPageData> = {
     ],
     faqs: [
       {
-        question: 'Which construction projects are suitable for your aluminum profiles?',
+        question: 'Which construction applications can I discuss?',
         answer:
-          'Our profiles are used in residential towers, commercial buildings, facade systems, and interior partition projects.',
+          'Common applications include windows, doors, facades, partitions, and interior systems. Share project drawings to review profile requirements.',
       },
       {
         question: 'Can you customize profile dimensions and wall thickness?',
         answer:
-          'Yes, we support customized dimensions, wall thickness, and structural requirements based on project drawings.',
+          'Share the drawing and intended application so dimensions, wall thickness, and other requirements can be reviewed for the project.',
       },
       {
         question: 'Do you provide surface treatment options for outdoor use?',
         answer:
-          'Yes. We provide anodizing, powder coating, and other treatments designed for durability in outdoor environments.',
+          'Discuss the intended environment, appearance, and finish requirements. Available options should be confirmed for the specific profile and order.',
       },
       {
         question: 'What is the typical MOQ for construction profiles?',
         answer:
-          'Our MOQ varies by profile complexity. We welcome pilot orders and scale up based on project needs.',
+          'Minimum order quantities depend on the profile and project details. Share the expected quantity to confirm what is available.',
       },
       {
         question: 'What information is needed for a quick quote?',
@@ -116,29 +116,29 @@ const landingPages: Record<string, LandingPageData> = {
   },
   'industrial-aluminum-extrusion-manufacturer-in-china': {
     slug: 'industrial-aluminum-extrusion-manufacturer-in-china',
-    title: 'Industrial Aluminum Extrusion Manufacturer in China | LingYe Aluminum',
-    h1: 'Industrial Aluminum Extrusion Manufacturer in China',
+    title: 'Industrial Aluminum Profiles for Equipment and Automation | LingYe Aluminum',
+    h1: 'Industrial Aluminum Profiles for Equipment and Automation',
     description:
-      'China-based industrial aluminum extrusion manufacturer with OEM support, precision processing, and export-ready production.',
+      'Explore industrial aluminum profile references for equipment frames, automation, transport, and mechanical projects. Share drawings to discuss project requirements.',
     intro:
-      'We provide industrial aluminum extrusion solutions for equipment frames, automation lines, transport components, and custom mechanical applications. Our facility is equipped to handle complex profiles with tight tolerances.',
+      'LingYe helps buyers discuss industrial profile geometry and coordinate manufacturing resources for equipment frames, automation lines, transport components, and custom mechanical applications.',
     bullets: [
-      'Custom extrusion tooling and profile development for OEM projects',
-      'Secondary processing including cutting, drilling, and CNC options',
-      'Anodizing and powder coating for corrosion resistance and appearance',
-      'Quality checks for dimensional consistency and surface finish',
+      'Drawing-based profile and tooling requirements',
+      'Processing options discussed against the drawing',
+      'Surface finish selected for the intended application',
+      'Dimensions and material confirmed by project specification',
     ],
     trustPoints: [
-      { icon: 'Capability', text: 'Full OEM/ODM capability' },
-      { icon: 'In-house', text: 'CNC and secondary processing in-house' },
-      { icon: 'Precision', text: 'Dimensional tolerance within +/-0.1mm' },
-      { icon: 'Global', text: 'Export to 30+ countries worldwide' },
+      { icon: 'OEM', text: 'OEM project requirements reviewed' },
+      { icon: 'Processing', text: 'Processing options confirmed by drawing' },
+      { icon: 'Specification', text: 'Dimensions confirmed for each project' },
+      { icon: 'Export', text: 'Export order details coordinated' },
     ],
     processSteps: [
-      { step: '01', title: 'Design & tooling', description: 'We develop extrusion dies and tooling based on your 2D/3D drawings.' },
-      { step: '02', title: 'Sample approval', description: 'First-article samples inspected and sent for your approval.' },
-      { step: '03', title: 'Mass production', description: 'Production run with in-process QC checks at each stage.' },
-      { step: '04', title: 'Finishing & shipment', description: 'Surface treatment, packaging, and logistics arranged.' },
+      { step: '01', title: 'Share drawings', description: 'Provide profile geometry, material, finish, and application details.' },
+      { step: '02', title: 'Review requirements', description: 'Discuss profile, tooling, and processing needs against the project.' },
+      { step: '03', title: 'Confirm options', description: 'Review available samples, finish choices, and order specifications.' },
+      { step: '04', title: 'Coordinate order', description: 'Confirm quantity, packaging, destination, and export documentation.' },
     ],
     productSlugs: ['2020-3030-4040-t-slot-aluminium-profiles', '2020-t-slot-aluminium-extrusion-profile-industrial', 'industrial-profile-extrude-aluminium-framing-40x40'],
     relatedLinks: [
@@ -150,55 +150,55 @@ const landingPages: Record<string, LandingPageData> = {
       {
         question: 'Do you support OEM industrial extrusion projects?',
         answer:
-          'Yes, we support OEM projects from profile design and tooling development to mass production and export shipment.',
+          'Share the drawing, material, finish, and application. Tooling, processing, and order options can then be discussed for the project.',
       },
       {
         question: 'What alloys and tempers are commonly available?',
         answer:
-          'Common options include 6061 and 6063 series with tempers such as T5 and T6, depending on application needs.',
+          'Alloy and temper depend on the profile and application. Share the required specification so availability can be confirmed.',
       },
       {
         question: 'Can you provide machining after extrusion?',
         answer:
-          'Yes, we provide secondary processing such as cutting, drilling, punching, and CNC machining based on drawings.',
+          'Share the drawing and processing details to confirm which secondary operations can be coordinated for the order.',
       },
       {
         question: 'How do you control quality consistency?',
         answer:
-          'We apply incoming material checks, process controls, and final inspections for dimensions, surface quality, and packaging.',
+          'Inspection documents and acceptance criteria should be agreed for each project. Include any required standards with the inquiry.',
       },
       {
         question: 'What is your typical lead time for industrial profiles?',
         answer:
-          'Standard lead time is 7-15 days depending on complexity, quantity, and surface finish requirements.',
+          'Timing depends on profile, quantity, tooling, and finish requirements. A project-specific schedule should be confirmed during quotation.',
       },
     ],
   },
   'custom-aluminum-profile-factory-for-oem-orders': {
     slug: 'custom-aluminum-profile-factory-for-oem-orders',
-    title: 'Custom Aluminum Profile Factory for OEM Orders | LingYe Aluminum',
-    h1: 'Custom Aluminum Profile Factory for OEM Orders',
+    title: 'Custom Aluminum Profiles for OEM Projects | LingYe Aluminum',
+    h1: 'Custom Aluminum Profiles for OEM Projects',
     description:
-      'Custom aluminum profile factory for OEM/ODM projects. Send drawings and get fast feedback on tooling, finish, and lead time.',
+      'Discuss custom aluminum profile requirements for OEM projects. Share drawings and confirm tooling, finish, order, and delivery options for your project.',
     intro:
-      'From sample development to mass production, LingYe Aluminum helps OEM buyers launch custom aluminum profile products with predictable quality and lead time. We serve as a true extension of your supply chain.',
+      'LingYe helps OEM buyers communicate profile requirements, coordinate manufacturing resources, and clarify order details against project drawings.',
     bullets: [
-      'Fast quotation workflow based on 2D/3D drawings and specifications',
-      'Flexible MOQ strategy for pilot and scale-up orders',
-      'Material, temper, and finish selection based on target market needs',
-      'Responsive communication for procurement and engineering teams',
+      'Drawing-based review of profile requirements',
+      'Order quantity and tooling options confirmed by project',
+      'Material, temper, and finish discussed for the application',
+      'Project communication for procurement and engineering teams',
     ],
     trustPoints: [
-      { icon: 'Custom', text: 'Custom die design service' },
-      { icon: 'Samples', text: 'Free samples available within 7 days' },
-      { icon: 'Flexible', text: 'Flexible MOQ for test orders' },
-      { icon: 'Shipping', text: 'FOB/CIF shipping from Shenzhen/Guangzhou' },
+      { icon: 'Drawing', text: 'Profile requirements reviewed against drawings' },
+      { icon: 'Tooling', text: 'Tooling and sample options confirmed by project' },
+      { icon: 'Quantity', text: 'Order quantity discussed during quotation' },
+      { icon: 'Export', text: 'Delivery and export details confirmed by order' },
     ],
     processSteps: [
-      { step: '01', title: 'Drawing submission', description: 'Send your 2D/3D drawings with alloy, temper, finish, and quantity details.' },
-      { step: '02', title: 'Quotation & timeline', description: 'We provide pricing, tooling cost, and production lead time within 48 hours.' },
-      { step: '03', title: 'Tooling & sampling', description: 'Die fabrication and sample production for your quality approval.' },
-      { step: '04', title: 'Production & delivery', description: 'Mass production with QC inspection, packaging, and on-time shipment.' },
+      { step: '01', title: 'Share the drawing', description: 'Include alloy, temper, finish, application, and estimated quantity if known.' },
+      { step: '02', title: 'Review the requirements', description: 'Discuss profile geometry, tooling, processing, and open specification questions.' },
+      { step: '03', title: 'Confirm project options', description: 'Review quotation details, sample options, and the expected order plan.' },
+      { step: '04', title: 'Coordinate delivery', description: 'Confirm packaging, destination, and export document requirements.' },
     ],
     productSlugs: ['aluminium-heat-sink-custom-extruded-aluminum-heats', 'h-shaped-aluminum-extrusionaluminum-h-structural-p', 'square-aluminium-tube-profiles-china-aluminium-ext'],
     relatedLinks: [
@@ -208,29 +208,29 @@ const landingPages: Record<string, LandingPageData> = {
     ],
     faqs: [
       {
-        question: 'Can you produce profiles strictly based on our drawings?',
+        question: 'Can profile requirements be based on our drawings?',
         answer:
-          'Yes, we can produce according to your 2D/3D drawings and technical standards with engineering review before tooling.',
+          'Yes. Share the drawing and applicable standards so profile, tooling, and manufacturing options can be reviewed for the project.',
       },
       {
         question: 'Do you support low-volume trial production?',
         answer:
-          'Yes, we support pilot runs and trial orders before scaling up to regular mass production.',
+          'Minimum quantities depend on the profile and project. Include your expected quantity so options can be confirmed.',
       },
       {
         question: 'What lead time should we expect for OEM orders?',
         answer:
-          'Lead time depends on tooling complexity, quantity, and finish process, and we provide a clear timeline during quotation.',
+          'Timing depends on tooling, quantity, and finish requirements. Confirm the expected schedule during project quotation.',
       },
       {
         question: 'How is packaging handled for export shipments?',
         answer:
-          'We provide export-oriented packaging solutions to reduce damage risk and support efficient container loading.',
+          'Share packaging and destination requirements so the suitable order and export arrangements can be discussed.',
       },
       {
         question: 'What file formats do you accept for drawings?',
         answer:
-          'We accept PDF, DWG, DXF, STEP, and IGES formats. Our engineering team can review and advise on your design.',
+          'Include a drawing or reference file with the inquiry. Confirm accepted formats and review requirements with the project contact.',
       },
     ],
   },
@@ -280,7 +280,6 @@ const LongtailLanding: React.FC = () => {
       name: page.h1,
       description: page.description,
       brand: { '@type': 'Brand', name: 'LingYe Aluminum' },
-      manufacturer: { '@type': 'Organization', name: 'LingYe Aluminum' },
       url: typeof window !== 'undefined' ? window.location.href : `https://lingyealuminum.com/en/${page.slug}`,
     };
   }, [page]);
@@ -354,7 +353,7 @@ const LongtailLanding: React.FC = () => {
         <div className="rounded-xl border border-blue-100 bg-blue-50 p-6 mb-8">
           <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('landing_request_quote', 'Request a quotation')}</h3>
           <p className="text-gray-700 mb-4">
-            Share your drawing, alloy, finish, quantity, and destination port. Our team will provide a practical quote quickly.
+            Share your drawing, alloy, finish, quantity, and destination port so the project requirements can be reviewed.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link

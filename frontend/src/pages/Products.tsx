@@ -390,10 +390,10 @@ const Products: React.FC = () => {
                 Aluminum Profile Supplier for Construction Projects
               </Link>
               <Link className="text-blue-700 hover:text-blue-900 underline" to="/en/industrial-aluminum-extrusion-manufacturer-in-china">
-                Industrial Aluminum Extrusion Manufacturer in China
+                Industrial Aluminum Profiles for Equipment and Automation
               </Link>
               <Link className="text-blue-700 hover:text-blue-900 underline" to="/en/custom-aluminum-profile-factory-for-oem-orders">
-                Custom Aluminum Profile Factory for OEM Orders
+                Custom Aluminum Profiles for OEM Projects
               </Link>
             </div>
           </div>

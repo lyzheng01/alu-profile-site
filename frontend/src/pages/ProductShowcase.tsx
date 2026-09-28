@@ -22,32 +22,32 @@ const factoryImages = [
 ];
 
 const finishes = [
-  { title: 'Anodized', desc: '10-25μm anodizing layer, matte or bright tone', tone: 'Matte Silver' },
-  { title: 'Powder Coated', desc: 'Akzo Nobel powder, any RAL color available', tone: 'RAL 7016 / 9016' },
-  { title: 'PVDF Painting', desc: 'Excellent UV resistance for curtain walls', tone: 'Metallic Champagne' },
-  { title: 'Wood Grain Transfer', desc: 'Faux wood feel with anti-scratch coat', tone: 'Golden Oak / Walnut' },
+  { title: 'Anodized', desc: 'Confirm color and coating requirements against the project specification', tone: 'Project-confirmed' },
+  { title: 'Powder Coated', desc: 'Discuss target color and surface requirements for the intended application', tone: 'Project-confirmed' },
+  { title: 'PVDF Painting', desc: 'Confirm coating system and performance requirements for the project', tone: 'Project-confirmed' },
+  { title: 'Wood Grain Transfer', desc: 'Check available decorative finish references for the order', tone: 'Project-confirmed' },
 ];
 
 const qaChecklist = [
-  'Dimensional accuracy ±0.08 mm ensured with inline laser gauges',
-  'Hardness testing for each batch (HB 8-12) after aging furnace',
-  'Neutral salt spray testing ≥ 1,000 h for PVDF and powder layers',
-  'Double inspection for corner joining strength and surface finish',
+  'Share the profile drawing or section dimensions',
+  'Confirm alloy and temper for the intended application',
+  'Specify surface finish, color, and appearance requirements',
+  'Note estimated quantity, packaging, and destination',
 ];
 
 const applicationScenarios = [
-  { title: 'Luxury Sliding Doors', detail: 'Large-span panoramic openings with slim interlocks (31 mm)', icon: '🚪' },
-  { title: 'Passive House Windows', detail: 'Triple glazing ready profiles with multi-cavity thermal break', icon: '🏠' },
-  { title: 'Commercial Curtain Walls', detail: 'Unitized façade frames with hidden drainage design', icon: '🏢' },
-  { title: 'Villa Folding Doors', detail: 'Heavy-duty rollers for 120 kg leaf, flush sill threshold', icon: '🌳' },
+  { title: 'Sliding doors', detail: 'Discuss opening size, panel configuration, and finish requirements.', icon: '🚪' },
+  { title: 'Windows', detail: 'Confirm glazing, thermal-break, and hardware compatibility by system.', icon: '🏠' },
+  { title: 'Curtain walls', detail: 'Share elevations and project specifications for profile review.', icon: '🏢' },
+  { title: 'Folding doors', detail: 'Confirm panel arrangement, hardware, and intended loading.', icon: '🌳' },
 ];
 
-const manufacturingSteps = [
-  { step: '01', title: 'Billet Preparation', desc: 'High purity 6063/6061 billets inspected & homogenized' },
-  { step: '02', title: 'Precision Extrusion', desc: '1,800-3,600T presses with online quenching & stretchers' },
-  { step: '03', title: 'Aging & Machining', desc: 'Automatic aging furnaces + CNC cutting, punching & milling' },
-  { step: '04', title: 'Surface Finishing', desc: 'Vertical powder line & 12+ anodizing tanks for stylish finishes' },
-  { step: '05', title: 'Assembly & QA', desc: 'Pre-assembly mock-up, hardware fitting & full inspection report' },
+const projectSteps = [
+  { step: '01', title: 'Share requirements', desc: 'Provide drawings, dimensions, application, and estimated quantity.' },
+  { step: '02', title: 'Review profile needs', desc: 'Discuss section geometry, system compatibility, alloy, and temper.' },
+  { step: '03', title: 'Confirm finish options', desc: 'Align color, surface appearance, and processing details to the project.' },
+  { step: '04', title: 'Review quotation', desc: 'Confirm specification, quantity, packaging, and destination details.' },
+  { step: '05', title: 'Coordinate the order', desc: 'Agree on the order plan and export documentation requirements.' },
 ];
 
 const ProductShowcase: React.FC = () => {
@@ -55,7 +55,7 @@ const ProductShowcase: React.FC = () => {
 
   useSeoMeta({
     title: 'Aluminium Windows & Doors System | LingYe Aluminum',
-    description: 'Custom-engineered thermal break aluminum profiles for windows, doors, curtain walls and villa folding doors. European-class quality control.',
+    description: 'Aluminum window and door profile references for sliding doors, windows, curtain walls, and folding door projects. Confirm dimensions and system compatibility against project drawings.',
     canonicalPath: `/${currentLanguage}/products/windows-doors/showcase`,
     ogImage: 'https://lingyealuminum.com/logo.jpg?v=3',
     language: currentLanguage,
@@ -101,7 +101,7 @@ const ProductShowcase: React.FC = () => {
               </h1>
               <p className="text-lg text-slate-600 leading-relaxed">
                 Custom-engineered thermal break profiles optimized for contemporary façades, villas and commercial towers.
-                Built with Lingye’s strict European-class quality control and extensive finish library.
+                Share a drawing or project schedule to discuss profile configuration, finish options, and order requirements.
               </p>
               <div className="flex flex-wrap gap-4">
                 <div className="px-5 py-3 bg-white border border-blue-100 rounded-2xl shadow-sm">
@@ -143,33 +143,33 @@ const ProductShowcase: React.FC = () => {
 
         <section className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 bg-white rounded-3xl p-8 shadow-xl border border-slate-100">
-            <h2 className="text-2xl font-bold text-slate-900 mb-6">Performance & Specifications</h2>
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">Project Specifications to Confirm</h2>
             <div className="grid sm:grid-cols-2 gap-4 text-sm text-slate-600">
               <div className="p-4 rounded-2xl bg-slate-50">
                 <p className="text-xs uppercase tracking-wide text-slate-500">Profile Alloy</p>
-                <p className="text-lg font-semibold text-slate-900">6063-T5 / 6061-T6</p>
+                <p className="text-lg font-semibold text-slate-900">Confirm by drawing or specification</p>
               </div>
               <div className="p-4 rounded-2xl bg-slate-50">
                 <p className="text-xs uppercase tracking-wide text-slate-500">Wall Thickness</p>
-                <p className="text-lg font-semibold text-slate-900">1.4 mm – 3.0 mm</p>
+                <p className="text-lg font-semibold text-slate-900">Confirm by profile requirements</p>
               </div>
               <div className="p-4 rounded-2xl bg-slate-50">
                 <p className="text-xs uppercase tracking-wide text-slate-500">Thermal Break</p>
-                <p className="text-lg font-semibold text-slate-900">PA66 GF25 Insulating Strips</p>
+                <p className="text-lg font-semibold text-slate-900">Select to match the target system</p>
               </div>
               <div className="p-4 rounded-2xl bg-slate-50">
                 <p className="text-xs uppercase tracking-wide text-slate-500">Hardware Compatibility</p>
-                <p className="text-lg font-semibold text-slate-900">Siegenia / Roto / HOPO</p>
+                <p className="text-lg font-semibold text-slate-900">Confirm with system and hardware details</p>
               </div>
             </div>
           </div>
           <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-3xl p-8 text-white shadow-xl">
             <h3 className="text-xl font-semibold mb-4">Project Services</h3>
             <ul className="space-y-4 text-sm tracking-wide">
-              <li>• BIM & shop drawing support (Autodesk Revit / CAD)</li>
-              <li>• Custom die opening within 7 days</li>
-              <li>• Mock-up fabrication & onsite guidance</li>
-              <li>• 15-year surface warranty for PVDF systems</li>
+              <li>• Drawing and schedule review</li>
+              <li>• Profile, finish, and processing requirement discussion</li>
+              <li>• Tooling or sample options confirmed during quotation</li>
+              <li>• Order and export detail coordination</li>
             </ul>
           </div>
         </section>
@@ -212,7 +212,7 @@ const ProductShowcase: React.FC = () => {
         <section className="bg-white rounded-3xl p-8 border border-slate-100 shadow-lg">
           <div className="grid lg:grid-cols-2 gap-10">
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 mb-4">Quality Assurance</h2>
+              <h2 className="text-2xl font-bold text-slate-900 mb-4">Project Details to Confirm</h2>
               <ul className="space-y-4 text-slate-600">
                 {qaChecklist.map((item, idx) => (
                   <li key={idx} className="flex items-start gap-3">
@@ -235,9 +235,9 @@ const ProductShowcase: React.FC = () => {
         <FactoryShowcase className="-mx-6 lg:-mx-12" />
 
         <section className="space-y-6">
-          <h2 className="text-2xl font-bold text-slate-900">Manufacturing Journey</h2>
+          <h2 className="text-2xl font-bold text-slate-900">Project Coordination</h2>
           <div className="grid lg:grid-cols-5 gap-4">
-            {manufacturingSteps.map((step) => (
+            {projectSteps.map((step) => (
               <div key={step.step} className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
                 <p className="text-sm font-mono text-blue-500">{step.step}</p>
                 <h4 className="text-lg font-semibold text-slate-900 mt-2">{step.title}</h4>
@@ -251,15 +251,14 @@ const ProductShowcase: React.FC = () => {
           <div className="grid lg:grid-cols-2 gap-10">
             <div className="space-y-4">
               <p className="text-sm uppercase tracking-[0.3em] text-white/70">Custom Project Support</p>
-              <h2 className="text-3xl font-bold leading-tight">Request detailed drawings, die opening and finish samples within 5 days</h2>
+              <h2 className="text-3xl font-bold leading-tight">Discuss your window or facade requirements</h2>
               <p className="text-white/80">
-                Share your window/door schedule or façade elevation, and our engineering team will match the optimal profile system, glazing bead, mullion,
-                transom and accessory solution for faster installation onsite.
+                Share a window schedule, façade elevation, drawing, or reference. Profile configuration, finish, and system compatibility can then be reviewed against your project needs.
               </p>
               <div className="flex flex-wrap gap-6 text-sm text-white/70">
-                <span>• BIM & CNC files</span>
-                <span>• Hardware pairing</span>
-                <span>• Mock-up fabrication</span>
+                <span>• Drawing or schedule</span>
+                <span>• Finish requirements</span>
+                <span>• Quantity and destination</span>
               </div>
             </div>
             <div className="bg-white rounded-2xl p-6 text-slate-900 shadow-xl">

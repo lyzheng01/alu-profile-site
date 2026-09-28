@@ -59,4 +59,11 @@ test('adds the shared factory showcase and preserves product-specific factory ph
 
   expect(await screen.findByTestId('factory-showcase')).toBeInTheDocument();
   expect(screen.getByRole('img', { name: 'Product factory gallery photo' })).toBeInTheDocument();
+  expect(screen.queryByText(/10\+ Years Aluminium Manufacturing Experience/i)).not.toBeInTheDocument();
+  expect(screen.queryByRole('heading', { name: /Why choose us\?/i })).not.toBeInTheDocument();
+
+  const structuredDataCalls = (jest.requireMock('../hooks/useStructuredData').useStructuredData as jest.Mock).mock.calls;
+  const productCall = [...structuredDataCalls].reverse().find(([key]) => key === 'product');
+  expect(productCall?.[1]).toMatchObject({ brand: { name: 'LingYe Aluminum' } });
+  expect(productCall?.[1]).not.toHaveProperty('manufacturer');
 });

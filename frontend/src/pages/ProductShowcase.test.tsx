@@ -37,4 +37,11 @@ test('uses the clean supplied surface-finish, quality and factory images', () =>
     'src',
     '/images/factory-extrusion-lines.webp'
   );
+  expect(screen.getByRole('heading', { name: 'Project Specifications to Confirm' })).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: 'Project Coordination' })).toBeInTheDocument();
+  expect(screen.queryByText(/1,800-3,600T|12\+ anodizing tanks|European-class|within 5 days|15-year surface warranty|±0\.08 mm/i)).not.toBeInTheDocument();
+
+  const structuredDataCalls = (jest.requireMock('../hooks/useStructuredData').useStructuredData as jest.Mock).mock.calls;
+  const productCall = structuredDataCalls.find(([key]) => key === 'showcase-product');
+  expect(productCall?.[1]).not.toHaveProperty('manufacturer');
 });

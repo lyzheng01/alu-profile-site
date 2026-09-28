@@ -50,3 +50,19 @@ class FrontendTranslationServiceTests(SimpleTestCase):
 
         self.assertEqual(result, '中文结果')
         factory.assert_called_once_with(source='en', target='zh-CN')
+
+    def test_positioning_copy_is_available_in_all_runtime_locales(self):
+        translations_dir = Path(__file__).resolve().parents[2] / 'translations'
+        self.service.translations_dir = translations_dir
+
+        for language in ('en', 'zh', 'es', 'pt'):
+            with self.subTest(language=language):
+                content = self.service.get_all_frontend_content(language)
+                self.assertTrue(content['home_hero_precision_title'])
+                self.assertTrue(content['home_hero_primary_cta'])
+                self.assertTrue(content['factory_showcase'])
+                self.assertTrue(content['footer_brand'])
+                self.assertNotRegex(
+                    content['about_company_intro_content'],
+                    r'professional aluminum profile manufacturer|fabricante de perfiles de aluminio|制造商|自有工厂',
+                )
