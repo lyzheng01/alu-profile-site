@@ -116,11 +116,140 @@ ARTICLES = [
 <p>Confirm labels, bundle or carton details, shipping documents and the receiving contact. After delivery, record any fit or finish feedback against the relevant drawing revision so future orders have a clear reference.</p>
 <p>At Lingye Aluminum, this is a practical coordination framework for custom-profile inquiries. The exact process, services, samples and inspection documents depend on the confirmed quotation, order scope and project agreement. No customer reference or project result should be inferred from this general workflow.</p>''',
     },
+    {
+        'title': '6061 vs 6063 Aluminium: How to Choose an Alloy and Temper',
+        'slug': '6061-vs-6063-aluminium-alloy-selection',
+        'keyword': '6061 vs 6063 aluminium',
+        'excerpt': 'Choose between 6061 and 6063 by balancing structural requirements, extrusion complexity, surface appearance, machining and the specified temper.',
+        'image': 'custom-profile2.jpg',
+        'tags': ['Material Selection', 'Design Guide'],
+        'meta_description': 'Compare 6061 and 6063 aluminium for custom extrusions. Understand temper, strength, finish and the questions to resolve before ordering.',
+        'content': '''<p>6061 and 6063 are both widely used 6xxx-series aluminium alloys, but they are not interchangeable labels. The right choice depends on the section geometry, required properties after processing, surface expectations and how the part will be used. Start with the design requirement, not with a generic claim that one alloy is always stronger or better.</p>
+<h2>What the alloy choice changes</h2>
+<p>6061 is frequently considered where a project needs a balance of strength, machinability and general engineering use. 6063 is commonly selected for extruded sections where surface appearance, thin or detailed geometry and architectural or enclosure applications matter. Actual results depend on the product form, section, temper, dimensions and production route; the alloy designation alone does not establish a finished part's allowable load.</p>
+<p>For an extrusion, also consider whether the desired cross-section can be produced reliably. Wall-thickness variation, narrow openings, long unsupported features and hollow cavities affect die design and process stability. Discuss the section with the extrusion supplier before locking the material and geometry together.</p>
+<h2>Temper is part of the specification</h2>
+<p>Temper describes the material condition and heat-treatment history, such as T5 or T6. It affects mechanical properties and can influence the sequence of extrusion, quenching, artificial ageing and machining. Do not write “6061” or “6063” alone when the design depends on strength or hardness. State the required temper or ask for a proposal tied to the drawing and intended service conditions.</p>
+<h2>A practical selection sequence</h2>
+<ol><li><strong>Define the function:</strong> identify loads, supports, spans, movement, vibration and any safety-related duty.</li><li><strong>Set the finish priority:</strong> note visible faces, anodized colour expectations, coating and cosmetic limits.</li><li><strong>Review manufacturability:</strong> share the section drawing and ask about minimum walls, hollows, slots and likely die constraints.</li><li><strong>Confirm downstream work:</strong> list CNC features, joining, bending or assembly interfaces that may affect material condition.</li><li><strong>Agree verification:</strong> specify the applicable material standard, inspection evidence and acceptance criteria in the purchase documents.</li></ol>
+<h2>What to send with an inquiry</h2>
+<p>Provide a revision-controlled section drawing, alloy and temper if already approved by engineering, critical dimensions, quantity, cut length, finish, machining details and application environment. If the alloy is undecided, state the functional target and request a technically supported option for your engineer to approve. Ask the supplier to identify the standard and documentation included in the quotation.</p>
+<p><strong>Important:</strong> this guide is for early procurement discussion, not a structural calculation or material certification. A qualified engineer should validate load-bearing and safety-critical parts using the actual geometry, support conditions and governing design rules.</p>''',
+    },
+    {
+        'title': 'Designing an Extrusion Cross-Section: A Die-Readiness Checklist',
+        'slug': 'aluminium-extrusion-cross-section-die-design-guide',
+        'keyword': 'aluminium extrusion die design',
+        'excerpt': 'Reduce avoidable die revisions by reviewing wall balance, hollow features, radii, tolerances and functional interfaces before releasing a custom profile drawing.',
+        'image': 'aluminium-profile-engineering.webp',
+        'tags': ['Custom Profiles', 'Design Guide'],
+        'meta_description': 'A practical die-readiness checklist for custom aluminium extrusion drawings, including wall balance, hollows, radii and critical interfaces.',
+        'content': '''<p>A custom extrusion drawing is also a manufacturing proposal. A section that looks simple in CAD can be difficult to extrude if material flow is unbalanced, walls vary sharply or narrow features create fragile die details. A short design-for-extrusion review before tooling can prevent a long cycle of drawing changes and sample corrections.</p>
+<h2>1. Make the section manufacturable</h2>
+<p>Where function permits, keep wall thickness reasonably consistent and transitions gradual. Large differences in metal mass across the section can make flow and dimensional control more difficult. Avoid sharp internal corners; practical radii can improve metal flow and reduce stress concentration in the part. The appropriate values depend on alloy, section size, press and die design, so confirm them with the proposed production source rather than applying a universal rule.</p>
+<p>Long, thin projections, narrow slots and deep channels deserve early review. They can challenge die strength, cooling and profile straightness. If a feature is not essential, simplifying or thickening it may improve feasibility. If it is essential, mark it clearly and ask for a manufacturability assessment.</p>
+<h2>2. Treat hollow sections as a special case</h2>
+<p>Hollow profiles usually require a die design that forms and joins metal flow around internal features. Identify every cavity, opening and joining interface in the drawing. Pay attention to enclosed hollows, thin bridges and narrow openings, and share assembly or sealing requirements so the supplier can assess the geometry. Never assume a hollow profile can use the same tooling approach, cost or minimum order as a simple solid section.</p>
+<h2>3. Put tolerances where they matter</h2>
+<p>Applying very tight tolerances to every dimension can raise tooling, inspection and production costs without improving function. Mark critical dimensions at interfaces such as a mating slot, bearing surface, seal land or fastener position. Separate functional tolerances from general tolerances and state the measurement method or datum where it matters. Confirm which tolerances apply before quoting.</p>
+<h2>4. Design for finishing and machining</h2>
+<p>Identify cosmetic faces, contact faces and surfaces that will be masked. Anodizing and coating can change dimensions and affect fit, so close-clearance features may need a defined finishing allowance or post-finish machining. Show holes, threads, cut-outs and CNC operations on a separate, revision-matched machining drawing when that makes inspection clearer.</p>
+<h2>Before authorizing tooling</h2>
+<ul><li>Confirm units, scale, revision and material designation.</li><li>Mark critical dimensions, datums, cosmetic faces and mating parts.</li><li>Review wall balance, radii, narrow openings, hollows and long projections.</li><li>Specify finish, colour sample expectations and any masked areas.</li><li>Agree tooling scope, sample quantity, approval criteria and ownership terms in writing.</li></ul>
+<p>Send both a dimensioned PDF and a usable CAD exchange file where available. Include annual demand estimates, initial quantity, cut lengths and destination because these can affect the commercial proposal. A supplier's feasibility comments do not replace the design authority's approval of function, strength or regulatory compliance.</p>''',
+    },
+    {
+        'title': 'How Aluminium Extrusion Works: From Billet to Finished Profile',
+        'slug': 'aluminium-extrusion-process-from-billet-to-profile',
+        'keyword': 'aluminium extrusion process steps',
+        'excerpt': 'Follow the main production stages from billet preparation and die setup through stretching, ageing, cutting, finishing and inspection, with buyer checkpoints at each stage.',
+        'image': 'factory-extrusion-lines.webp',
+        'tags': ['Manufacturing Process', 'Aluminium Extrusion'],
+        'meta_description': 'Understand the aluminium extrusion process and learn what buyers should confirm about samples, dimensions, finish and inspection.',
+        'content': '''<p>Understanding the extrusion route helps buyers ask better questions and place inspection at the right points. Exact equipment, parameters and sequence vary by profile, alloy and production source, but most projects move through a recognisable set of stages.</p>
+<h2>1. Billet preparation and die setup</h2>
+<p>An aluminium billet is prepared and heated to a controlled processing range. The die is installed and brought to operating conditions. Die design, alloy, press capability and profile complexity all influence the setup. For a custom section, the released drawing and approved revision must match the tooling plan before a trial begins.</p>
+<h2>2. Extrusion and cooling</h2>
+<p>The press forces heated aluminium through the die opening to form a continuous profile. The emerging profile is cooled using a process appropriate to the alloy and target condition. At this point, the metal is not yet necessarily in its final straightness, temper or cut-length condition.</p>
+<h2>3. Stretching, ageing and cutting</h2>
+<p>After cooling, profiles may be stretched to correct residual distortion, cut to manageable lengths and heat-treated to achieve the specified temper. Sequence and conditions depend on material and product requirements. If mechanical properties are critical, agree on the material designation, temper and supporting inspection documentation in the order specification.</p>
+<h2>4. Finishing and secondary operations</h2>
+<p>Profiles can then be cut to order, machined, deburred and surface-finished. Anodizing, powder coating and other treatments have different appearance and dimensional considerations. Identify cosmetic faces, close-fit features, masking needs and sample approval requirements before processing. Keep the drawing revision aligned across extrusion and machining operations.</p>
+<h2>5. Inspection, packing and shipment</h2>
+<p>Inspection should be tied to the agreed drawing and acceptance criteria. Typical checks may include section dimensions, cut length, appearance, machining features and finish, but the exact plan must be agreed for the project. Packaging should protect long profiles and finished surfaces from movement, abrasion and moisture exposure appropriate to the route and destination.</p>
+<h2>Buyer checkpoints that prevent surprises</h2>
+<ul><li>Before tooling: approve the section drawing, alloy/temper proposal and tooling scope.</li><li>At sampling: define which dimensions, interfaces, appearance and finish are acceptance items.</li><li>Before production: confirm the approved sample or first-article status and final drawing revision.</li><li>Before shipment: agree quantities, labels, protective packaging and required documents.</li></ul>
+<p>For Lingye Aluminum inquiries, production steps and available records are confirmed with the selected production partner and stated in the project quotation. A process overview is not a claim that every facility uses identical equipment or that a specific inspection document is automatically included.</p>''',
+    },
+    {
+        'title': 'CNC Machining Aluminium Profiles: Tolerances, Datums and Inspection',
+        'slug': 'cnc-machined-aluminium-profile-tolerances-inspection',
+        'keyword': 'CNC machining aluminium profiles',
+        'excerpt': 'Help machining suppliers quote and inspect extrusion parts consistently by defining datums, critical features, burr limits, finish sequence and sample approval.',
+        'image': 'cnc-parts2.webp',
+        'tags': ['CNC Machining', 'Quality Control'],
+        'meta_description': 'Specify CNC-machined aluminium profiles clearly with datum references, critical tolerances, deburring, finish sequence and inspection checkpoints.',
+        'content': '''<p>When an extruded profile is converted into a machined component, the extrusion drawing alone is rarely enough. Hole positions, end cuts, slots and interfaces need a shared datum scheme so the part can be made and inspected consistently.</p>
+<h2>Build the drawing around assembly function</h2>
+<p>Show how the finished part locates in the assembly. Choose datums that reflect the real mating surfaces and establish the origin and orientation for hole patterns or cut features. Avoid dimension chains when a feature's position is important; reference it to a clear datum or use a suitable geometric tolerance scheme reviewed by the design authority.</p>
+<p>Separate extrusion dimensions from machined dimensions where helpful. State whether dimensions apply before or after anodizing or coating. If machining crosses a cosmetic surface, specify the acceptable tool marks and whether the face needs a secondary finish.</p>
+<h2>Do not over-tighten every feature</h2>
+<p>Tolerances should reflect fit and function. A tight tolerance may require slower machining, dedicated fixturing and more inspection. Identify critical-to-function dimensions and explain their role. For non-critical dimensions, use an agreed general tolerance rather than silently assuming a universal standard. Confirm measurement capability for the feature and part size before the order is released.</p>
+<h2>Cover the details that cause assembly trouble</h2>
+<ul><li>Thread size, depth, class and whether threads must remain clear after finishing.</li><li>Hole position, countersink/counterbore dimensions and entry side.</li><li>Cut-end squareness, burr limits and edge-break requirements.</li><li>Slot or groove machining limits and the surfaces used for clamping.</li><li>Masking, protective film and handling of cosmetic faces.</li></ul>
+<h2>Agree a useful first-article check</h2>
+<p>For a new or revised part, define the sample quantity and inspection characteristics before production. A first-article report is only useful when both parties agree which drawing revision, measurement method and results it covers. For recurring orders, clarify whether inspection is performed per batch, at defined intervals or on specified characteristics.</p>
+<h2>RFQ package for a machined extrusion</h2>
+<p>Send the extrusion section and its material/temper, a revision-controlled machining drawing, 3D model where available, finish specification, expected quantity, cut length, critical dimensions and destination. Add photographs or assembly drawings only as supplements; they do not replace dimensions and tolerances. Ask the supplier to list quotation assumptions and any features that need clarification.</p>
+<p>Inspection scope and records vary by project. Put the required report, sampling plan and acceptance criteria in the purchase documents rather than assuming they are included.</p>''',
+    },
+    {
+        'title': 'Aluminium Heat Sink Profile Design: Fins, Airflow and Interface',
+        'slug': 'aluminium-heat-sink-profile-design-guide',
+        'keyword': 'aluminium heat sink extrusion design',
+        'excerpt': 'A practical thermal-design handoff for extrusion buyers: define heat load, airflow, mounting interface and test conditions before choosing a fin profile.',
+        'image': 'heat-sink-profile.jpg',
+        'tags': ['Heat Sink', 'Application Guide'],
+        'meta_description': 'Design a more reviewable aluminium heat sink extrusion by documenting heat load, airflow, mounting, contact surface and thermal test conditions.',
+        'content': '''<p>A heat sink is not effective just because it has many fins. Thermal performance depends on the heat source, contact interface, airflow, orientation, surrounding enclosure and operating conditions. The extrusion profile must support a system-level thermal design rather than stand in for one.</p>
+<h2>Start with the operating conditions</h2>
+<p>Document the heat generated, allowable component temperature, ambient range, duty cycle and available airflow. State whether cooling is natural convection or forced air, and include the fan direction and approximate flow conditions if known. Include the enclosure and nearby obstructions because they can restrict the air path.</p>
+<h2>Balance fin geometry with manufacturability</h2>
+<p>Fin height, thickness, spacing and base thickness influence surface area, air movement, weight and extrusion feasibility. Closely packed fins can increase area but may impede airflow or be harder to produce consistently. A thin base may reduce material but can create a longer heat-spreading path or complicate mounting. Ask the extrusion source to review the section for die feasibility and dimensional control; have the thermal engineer evaluate performance.</p>
+<h2>Design the interface as carefully as the fins</h2>
+<p>Show the component contact area, flatness or surface requirement if specified, fastener locations and mounting pressure assumptions. Thermal interface material, surface finish and contact pressure can materially affect heat transfer. Identify machined faces and state the inspection requirement for any critical contact feature.</p>
+<h2>Plan verification before tooling</h2>
+<p>Define how performance will be tested: heat input, ambient temperature, orientation, airflow, sensor positions, stabilization time and pass/fail temperature limits. Simulations and supplier calculations depend on their boundary assumptions; compare them only when the assumptions are visible. Validate the final configuration with the intended assembly and operating conditions.</p>
+<h2>Information to include in an RFQ</h2>
+<ul><li>Profile cross-section, alloy/temper target and overall dimensions.</li><li>Heat load, ambient range, cooling method and target temperature.</li><li>Mounting interface, contact area, fasteners and enclosure constraints.</li><li>Machined features, surface finish, critical tolerances and quantity.</li><li>Whether the quote should include only extrusion or also machining and finishing.</li></ul>
+<p>A profile supplier can assess extrusion feasibility and quote the agreed manufacturing scope; thermal validation remains a design responsibility unless analysis and test services are explicitly included in the project agreement.</p>''',
+    },
+    {
+        'title': 'Aluminium Solar Mounting Profiles: Loads, Interfaces and Project Checks',
+        'slug': 'aluminium-solar-mounting-profile-design-checklist',
+        'keyword': 'aluminium solar mounting profiles',
+        'excerpt': 'Plan a solar mounting extrusion around the site loads, module clamps, roof interface, drainage, corrosion exposure and installation tolerances.',
+        'image': 'chile-aluminium-profile.webp',
+        'tags': ['Solar Mounting', 'Application Guide'],
+        'meta_description': 'A project checklist for aluminium solar mounting profiles covering structural loads, module interfaces, corrosion exposure, drainage and installation.',
+        'content': '''<p>Solar mounting profiles are part of a structural system, not standalone rails. The correct section depends on the site, support spacing, module layout, clamps, roof or ground interface and governing design requirements. A catalogue profile should not be treated as approved for a project until those conditions have been checked.</p>
+<h2>Define the site and load basis</h2>
+<p>Record project location, installation type, support spacing, module dimensions and orientation. The responsible engineer should establish applicable wind, snow, seismic and maintenance loads under the relevant local rules, then check rails, splices, clamps, fasteners, anchors and supporting structure as a system. Do not derive allowable spans from profile appearance or nominal size alone.</p>
+<h2>Resolve module and mounting interfaces</h2>
+<p>Provide the module-frame dimensions and approved clamp zones, rail orientation, slot or channel details, end and mid-clamp references, splice locations and bonding requirements. Check that fasteners can be installed and torqued with the available access. Tolerance stack-up across modules and rail joints can affect alignment and installation time.</p>
+<h2>Account for environment and finish</h2>
+<p>Describe coastal or industrial exposure, water paths, dissimilar-metal contacts and maintenance expectations. Specify the material and surface treatment requirements against the project's applicable standards. Include drainage and debris considerations in the geometry review, and avoid trapping water where the design can provide a suitable path.</p>
+<h2>Make installation practical</h2>
+<p>State required rail lengths, splice details, cut-end treatment, hole patterns, labels and packaging sequence. Consider transport limits, handling at the site and whether installers need pre-cut or machined components. Mark visible faces and any dimensions that control module alignment.</p>
+<h2>Checklist before quotation</h2>
+<ul><li>Site location, installation type and engineer-approved load basis.</li><li>Module interface drawing, clamp zones and fastener specification.</li><li>Support spacing, rail spans, splice and anchoring details.</li><li>Alloy, temper, finish and environmental exposure requirements.</li><li>Lengths, machining, quantity, packaging and required inspection evidence.</li></ul>
+<p>For a supplier comparison, ask each respondent to state assumptions, exclusions, profile revision, included operations and required customer approvals. The project engineer must validate structural capacity and code compliance for the actual site; a general application guide or supplier quotation is not a substitute for that review.</p>''',
+    },
 ]
 
 
 class Command(BaseCommand):
-    help = 'Publish the five reviewed Lingye aluminium industry articles.'
+    help = 'Publish the reviewed Lingye aluminium industry articles.'
 
     @transaction.atomic
     def handle(self, *args, **options):
@@ -131,7 +260,12 @@ class Command(BaseCommand):
         for data in ARTICLES:
             cover_name = f"{data['slug']}{Path(data['image']).suffix}"
             cover_path = media_dir / cover_name
-            shutil.copyfile(asset_dir / data['image'], cover_path)
+            source_path = asset_dir / data['image']
+            if not source_path.is_file():
+                source_path = settings.BASE_DIR.parent / 'frontend' / 'public' / 'images' / data['image']
+            if not source_path.is_file():
+                raise FileNotFoundError(f"Article cover asset not found: {data['image']}")
+            shutil.copyfile(source_path, cover_path)
 
             article, _ = Article.objects.update_or_create(
                 slug=data['slug'],
@@ -170,4 +304,4 @@ class Command(BaseCommand):
             )
             self.stdout.write(f"Published: {article.slug} (topic {topic.id})")
 
-        self.stdout.write(self.style.SUCCESS('Published 5 Lingye news articles.'))
+        self.stdout.write(self.style.SUCCESS(f'Published {len(ARTICLES)} Lingye news articles.'))
