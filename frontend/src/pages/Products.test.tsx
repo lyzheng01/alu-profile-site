@@ -40,6 +40,7 @@ test('renders a procurement-oriented product catalog with category filters and R
         results: [
           {
             id: 16,
+            slug: 'industrial-40x40-t-slot-profile',
             translated_name: 'Industrial Profile Extrude Aluminium Framing 40x40 T-SLOT aluminium extrusion',
             translated_description: 'Industrial-grade 40x40 T-slot profile for workstations and automation frames.',
             range_param: '40x40 T-SLOT aluminium profiles',
@@ -82,7 +83,10 @@ test('renders a procurement-oriented product catalog with category filters and R
   expect(screen.getByRole('button', { name: /Industrial Aluminium Profile/i })).toBeInTheDocument();
   expect(screen.getByText(/40x40 T-SLOT aluminium profiles/i)).toBeInTheDocument();
   expect(screen.getByText(/6063 Series \/ T5/i)).toBeInTheDocument();
-  expect(screen.getByRole('link', { name: /Send RFQ/i })).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: /Send RFQ/i })).toHaveAttribute(
+    'href',
+    '/en/products/industrial-40x40-t-slot-profile#inquiry'
+  );
   expect(await screen.findByTestId('factory-showcase')).toBeInTheDocument();
 
   await waitFor(() => {

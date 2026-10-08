@@ -14,7 +14,7 @@ jest.mock('../contexts/TranslationContext', () => ({
 jest.mock('../hooks/useSeoMeta', () => ({ useSeoMeta: jest.fn() }));
 jest.mock('../hooks/useStructuredData', () => ({ useStructuredData: jest.fn() }));
 jest.mock('../components/FloatingContactButtons', () => () => <div />);
-jest.mock('../components/InquiryForm', () => () => <div />);
+jest.mock('../components/InquiryForm', () => () => <div data-testid="product-inquiry-form" />);
 
 test('adds the shared factory showcase and preserves product-specific factory photos', async () => {
   global.fetch = jest.fn()
@@ -22,7 +22,7 @@ test('adds the shared factory showcase and preserves product-specific factory ph
       ok: true,
       json: async () => ({
         id: 12,
-        slug: 'test-aluminum-profile',
+        slug: '2040-t-slot-aluminium-profile',
         name: 'Test Aluminum Profile',
         description: 'Test description',
         category: { id: 3, name: 'Industrial Profiles' },
@@ -38,7 +38,7 @@ test('adds the shared factory showcase and preserves product-specific factory ph
         specification_items: [],
         feature_items: [],
         application_items: [],
-        images: [],
+        images: [{ id: 5, image: '/media/products/catalog/2040-t-slot-aluminium-profile.webp' }],
         factory_images: [
           { id: 1, title: 'Product factory gallery photo', image: '/media/product-factory.jpg' },
           { id: 2, title: 'Filtered extra factory photo', image: '/media/extra-factory.jpg' },
@@ -58,6 +58,10 @@ test('adds the shared factory showcase and preserves product-specific factory ph
   );
 
   expect(await screen.findByTestId('factory-showcase')).toBeInTheDocument();
+  expect(screen.getByText(/Illustrative reference only/i)).toBeInTheDocument();
+  expect(document.querySelector('#inquiry')).toContainElement(screen.getByTestId('product-inquiry-form'));
+  expect(screen.getByText('Send these details for a faster reply')).toBeInTheDocument();
+  expect(screen.getByText('Profile drawing or reference photo')).toBeInTheDocument();
   expect(screen.getByRole('img', { name: 'Product factory gallery photo' })).toBeInTheDocument();
   expect(screen.queryByText(/10\+ Years Aluminium Manufacturing Experience/i)).not.toBeInTheDocument();
   expect(screen.queryByRole('heading', { name: /Why choose us\?/i })).not.toBeInTheDocument();

@@ -1,4 +1,5 @@
 import tempfile
+from pathlib import Path
 from django.contrib.admin.sites import AdminSite
 from django.contrib.auth import get_user_model
 from django.contrib.messages.storage.fallback import FallbackStorage
@@ -8,6 +9,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template.loader import render_to_string
 from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
+from PIL import Image
 from unittest import mock
 
 from .admin import ProductAdmin
@@ -251,23 +253,233 @@ class ProductTemplateSeedCommandTests(TestCase):
 
 
 class SeedLingyeCatalogCommandTests(TestCase):
-    def test_seed_lingye_catalog_creates_five_categories_and_twenty_products_idempotently(self):
-        with tempfile.TemporaryDirectory() as media_root, override_settings(MEDIA_ROOT=media_root):
-            call_command('seed_lingye_catalog')
+    CURRENT_SLUGS = {
+        'glass-door-frame-profiles',
+        'wardrobe-aluminium-profiles',
+        'gola-handleless-cabinet-profiles',
+        'wardrobe-handle-profiles',
+        'aluminium-heat-sink-profiles',
+        'custom-cnc-aluminium-profiles',
+        'aluminium-enclosure-profiles',
+        'cnc-machined-aluminium-components',
+        '2020-t-slot-aluminium-profile',
+        '3030-t-slot-aluminium-profile',
+        '4040-t-slot-aluminium-profile',
+        '4545-t-slot-aluminium-profile',
+        'custom-window-door-extrusions',
+        'curtain-wall-aluminium-profiles',
+        'south-america-window-door-extrusions',
+        'africa-window-door-extrusions',
+        'aluminium-u-channel',
+        'aluminium-h-profile',
+        'aluminium-square-tube',
+        'aluminium-flat-bar',
+    }
+
+    NEW_SLUGS = {
+        '2040-t-slot-aluminium-profile',
+        '2060-t-slot-aluminium-profile',
+        '3060-t-slot-aluminium-profile',
+        '4080-t-slot-aluminium-profile',
+        '5050-t-slot-aluminium-profile',
+        '6060-t-slot-aluminium-profile',
+        '8080-t-slot-aluminium-profile',
+        '9090-t-slot-aluminium-profile',
+        '90-degree-external-corner-bracket',
+        'three-way-connector',
+        'angle-bracket',
+        'flat-joining-plate',
+        't-slot-nut',
+        't-bolt',
+        'anchor-fastener-set',
+        'profile-end-cap',
+        'panel-fastener',
+        'hinge',
+        'leveling-foot',
+        'caster-wheel',
+        'sliding-window-system',
+        'casement-window-system',
+        'thermal-break-window-system',
+        'sliding-door-system',
+        'folding-door-system',
+        'commercial-entrance-shopfront-system',
+    }
+
+    T_SLOT_SLUGS = {
+        '2020-t-slot-aluminium-profile',
+        '3030-t-slot-aluminium-profile',
+        '4040-t-slot-aluminium-profile',
+        '4545-t-slot-aluminium-profile',
+        '2040-t-slot-aluminium-profile',
+        '2060-t-slot-aluminium-profile',
+        '3060-t-slot-aluminium-profile',
+        '4080-t-slot-aluminium-profile',
+        '5050-t-slot-aluminium-profile',
+        '6060-t-slot-aluminium-profile',
+        '8080-t-slot-aluminium-profile',
+        '9090-t-slot-aluminium-profile',
+        '90-degree-external-corner-bracket',
+        'three-way-connector',
+        'angle-bracket',
+        'flat-joining-plate',
+        't-slot-nut',
+        't-bolt',
+        'anchor-fastener-set',
+        'profile-end-cap',
+        'panel-fastener',
+        'hinge',
+        'leveling-foot',
+        'caster-wheel',
+    }
+
+    WINDOWS_DOORS_SLUGS = {
+        'custom-window-door-extrusions',
+        'curtain-wall-aluminium-profiles',
+        'south-america-window-door-extrusions',
+        'africa-window-door-extrusions',
+        'sliding-window-system',
+        'casement-window-system',
+        'thermal-break-window-system',
+        'sliding-door-system',
+        'folding-door-system',
+        'commercial-entrance-shopfront-system',
+    }
+
+    EXPECTED_PRESERVED_ORDERS = {
+        'glass-door-frame-profiles': 1,
+        'wardrobe-aluminium-profiles': 2,
+        'gola-handleless-cabinet-profiles': 3,
+        'wardrobe-handle-profiles': 4,
+        'aluminium-heat-sink-profiles': 11,
+        'custom-cnc-aluminium-profiles': 12,
+        'aluminium-enclosure-profiles': 13,
+        'cnc-machined-aluminium-components': 14,
+        '2020-t-slot-aluminium-profile': 21,
+        '3030-t-slot-aluminium-profile': 22,
+        '4040-t-slot-aluminium-profile': 23,
+        '4545-t-slot-aluminium-profile': 24,
+    }
+
+    def test_seed_lingye_catalog_matches_expanded_inventory_contract_idempotently(self):
+        with tempfile.TemporaryDirectory() as media_root, tempfile.TemporaryDirectory() as translations_dir, override_settings(MEDIA_ROOT=media_root):
+            preserved_media = Path(media_root) / 'products' / 'catalog' / '2020-aluminium-t-slot.jpg'
+            preserved_media.parent.mkdir(parents=True, exist_ok=True)
+            preserved_media.write_bytes(b'keep existing customized media')
+
+            call_command('seed_lingye_catalog', translations_dir=translations_dir)
+            self.assertEqual(preserved_media.read_bytes(), b'keep existing customized media')
+            self.assertTrue(self.T_SLOT_SLUGS.isdisjoint(self.WINDOWS_DOORS_SLUGS))
 
             self.assertEqual(Category.objects.count(), 5)
-            self.assertEqual(Product.objects.count(), 20)
-            self.assertEqual(ProductImage.objects.count(), 20)
-            self.assertEqual(Product.objects.values_list('features', flat=True).distinct().count(), 20)
+            self.assertEqual(Product.objects.count(), 46)
+            product_orders = list(Product.objects.values_list('order', flat=True))
+            self.assertEqual(len(product_orders), len(set(product_orders)))
+            self.assertEqual(ProductImage.objects.count(), 46)
+            self.assertEqual(ProductImage.objects.filter(is_primary=True).count(), 46)
+            self.assertEqual(
+                Product.objects.filter(category__slug='t-slot-profiles').count(),
+                24,
+            )
+            self.assertEqual(
+                Product.objects.filter(category__slug='windows-doors').count(),
+                10,
+            )
+            self.assertEqual(
+                self.T_SLOT_SLUGS,
+                set(Product.objects.filter(category__slug='t-slot-profiles').values_list('slug', flat=True)),
+            )
+            self.assertEqual(
+                self.WINDOWS_DOORS_SLUGS,
+                set(Product.objects.filter(category__slug='windows-doors').values_list('slug', flat=True)),
+            )
             self.assertEqual(
                 set(Category.objects.values_list('slug', flat=True)),
                 {'cabinet-profiles', 'industrial-profiles', 't-slot-profiles', 'windows-doors', 'standard-aluminium-profiles'},
             )
-            self.assertTrue(Product.objects.filter(slug='south-america-window-door-extrusions').exists())
-            self.assertTrue(Product.objects.filter(slug='africa-window-door-extrusions').exists())
 
-            call_command('seed_lingye_catalog')
+            products = list(Product.objects.prefetch_related('images').order_by('slug'))
+            slugs = [product.slug for product in products]
+            product_order_by_slug = {product.slug: product.order for product in products}
+            self.assertEqual(len(slugs), len(set(slugs)))
+            self.assertEqual(set(slugs), self.CURRENT_SLUGS | self.NEW_SLUGS)
+            self.assertTrue(self.CURRENT_SLUGS.issubset(set(slugs)))
+            self.assertTrue(self.NEW_SLUGS.isdisjoint(self.CURRENT_SLUGS))
+            self.assertEqual(len(self.NEW_SLUGS), 26)
+            features = [product.features.strip() for product in products]
+            self.assertTrue(all(features))
+            self.assertEqual(len(features), len(set(features)))
+            for slug, expected_order in self.EXPECTED_PRESERVED_ORDERS.items():
+                self.assertEqual(product_order_by_slug[slug], expected_order, slug)
 
-            self.assertEqual(Category.objects.count(), 5)
-            self.assertEqual(Product.objects.count(), 20)
-            self.assertEqual(ProductImage.objects.count(), 20)
+            t_slot_orders = Product.objects.filter(category__slug='t-slot-profiles').values_list('order', flat=True)
+            windows_doors_orders = Product.objects.filter(category__slug='windows-doors').values_list('order', flat=True)
+            standard_profile_orders = Product.objects.filter(
+                category__slug='standard-aluminium-profiles'
+            ).values_list('order', flat=True)
+            self.assertLess(max(t_slot_orders), min(windows_doors_orders))
+            self.assertLess(min(windows_doors_orders), max(windows_doors_orders))
+            self.assertLess(max(windows_doors_orders), min(standard_profile_orders))
+
+            image_associations = {}
+            for product in products:
+                images = list(product.images.all())
+                primary_images = [image for image in images if image.is_primary]
+                self.assertEqual(len(primary_images), 1, product.slug)
+                self.assertEqual(len(images), 1, product.slug)
+                image = primary_images[0]
+                image_path = Path(media_root) / image.image.name
+                self.assertTrue(image_path.is_file(), product.slug)
+                if product.slug in self.NEW_SLUGS:
+                    with Image.open(image_path) as asset:
+                        asset.load()
+                        self.assertGreaterEqual(asset.width, 128, product.slug)
+                        self.assertGreaterEqual(asset.height, 128, product.slug)
+                image_associations[product.slug] = (
+                    image.image.name,
+                    image.is_primary,
+                    image.order,
+                )
+
+            first_run = {
+                'category_slugs': set(Category.objects.values_list('slug', flat=True)),
+                'product_slugs': set(slugs),
+                'product_order_by_slug': product_order_by_slug,
+                'image_associations': image_associations,
+                'product_count': Product.objects.count(),
+                'image_count': ProductImage.objects.count(),
+                'primary_image_count': ProductImage.objects.filter(is_primary=True).count(),
+            }
+
+            call_command('seed_lingye_catalog', translations_dir=translations_dir)
+
+            self.assertEqual(Category.objects.count(), len(first_run['category_slugs']))
+            self.assertEqual(Product.objects.count(), first_run['product_count'])
+            self.assertEqual(ProductImage.objects.count(), first_run['image_count'])
+            self.assertEqual(
+                ProductImage.objects.filter(is_primary=True).count(),
+                first_run['primary_image_count'],
+            )
+            self.assertEqual(
+                set(Product.objects.values_list('slug', flat=True)),
+                first_run['product_slugs'],
+            )
+            self.assertEqual(
+                dict(Product.objects.values_list('slug', 'order')),
+                first_run['product_order_by_slug'],
+            )
+            self.assertEqual(
+                set(Category.objects.values_list('slug', flat=True)),
+                first_run['category_slugs'],
+            )
+            rerun_products = Product.objects.prefetch_related('images').order_by('slug')
+            rerun_image_associations = {
+                product.slug: (
+                    image.image.name,
+                    image.is_primary,
+                    image.order,
+                )
+                for product in rerun_products
+                for image in product.images.all()
+                if image.is_primary
+            }
+            self.assertEqual(rerun_image_associations, first_run['image_associations'])

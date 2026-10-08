@@ -76,6 +76,25 @@ interface Product {
   created_at: string;
 }
 
+const ILLUSTRATIVE_CATALOG_SLUGS = new Set([
+  '2040-t-slot-aluminium-profile', '2060-t-slot-aluminium-profile',
+  '3060-t-slot-aluminium-profile', '4080-t-slot-aluminium-profile',
+  '5050-t-slot-aluminium-profile', '6060-t-slot-aluminium-profile',
+  '8080-t-slot-aluminium-profile', '9090-t-slot-aluminium-profile',
+  '90-degree-external-corner-bracket', 'three-way-connector', 'angle-bracket',
+  'flat-joining-plate', 't-slot-nut', 't-bolt', 'anchor-fastener-set',
+  'profile-end-cap', 'panel-fastener', 'hinge', 'leveling-foot', 'caster-wheel',
+  'sliding-window-system', 'casement-window-system', 'thermal-break-window-system',
+  'sliding-door-system', 'folding-door-system', 'commercial-entrance-shopfront-system',
+]);
+
+const ILLUSTRATIVE_NOTICES: Record<string, string> = {
+  en: 'Illustrative reference only. Confirm the final section, system compatibility, and project details against approved drawings and specifications.',
+  zh: '图片仅供示意参考。最终截面、系统兼容性及项目细节请以确认后的图纸和规格为准。',
+  es: 'Imagen de referencia ilustrativa. Confirme la sección final, la compatibilidad del sistema y los detalles del proyecto con los planos y especificaciones aprobados.',
+  pt: 'Imagem meramente ilustrativa. Confirme a secção final, a compatibilidade do sistema e os detalhes do projeto com os desenhos e especificações aprovados.',
+};
+
 const ProductDetail: React.FC = () => {
   const { productSlug } = useParams<{ productSlug: string }>();
   const navigate = useNavigate();
@@ -85,6 +104,7 @@ const ProductDetail: React.FC = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { t, currentLanguage: contextLanguage } = useTranslation();
   const currentLanguage = contextLanguage || 'zh';
+  const illustrativeNotice = ILLUSTRATIVE_NOTICES[currentLanguage] || ILLUSTRATIVE_NOTICES.en;
 
   const resolveProductMediaUrl = (imageUrl?: string | null) => {
     if (!imageUrl) return null;
@@ -226,6 +246,12 @@ const ProductDetail: React.FC = () => {
 
     fetchProductAndRelated();
   }, [productSlug, currentLanguage, navigate]);
+
+  useEffect(() => {
+    if (product && typeof window !== 'undefined' && window.location.hash === '#inquiry') {
+      document.getElementById('inquiry')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [product]);
 
   // 所有 Hooks 必须在早期返回之前调用
   const surfaceTreatmentImageData = React.useMemo(() => {
@@ -576,6 +602,11 @@ const ProductDetail: React.FC = () => {
                 </div>
               )}
             </div>
+            {product.images?.length > 0 && ILLUSTRATIVE_CATALOG_SLUGS.has(product.slug) && (
+              <p className="text-sm leading-5 text-gray-600">
+                {illustrativeNotice}
+              </p>
+            )}
           </div>
 
           {/* Right column - product info */}
@@ -1027,7 +1058,21 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
             )}
 
             {/* Inquiry form */}
-            <div>
+            <div id="inquiry" className="scroll-mt-24">
+              <div className="mb-5 border-b border-slate-200 pb-5">
+                <h2 className="text-lg font-semibold text-slate-900">
+                  {t('home_inquiry_details_title', 'Send these details for a faster reply')}
+                </h2>
+                <ul className="mt-3 grid gap-x-6 gap-y-2 text-sm leading-6 text-slate-600 sm:grid-cols-2">
+                  <li>{t('home_inquiry_drawing', 'Profile drawing or reference photo')}</li>
+                  <li>{t('home_inquiry_material', 'Alloy, temper, and finish requirement')}</li>
+                  <li>{t('home_inquiry_quantity', 'Estimated quantity and destination port')}</li>
+                  <li>{t('home_inquiry_packaging', 'Packaging or machining expectations')}</li>
+                </ul>
+                <p className="mt-3 text-sm leading-6 text-slate-500">
+                  {t('home_inquiry_helper', 'If a specification is not final, send the information you have and note what still needs confirmation.')}
+                </p>
+              </div>
               <InquiryForm 
                 productName={product.name}
                 productLink={window.location.href}

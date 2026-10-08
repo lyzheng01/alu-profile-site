@@ -362,7 +362,7 @@ const Products: React.FC = () => {
                         {t('products_view_details', 'View Details')}
                       </Link>
                       <Link
-                        to={`/${currentLanguage}/products/${product.id}#inquiry`}
+                        to={`/${currentLanguage}/products/${product.slug || product.id}#inquiry`}
                         className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-lg border border-sky-200 px-4 py-2 text-sm font-semibold text-sky-800 transition hover:border-sky-500 hover:bg-sky-50 focus:outline-none focus:ring-2 focus:ring-sky-500"
                       >
                         {t('products_send_rfq', 'Send RFQ')}

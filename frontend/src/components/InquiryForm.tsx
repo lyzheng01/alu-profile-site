@@ -40,6 +40,9 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
     try {
       // 构建消息内容，自动附加产品链接
       let messageContent = formData.message;
+      if (formData.country.trim()) {
+        messageContent += `${messageContent.trim() ? '\n\n' : ''}Country: ${formData.country.trim()}`;
+      }
       if (productLink) {
         messageContent += `\n\n---\nProduct Link: ${productLink}`;
       }
