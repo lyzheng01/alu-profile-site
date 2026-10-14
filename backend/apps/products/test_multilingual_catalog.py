@@ -148,6 +148,28 @@ class SeededCatalogTranslationsTests(TestCase):
                     self.assertEqual(set(catalog[slug]), set(CATALOG_FIELDS), f'{locale}/{slug}')
                     self.assertTrue(all(isinstance(catalog[slug][field], str) and catalog[slug][field].strip() for field in CATALOG_FIELDS), f'{locale}/{slug}')
 
+    def test_spanish_and_portuguese_sources_cover_published_legacy_products_by_slug(self):
+        backend_root = Path(__file__).resolve().parents[2]
+        published_slugs = {
+            'glass-door-frame-profiles', 'wardrobe-aluminium-profiles',
+            'gola-handleless-cabinet-profiles', 'wardrobe-handle-profiles',
+            'aluminium-heat-sink-profiles', 'custom-cnc-aluminium-profiles',
+            'aluminium-enclosure-profiles', 'cnc-machined-aluminium-components',
+            '2020-t-slot-aluminium-profile', '3030-t-slot-aluminium-profile',
+            '4040-t-slot-aluminium-profile', '4545-t-slot-aluminium-profile',
+        }
+        invalid_copy = ('original', 'project-specific; confirm', 'to be confirmed by project')
+        for locale in ('es', 'pt'):
+            with self.subTest(locale=locale):
+                source = json.loads((backend_root / 'translations' / f'product_{locale}.json').read_text(encoding='utf-8'))
+                catalog = source.get('_catalog_by_slug', {})
+                self.assertTrue(published_slugs.issubset(catalog), f'{locale} is missing published slug translations')
+                for slug in published_slugs:
+                    for field in CATALOG_FIELDS:
+                        value = catalog[slug].get(field, '')
+                        self.assertTrue(value.strip(), f'{locale}/{slug}/{field} is empty')
+                        self.assertFalse(any(marker in value.lower() for marker in invalid_copy), f'{locale}/{slug}/{field} is placeholder text')
+
     def test_seed_merges_resolved_id_keys_preserves_existing_keys_and_is_idempotent(self):
         backend_root = Path(__file__).resolve().parents[2]
         source = json.loads((backend_root / 'translations' / 'product_zh.json').read_text(encoding='utf-8'))

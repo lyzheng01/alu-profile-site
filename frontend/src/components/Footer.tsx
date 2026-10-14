@@ -132,7 +132,7 @@ const Footer: React.FC = () => {
                   key={link.id}
                   href={link.url}
                   target={link.target_blank ? '_blank' : '_self'}
-                  rel={`${link.is_nofollow ? 'nofollow' : ''} ${link.target_blank ? 'noopener noreferrer' : ''}`.trim() || undefined}
+                  rel={link.is_nofollow ? 'nofollow noopener noreferrer' : 'noopener noreferrer'}
                   className="text-gray-400 hover:text-white transition-colors duration-300 flex items-center gap-2"
                   title={link.description || link.name}
                 >

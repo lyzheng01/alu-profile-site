@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+  <title id="title">Thermal-break window profile cross-section</title>
+  <desc id="desc">Illustrative cutaway of inner and outer aluminium profile sections separated by a polyamide thermal barrier, with glazing, gaskets and drainage path.</desc>
+  <rect width="1200" height="650" fill="#f4f7fa"/>
+  <text x="64" y="72" font-family="Arial,sans-serif" font-size="30" font-weight="700" fill="#12345a">Read the interfaces in a section drawing</text>
+  <text x="64" y="112" font-family="Arial,sans-serif" font-size="17" fill="#526477">Illustrative only. Confirm the actual system geometry and dimensions from approved drawings.</text>
+  <g transform="translate(105 170)">
+    <path d="M95 45h250v90h-82v250h-88V135H95z" fill="#8fa2b4" stroke="#30485f" stroke-width="8"/>
+    <path d="M805 45h-250v90h82v250h88V135h80z" fill="#8fa2b4" stroke="#30485f" stroke-width="8"/>
+    <path d="M345 80h83v48h-83zm-83 220h83v48h-83zm333-220h-83v48h83zm83 220h-83v48h83z" fill="#1476c8" stroke="#0c4f8b" stroke-width="5"/>
+    <rect x="440" y="-8" width="125" height="235" rx="8" fill="#d9eef8" fill-opacity=".78" stroke="#4389a9" stroke-width="5"/>
+    <rect x="457" y="-8" width="10" height="235" fill="#fff" fill-opacity=".8"/>
+    <rect x="536" y="-8" width="10" height="235" fill="#fff" fill-opacity=".8"/>
+    <path d="M419 57h20v36h-20m146-36h-20v36h20" fill="none" stroke="#1c7b62" stroke-width="14" stroke-linecap="round"/>
+    <path d="M95 390h250v-38H95zm710 0H555v-38h250z" fill="#d1d9e0" stroke="#30485f" stroke-width="8"/>
+    <path d="M675 350h35v-25h33v25h62" fill="none" stroke="#1476c8" stroke-width="8" stroke-linejoin="round"/>
+    <path d="M755 334h55" stroke="#f09a36" stroke-width="8" marker-end="url(#arrow)"/>
+  </g>
+  <g font-family="Arial,sans-serif" font-size="18" fill="#24384c">
+    <text x="85" y="205">Interior side</text><text x="960" y="205">Exterior side</text>
+    <text x="470" y="425">Glazing build-up</text><text x="445" y="530">Thermal barrier and mechanical interlock</text>
+    <text x="90" y="570">Frame / sash geometry</text><text x="815" y="570">Gasket, glazing pocket and drainage route</text>
+  </g>
+  <path d="M180 220h155" stroke="#24384c" stroke-width="2"/><path d="M880 220h150" stroke="#24384c" stroke-width="2"/>
+  <path d="M520 432v56" stroke="#24384c" stroke-width="2"/><path d="M610 505v-92" stroke="#24384c" stroke-width="2"/>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0v6l9-3z" fill="#f09a36"/></marker></defs>
+</svg>

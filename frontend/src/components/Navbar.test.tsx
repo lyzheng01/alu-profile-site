@@ -70,8 +70,8 @@ test('requests and renders product category labels in the active language', asyn
   global.fetch = jest.fn().mockResolvedValue({
     json: async () => ({
       results: [
-        { id: 2, name: 'Industrial Aluminium Profiles' },
-        { id: 3, translated_name: 'T-slot Aluminium Profiles' },
+        { id: 2, slug: 'industrial-profiles', name: 'Industrial Aluminium Profiles' },
+        { id: 3, slug: 't-slot-profiles', translated_name: 'T-slot Aluminium Profiles' },
       ],
     }),
   }) as unknown as typeof fetch;
@@ -85,8 +85,12 @@ test('requests and renders product category labels in the active language', asyn
   fireEvent.click(screen.getAllByText('Products')[0].parentElement!);
 
   const dropdown = screen.getByRole('navigation').querySelector('#desktop-products-dropdown');
-  expect(await within(dropdown as HTMLElement).findByText('Industrial Aluminium Profiles')).toBeInTheDocument();
-  expect(within(dropdown as HTMLElement).getByText('T-slot Aluminium Profiles')).toBeInTheDocument();
+  expect(await within(dropdown as HTMLElement).findByText('Industrial Profiles')).toBeInTheDocument();
+  expect(within(dropdown as HTMLElement).getByText('T-Slot Framing')).toBeInTheDocument();
+  expect(within(dropdown as HTMLElement).getByRole('link', { name: 'Industrial Profiles' })).toHaveAttribute(
+    'href',
+    '/en/products/category/industrial-profiles'
+  );
   expect(global.fetch).toHaveBeenCalledWith(
     expect.stringContaining('/api/categories/?lang=en&include_subcategories=true')
   );

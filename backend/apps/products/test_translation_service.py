@@ -1,6 +1,7 @@
 import json
 import tempfile
 from pathlib import Path
+from types import SimpleNamespace
 from unittest import mock
 
 from django.test import SimpleTestCase
@@ -50,6 +51,40 @@ class FrontendTranslationServiceTests(SimpleTestCase):
 
         self.assertEqual(result, '中文结果')
         factory.assert_called_once_with(source='en', target='zh-CN')
+
+    def test_article_batch_does_not_persist_source_text_as_a_translation(self):
+        article = SimpleNamespace(
+            id=6,
+            title='A profile guide',
+            content='<p>Article content</p>',
+            excerpt='A short summary',
+            meta_title='A profile guide',
+            meta_description='A useful description',
+            meta_keywords='aluminium profile',
+        )
+        with mock.patch.object(self.service, 'translate_text', side_effect=lambda text, _lang: text), \
+                mock.patch('apps.products.services.time.sleep'):
+            translations = self.service.translate_model_batch('article', [article], 'zh')
+
+        self.assertFalse(any(key.endswith('_6') for key in translations))
+        self.assertFalse((Path(self.temp_dir.name) / 'article_zh.json').exists())
+
+    def test_article_batch_translates_seo_metadata_in_addition_to_body_fields(self):
+        article = SimpleNamespace(
+            id=6,
+            title='A profile guide',
+            content='<p>Article content</p>',
+            excerpt='A short summary',
+            meta_title='A profile guide',
+            meta_description='A useful description',
+            meta_keywords='aluminium profile',
+        )
+        with mock.patch.object(self.service, 'translate_text', side_effect=lambda text, _lang: f'zh:{text}'), \
+                mock.patch('apps.products.services.time.sleep'):
+            translations = self.service.translate_model_batch('article', [article], 'zh')
+
+        for field in ('title', 'content', 'excerpt', 'meta_title', 'meta_description', 'meta_keywords'):
+            self.assertIn(f'{field}_6', translations)
 
     def test_positioning_copy_is_available_in_all_runtime_locales(self):
         translations_dir = Path(__file__).resolve().parents[2] / 'translations'

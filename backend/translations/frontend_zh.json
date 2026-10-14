@@ -20,7 +20,7 @@
   "slide_2_subtitle": "面向国际项目的铝型材选择",
   "slide_2_cta": "查看产品",
   "slide_3_title": "先进技术",
-  "slide_3_subtitle": "创新制造工艺",
+  "slide_3_subtitle": "按项目需求协调供应商生产资源",
   "slide_3_cta": "联系我们",
   
   "advantage_1_title": "项目需求协调",
@@ -77,7 +77,7 @@
   "news_published": "发布时间",
   "news_author": "作者",
   "news_tags": "标签",
-  "news_seo_title": "铝型材行业新闻与技术资讯 | 凌烨铝业",
+  "news_seo_title": "铝型材行业资讯 | 凌烨铝业",
   "news_seo_description": "了解铝型材市场趋势、挤压加工、表面处理、T型槽产品和项目合作资讯。",
   "news_collection_name": "铝型材行业新闻 | 凌烨铝业",
   "news_collection_description": "铝型材市场趋势、加工技术和产品更新。",
@@ -129,8 +129,8 @@
   "contact_technical_support": "技术支持",
   "contact_sales_inquiry": "销售咨询",
   
-  "factory_showcase": "制造能力与生产场景",
-  "factory_subtitle": "展示铝型材生产场景，并围绕项目需求沟通制造资源与可选方案。",
+  "factory_showcase": "供应商生产参考与资源",
+  "factory_subtitle": "展示供应商生产场景参考，并围绕铝型材项目需求沟通可协调的生产资源。",
   
   "footer_brand": "凌烨铝业",
   "footer_slogan": "面向全球项目的铝型材解决方案",
@@ -157,9 +157,9 @@
   "home_explore_company_title": "探索我们的公司",
   "home_explore_company_subtitle": "从生产到产品供应再到库存，看看我们如何将质量融入生活。",
   
-  "home_factory_production_line": "工厂生产线",
+  "home_factory_production_line": "供应商挤压生产线参考",
   "home_production_equipment": "生产设备",
-  "home_production_equipment_desc": "拥有最先进的生产设施和尖端技术",
+  "home_production_equipment_desc": "通过生产设备与现场参考，沟通项目所需的生产条件",
   
   "home_product_storage": "产品存储",
   "home_inventory_management": "库存管理",
@@ -223,9 +223,9 @@
   "products_search_placeholder": "搜索产品...",
   "products_all_categories": "所有分类",
   "products_all": "全部",
-  "products_no_products": "未找到产品",
-  "products_no_products_desc": "请先在后台添加产品信息",
-  "products_found_count": "找到 {count} 个产品",
+  "products_no_products": "没有找到符合当前筛选条件的产品",
+  "products_no_products_desc": "请调整或清除筛选条件后重试。",
+  "products_found_count": "产品：{count}",
   "home_hero_precision_title": "围绕项目需求的铝型材方案",
   "home_hero_precision_desc": "面向建筑与工业应用，沟通定制挤压、表面处理选项和项目配合需求。",
   "home_hero_primary_cta": "提交图纸询价",
@@ -290,6 +290,7 @@
   "product_detail_quality_grade": "质量等级",
   "product_detail_temper_state": "状态",
   "product_detail_description": "产品描述",
+  "product_detail_description_pending": "具体项目要求以确认后的图纸和技术规格为准。",
   "product_detail_features": "产品特点",
   "product_detail_specification_name": "规格名称",
   "product_detail_specification_value": "规格值",
@@ -371,5 +372,6 @@
   ,"landing_related_resources": "相关资源"
   ,"factory_showcase_about_cta": "了解项目配合方式"
   ,"factory_extrusion_line_alt": "铝型材挤压生产线"
-  ,"factory_crane_alt": "铝型材工厂行车与生产现场"
+  ,"factory_crane_alt": "铝型材工厂行车与生产现场",
+  "footer_friend_links": "相关链接"
 }

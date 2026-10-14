@@ -24,10 +24,10 @@ const FactoryShowcase: React.FC<{ className?: string }> = ({ className = '' }) =
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-3xl">
             <h2 id="factory-showcase-title" className="text-2xl font-semibold text-slate-900 sm:text-3xl">
-              {t('factory_showcase', 'Manufacturing Capabilities')}
+              {t('factory_showcase', 'Production References & Supplier Resources')}
             </h2>
             <p className="mt-3 text-base leading-7 text-slate-600 sm:text-lg">
-              {t('factory_subtitle', 'Production scenes and manufacturing resources for project-specific aluminum profile requirements.')}
+              {t('factory_subtitle', 'Examples of supplier production environments and resources for project-specific aluminum profile requirements.')}
             </p>
           </div>
           <Link

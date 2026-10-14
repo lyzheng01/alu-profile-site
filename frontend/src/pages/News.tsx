@@ -4,6 +4,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from '../contexts/TranslationContext';
 import FloatingContactButtons from '../components/FloatingContactButtons';
 import { useSeoMeta } from '../hooks/useSeoMeta';
+import { SITE_ORIGIN } from '../config/site';
 import { useStructuredData } from '../hooks/useStructuredData';
 
 interface Article {
@@ -24,6 +25,7 @@ interface Article {
   meta_title?: string;
   meta_description?: string;
   meta_keywords?: string;
+  available_languages?: string[];
 }
 
 interface Tag {
@@ -32,6 +34,33 @@ interface Tag {
   description: string;
 }
 
+const newsSeoCopy: Record<string, { title: string; description: string }> = {
+  en: { title: 'Aluminum Industry News & Insights | LingYe', description: 'Practical guides to aluminum extrusion, profile design, finishing, and sourcing for project buyers.' },
+  zh: { title: '铝型材行业资讯 | 凌烨铝业', description: '阅读铝型材挤压、截面设计、表面处理与项目采购的实用指南。' },
+  es: { title: 'Noticias sobre aluminio | LingYe', description: 'Guías prácticas sobre extrusión, diseño de perfiles, acabados y abastecimiento para proyectos de aluminio.' },
+  pt: { title: 'Notícias sobre alumínio | LingYe', description: 'Guias práticos sobre extrusão, projeto de perfis, acabamentos e fornecimento para projetos de alumínio.' },
+};
+
+const conciseEnglishArticleTitles: Record<string, string> = {
+  'choose-2020-3030-4040-4545-t-slot-profiles': '2020, 3030, 4040 & 4545 T-Slot Profiles | LingYe',
+  'planning-a-t-slot-aluminium-frame': 'T-Slot Frame Design: Loads & Joints | LingYe',
+  'aluminium-extrusion-rfq-checklist': 'Aluminium Extrusion RFQ Checklist | LingYe',
+  'selecting-an-aluminium-profile-finish': 'Aluminium Profile Finishes: Anodizing, Powder Coat & Wood Grain | LingYe',
+  'custom-aluminium-profile-project-workflow': 'Custom Aluminium Profile Project Workflow | LingYe',
+  '6061-vs-6063-aluminium-alloy-selection': '6061 vs 6063 Aluminium: Alloy Selection | LingYe',
+  'aluminium-extrusion-cross-section-die-design-guide': 'Aluminium Extrusion Design: Die-Readiness Checklist | LingYe',
+  'aluminium-extrusion-process-billet-to-profile': 'How Aluminium Extrusion Works | LingYe',
+  'cnc-machining-aluminium-profiles-tolerances-datums-inspection': 'CNC Machining Aluminium Profiles: Tolerances & Inspection | LingYe',
+  'aluminium-heat-sink-profile-design-guide': 'Aluminium Heat Sink Profile Design | LingYe',
+  'aluminium-solar-mounting-profile-design-guide': 'Aluminium Solar Mounting Profiles: Design Checks | LingYe',
+  'aluminium-extrusion-die-tooling-ownership-checklist': 'Aluminium Extrusion Die Ownership & Tooling Costs | LingYe',
+  'aluminium-extrusion-lead-time-planning-guide': 'Aluminium Extrusion Lead Time: Buyer Guide | LingYe',
+  'aluminium-profile-export-packaging-checklist': 'Export Packaging for Aluminium Profiles | LingYe',
+  'thermal-break-window-rfq-guide': 'Thermal-Break Window Profile RFQ Guide | LingYe',
+  't-slot-profile-accessory-compatibility-guide': 'T-Slot Profile & Accessory Compatibility | LingYe',
+  'compare-aluminum-extrusion-quotes-landed-cost': 'Compare Aluminium Extrusion Quotes & Landed Cost | LingYe',
+};
+
 // 新闻详情页面组件
 const NewsDetail: React.FC = () => {
   const { articleRef } = useParams<{ articleRef: string }>();
@@ -39,18 +68,26 @@ const NewsDetail: React.FC = () => {
   const { t, currentLanguage } = useTranslation();
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
+  const seoLanguage = article && !article.available_languages?.includes(currentLanguage)
+    ? 'en'
+    : currentLanguage;
 
   // 设置页面标题
   useSeoMeta({
-    title: article?.meta_title || (article ? `${article.title} | LingYe Aluminum` : undefined),
+    title: article && seoLanguage === 'en'
+      ? conciseEnglishArticleTitles[article.slug] || article.meta_title || `${article.title} | LingYe`
+      : article?.meta_title || (article ? `${article.title} | LingYe` : undefined),
     description: article?.meta_description || article?.excerpt || article?.summary || undefined,
     keywords: article?.meta_keywords || undefined,
-    canonicalPath: article?.slug ? `/${currentLanguage}/news/${article.slug}` : undefined,
-    ogTitle: article?.meta_title || article?.title || undefined,
+    canonicalPath: article?.slug ? `/${seoLanguage}/news/${article.slug}` : undefined,
+    ogTitle: article && seoLanguage === 'en'
+      ? conciseEnglishArticleTitles[article.slug] || article.meta_title || `${article.title} | LingYe`
+      : article?.meta_title || (article ? `${article.title} | LingYe` : undefined),
     ogDescription: article?.meta_description || article?.excerpt || article?.summary || undefined,
     ogImage: article?.featured_image || undefined,
     robots: !article && !loading ? 'noindex,follow' : undefined,
-    language: currentLanguage,
+    language: seoLanguage,
+    alternateLanguages: article?.available_languages,
   });
 
   const articleStructuredData = React.useMemo(() => {
@@ -63,7 +100,7 @@ const NewsDetail: React.FC = () => {
       datePublished: article.created_at,
       dateModified: article.updated_at || article.created_at,
       author: {
-        '@type': 'Person',
+        '@type': 'Organization',
         name: article.author || 'LingYe Aluminum',
       },
       publisher: {
@@ -79,7 +116,7 @@ const NewsDetail: React.FC = () => {
 
   const breadcrumbStructuredData = React.useMemo(() => {
     if (!article) return null;
-    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealuminum.com';
+    const base = typeof window !== 'undefined' ? window.location.origin : SITE_ORIGIN;
     return {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
@@ -269,12 +306,13 @@ const NewsList: React.FC = () => {
   const [selectedTag, setSelectedTag] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const articlesPerPage = 6;
+  const seoCopy = newsSeoCopy[currentLanguage] || newsSeoCopy.en;
 
   const canonicalQuery = currentPage > 1 ? `?page=${currentPage}` : selectedTag ? `?tag=${selectedTag}` : '';
 
   useSeoMeta({
-    title: currentPage > 1 ? `${t('news_seo_title', 'Aluminum Industry News')} - Page ${currentPage}` : t('news_seo_title', 'Aluminum Industry News'),
-    description: t('news_seo_description', 'Read latest aluminum market trends, processing insights, and product updates.'),
+    title: currentPage > 1 ? `${seoCopy.title} - ${currentPage}` : seoCopy.title,
+    description: seoCopy.description,
     canonicalPath: `/${currentLanguage}/news${canonicalQuery}`,
     robots: currentPage > 1 ? 'noindex,follow' : undefined,
     language: currentLanguage,
@@ -285,13 +323,13 @@ const NewsList: React.FC = () => {
     '@type': 'CollectionPage',
     name: t('news_collection_name', 'Aluminum Industry News | LingYe Aluminum'),
     description: t('news_collection_description', 'Latest aluminum market trends, processing insights, and product updates.'),
-    isPartOf: { '@type': 'WebSite', name: 'LingYe Aluminum', url: 'https://lingyealuminum.com' },
+    isPartOf: { '@type': 'WebSite', name: 'LingYe Aluminum', url: SITE_ORIGIN },
   }), [t]);
 
   useStructuredData('news-list-collection', collectionStructuredData);
 
   const breadcrumbStructuredData = React.useMemo(() => {
-    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealuminum.com';
+    const base = typeof window !== 'undefined' ? window.location.origin : SITE_ORIGIN;
     return {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
@@ -300,7 +338,7 @@ const NewsList: React.FC = () => {
         { '@type': 'ListItem', position: 2, name: t('news_breadcrumb_title', 'News'), item: `${base}/${currentLanguage}/news` },
       ],
     };
-  }, [currentLanguage]);
+  }, [currentLanguage, t]);
 
   useStructuredData('news-list-breadcrumb', breadcrumbStructuredData);
 
@@ -327,13 +365,10 @@ const NewsList: React.FC = () => {
         }
       } catch (error) {
         console.error('获取标签数据失败:', error);
-      } finally {
-        setLoading(false);
       }
     };
 
-    fetchArticles();
-    fetchTags();
+    Promise.all([fetchArticles(), fetchTags()]).finally(() => setLoading(false));
   }, [currentLanguage, t]);
 
   // 过滤新闻（只按标签筛选，不搜索）
@@ -389,7 +424,12 @@ const NewsList: React.FC = () => {
         </div>
       </div>
 
-                           <div className="max-w-7xl mx-auto px-8 py-12">
+      <div
+        className="max-w-7xl mx-auto px-8 py-12"
+        data-testid="news-list-page"
+        data-news-ready={loading ? 'false' : 'true'}
+        data-news-article-count={articles.length}
+      >
                 {/* 标签筛选 */}
                 <div className="mb-8">
                   <div className="flex flex-wrap gap-2">

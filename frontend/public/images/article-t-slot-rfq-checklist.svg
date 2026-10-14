@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">T-slot profile and accessory RFQ checklist</title>
+  <desc id="desc">Five purchasing checkpoints: identify the profile, specify mating parts, check assembly access, approve a sample, and confirm the commercial order scope.</desc>
+  <rect width="1200" height="760" fill="#f6f8fa"/>
+  <text x="64" y="76" fill="#17324d" font-family="Arial, sans-serif" font-size="36" font-weight="700">A clearer T-slot accessory RFQ</text>
+  <text x="64" y="116" fill="#526575" font-family="Arial, sans-serif" font-size="21">Record confirmed facts separately from open questions.</text>
+  <g font-family="Arial, sans-serif">
+    <g transform="translate(64 165)">
+      <rect width="1072" height="92" rx="10" fill="#ffffff" stroke="#cbd5dd" stroke-width="2"/>
+      <circle cx="48" cy="46" r="27" fill="#087e8b"/><text x="48" y="54" text-anchor="middle" fill="#ffffff" font-size="23" font-weight="700">1</text>
+      <text x="96" y="41" fill="#17324d" font-size="24" font-weight="700">Identify the profile</text>
+      <text x="96" y="70" fill="#526575" font-size="19">Part number · drawing revision · slot and interface details</text>
+    </g>
+    <g transform="translate(64 273)">
+      <rect width="1072" height="92" rx="10" fill="#ffffff" stroke="#cbd5dd" stroke-width="2"/>
+      <circle cx="48" cy="46" r="27" fill="#087e8b"/><text x="48" y="54" text-anchor="middle" fill="#ffffff" font-size="23" font-weight="700">2</text>
+      <text x="96" y="41" fill="#17324d" font-size="24" font-weight="700">Name each mating part</text>
+      <text x="96" y="70" fill="#526575" font-size="19">Nut and bolt · bracket · connector · panel retainer · quantities</text>
+    </g>
+    <g transform="translate(64 381)">
+      <rect width="1072" height="92" rx="10" fill="#ffffff" stroke="#cbd5dd" stroke-width="2"/>
+      <circle cx="48" cy="46" r="27" fill="#087e8b"/><text x="48" y="54" text-anchor="middle" fill="#ffffff" font-size="23" font-weight="700">3</text>
+      <text x="96" y="41" fill="#17324d" font-size="24" font-weight="700">Describe the assembly</text>
+      <text x="96" y="70" fill="#526575" font-size="19">Joint orientation · build sequence · panel fit · tool access</text>
+    </g>
+    <g transform="translate(64 489)">
+      <rect width="1072" height="92" rx="10" fill="#ffffff" stroke="#cbd5dd" stroke-width="2"/>
+      <circle cx="48" cy="46" r="27" fill="#087e8b"/><text x="48" y="54" text-anchor="middle" fill="#ffffff" font-size="23" font-weight="700">4</text>
+      <text x="96" y="41" fill="#17324d" font-size="24" font-weight="700">Approve a representative sample</text>
+      <text x="96" y="70" fill="#526575" font-size="19">Fit · alignment · seating · access · finish protection</text>
+    </g>
+    <g transform="translate(64 597)">
+      <rect width="1072" height="92" rx="10" fill="#ffffff" stroke="#cbd5dd" stroke-width="2"/>
+      <circle cx="48" cy="46" r="27" fill="#d56b25"/><text x="48" y="54" text-anchor="middle" fill="#ffffff" font-size="23" font-weight="700">5</text>
+      <text x="96" y="41" fill="#17324d" font-size="24" font-weight="700">Close the order scope</text>
+      <text x="96" y="70" fill="#526575" font-size="19">Included and excluded parts · finish · packing · destination · timing</text>
+    </g>
+  </g>
+</svg>

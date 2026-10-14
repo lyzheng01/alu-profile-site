@@ -56,7 +56,8 @@ test('renders the new B2B homepage structure and requests featured products', as
         results: [
           {
             id: 6,
-            name: 'Construction Profiles',
+            slug: 'industrial-profiles',
+            name: 'Industrial Profiles',
             description: 'Built for doors, windows, and facade projects.',
             image: '/media/category-1.jpg',
           },
@@ -70,11 +71,13 @@ test('renders the new B2B homepage structure and requests featured products', as
     </MemoryRouter>
   );
 
+  expect(document.title).toBe('Aluminum Profiles for Global Projects | LingYe');
+
   const heroHeading = await screen.findByRole('heading', { name: /Aluminum Profile Solutions for Your Project/i });
   const factoryShowcase = await screen.findByTestId('factory-showcase');
   const homeText = document.body.textContent || '';
-  expect(homeText.indexOf('Recommended Profiles for High-Intent Buyers')).toBeLessThan(homeText.indexOf('Manufacturing Capabilities'));
-  expect(homeText.indexOf('Manufacturing Capabilities')).toBeLessThan(homeText.indexOf('Profile Finishes and Applications'));
+  expect(homeText.indexOf('Recommended Profiles for High-Intent Buyers')).toBeLessThan(homeText.indexOf('Production References & Supplier Resources'));
+  expect(homeText.indexOf('Production References & Supplier Resources')).toBeLessThan(homeText.indexOf('Profile Finishes and Applications'));
   expect(factoryShowcase).toBeInTheDocument();
   expect(heroHeading).toBeInTheDocument();
   expect(heroHeading).toHaveClass('text-4xl', 'sm:text-5xl', 'md:text-6xl');
@@ -108,13 +111,15 @@ test('renders the new B2B homepage structure and requests featured products', as
   expect(screen.queryByText(/Days standard lead time/i)).not.toBeInTheDocument();
   expect(screen.getByRole('heading', { name: /Explore Core Product Categories/i })).toBeInTheDocument();
   expect(screen.queryByText(/^Category navigation$/i)).not.toBeInTheDocument();
-  const categoryImage = await screen.findByAltText('Construction Profiles');
+  const categoryImage = await screen.findByAltText('Industrial Profiles');
   expect(categoryImage).toHaveAttribute('src', expect.stringContaining('/media/category-1.jpg'));
   expect(categoryImage).toHaveClass('object-contain', 'object-center');
   expect(categoryImage).toHaveAttribute('loading', 'lazy');
-  const categoryLink = screen.getByRole('link', { name: /Construction Profiles/i });
+  const categoryLink = screen.getByRole('link', { name: /Industrial Profiles/i });
+  expect(categoryLink).toHaveAttribute('href', '/en/products/category/industrial-profiles');
+  expect(screen.getByTestId('home-category-section')).toHaveAttribute('data-home-categories-ready', 'true');
   expect(categoryLink.parentElement).toHaveClass('md:grid-cols-3');
-  expect(screen.getByText('Construction Profiles')).toBeInTheDocument();
+  expect(screen.getByText('Industrial Profiles')).toBeInTheDocument();
   expect(screen.queryByText('Built for doors, windows, and facade projects.')).not.toBeInTheDocument();
   expect(screen.queryByText('View Category')).not.toBeInTheDocument();
   expect(screen.queryByRole('heading', { name: /Browse by Profile Application/i })).not.toBeInTheDocument();

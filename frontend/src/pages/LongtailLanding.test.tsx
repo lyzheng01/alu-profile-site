@@ -31,8 +31,14 @@ test('keeps the existing industrial URL while presenting neutral project coordin
   expect(screen.getByRole('heading', { name: 'Industrial Aluminum Profiles for Equipment and Automation' })).toBeInTheDocument();
   expect(screen.getByText(/coordinate manufacturing resources/i)).toBeInTheDocument();
   expect(screen.queryByText(/48 hours|within 5 days|factory-direct|manufacturer in China/i)).not.toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'T-slot aluminum extrusion profiles' })).toHaveAttribute(
+    'href',
+    '/en/products/category/t-slot-profiles'
+  );
 
   const structuredDataCalls = (jest.requireMock('../hooks/useStructuredData').useStructuredData as jest.Mock).mock.calls;
   const productCall = structuredDataCalls.find(([key]) => key === 'landing-industrial-aluminum-extrusion-manufacturer-in-china');
+  expect(productCall?.[1]['@type']).toBe('WebPage');
+  expect(productCall?.[1]).toMatchObject({ publisher: { name: 'LingYe Aluminum' } });
   expect(productCall?.[1]).not.toHaveProperty('manufacturer');
 });

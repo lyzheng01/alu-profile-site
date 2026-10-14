@@ -18,8 +18,8 @@ test('renders localized factory context with the approved images and About link'
     </MemoryRouter>
   );
 
-  expect(screen.getByRole('heading', { name: 'Manufacturing Capabilities' })).toBeInTheDocument();
-  expect(screen.getByText('Production scenes and manufacturing resources for project-specific aluminum profile requirements.')).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: 'Production References & Supplier Resources' })).toBeInTheDocument();
+  expect(screen.getByText('Examples of supplier production environments and resources for project-specific aluminum profile requirements.')).toBeInTheDocument();
   expect(screen.getByRole('img', { name: 'Aluminum extrusion production line' })).toHaveAttribute(
     'src',
     '/images/factory-extrusion-lines.webp'

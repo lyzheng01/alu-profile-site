@@ -52,6 +52,9 @@ const AppContent: React.FC = () => {
             <Route key={`${lang}-products`} path={`/${lang}/products`} element={<Products />} />
           ))}
           {supportedLanguages.map(lang => (
+            <Route key={`${lang}-product-category`} path={`/${lang}/products/category/:categorySlug`} element={<Products />} />
+          ))}
+          {supportedLanguages.map(lang => (
             <Route key={`${lang}-product-detail`} path={`/${lang}/products/:productSlug`} element={<ProductDetail />} />
           ))}
           {supportedLanguages.map(lang => (
@@ -98,4 +101,4 @@ function App() {
   );
 }
 
-export default App; 
+export default App;

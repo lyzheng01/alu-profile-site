@@ -1,7 +1,4 @@
 // API配置文件
-// 生产环境配置 - 请根据您的实际域名修改（使用 HTTPS 防止混合内容）
-const PRODUCTION_DOMAIN = 'https://lingyealuminum.com';
-
 const API_BASE_URL = (() => {
   // 如果设置了环境变量，使用环境变量
   if (process.env.REACT_APP_API_URL) {

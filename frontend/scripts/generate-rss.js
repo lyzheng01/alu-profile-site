@@ -2,8 +2,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const SITE_URL = process.env.SITE_URL || 'https://lingyealuminum.com';
-const API_BASE = process.env.RSS_API_BASE || 'https://lingyealuminum.com/api';
+const SITE_URL = process.env.SITE_URL || 'https://lingyealu.com';
+const API_BASE = process.env.RSS_API_BASE || 'https://lingyealu.com/api';
 const LANGS = ['en', 'zh', 'es', 'pt'];
 
 const fetchJson = async (url) => {

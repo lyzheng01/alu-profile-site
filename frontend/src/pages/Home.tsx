@@ -8,6 +8,7 @@ import { useTranslation } from '../contexts/TranslationContext';
 import { useSeoMeta } from '../hooks/useSeoMeta';
 import { useStructuredData } from '../hooks/useStructuredData';
 import { resolveMediaUrl } from '../utils/url';
+import { getProductCategoryLabel } from '../data/productCategoryGuides';
 
 type ProductImage = {
   image: string;
@@ -25,6 +26,7 @@ type FeaturedProduct = {
 
 type CategoryItem = {
   id: number | string;
+  slug?: string;
   name: string;
   description?: string;
   image?: string;
@@ -61,6 +63,7 @@ const Home: React.FC = () => {
   const { currentLanguage, t } = useTranslation();
   const [featuredProducts, setFeaturedProducts] = useState<FeaturedProduct[]>([]);
   const [categories, setCategories] = useState<CategoryItem[]>([]);
+  const [categoriesLoaded, setCategoriesLoaded] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const heroTitle = t('home_hero_precision_title', 'Aluminum Profile Solutions for Your Project');
@@ -71,23 +74,23 @@ const Home: React.FC = () => {
 
   const homeSeo = {
     en: {
-      title: 'Aluminum Profile Solutions for Global Projects | LingYe Aluminum',
+      title: 'Aluminum Profiles for Global Projects | LingYe',
       description: 'Explore aluminum profile ranges and coordinate custom requirements, finishing options, and export inquiries with LingYe Aluminum.',
     },
     zh: {
-      title: '铝型材项目解决方案 | LingYe Aluminum',
+      title: '铝型材项目解决方案 | 凌烨铝业',
       description: '了解建筑与工业铝型材产品，并沟通定制需求、表面处理选项及出口项目询价。',
     },
     es: {
-      title: 'Soluciones de perfiles de aluminio para proyectos | LingYe Aluminum',
+      title: 'Perfiles de aluminio para proyectos | LingYe',
       description: 'Explore perfiles de aluminio y consulte requisitos personalizados, acabados y pedidos de exportación con LingYe Aluminum.',
     },
     pt: {
-      title: 'Soluções em perfis de alumínio para projetos | LingYe Aluminum',
+      title: 'Perfis de alumínio para projetos | LingYe',
       description: 'Explore perfis de alumínio e consulte requisitos personalizados, acabamentos e pedidos de exportação com a LingYe Aluminum.',
     },
   }[currentLanguage as 'en' | 'zh' | 'es' | 'pt'] || {
-    title: 'Aluminum Profile Solutions for Global Projects | LingYe Aluminum',
+    title: 'Aluminum Profiles for Global Projects | LingYe',
     description: 'Explore aluminum profile ranges and coordinate custom requirements, finishing options, and export inquiries with LingYe Aluminum.',
   };
 
@@ -181,13 +184,15 @@ const Home: React.FC = () => {
           setCategories(
             categoryList.slice(0, 5).map((category) => ({
               ...category,
-              name: cleanEnglishCopy((category as any).translated_name || category.name),
+              name: getProductCategoryLabel(category.slug, currentLanguage, cleanEnglishCopy((category as any).translated_name || category.name)),
               description: cleanEnglishCopy((category as any).translated_description || category.description),
             }))
           );
         }
       } catch (error) {
         console.error('Failed to fetch homepage data:', error);
+      } finally {
+        setCategoriesLoaded(true);
       }
     };
 
@@ -291,7 +296,12 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      <section className="bg-white py-16 md:py-20">
+          <section
+            className="bg-white py-16 md:py-20"
+            data-testid="home-category-section"
+            data-home-categories-ready={categoriesLoaded ? 'true' : 'false'}
+            data-home-category-count={categories.length}
+          >
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl">
@@ -312,7 +322,9 @@ const Home: React.FC = () => {
             {categories.map((category) => (
               <Link
                 key={category.id}
-                to={`/${currentLanguage}/products?category=${category.id}`}
+                to={category.slug
+                  ? `/${currentLanguage}/products/category/${category.slug}`
+                  : `/${currentLanguage}/products?category=${category.id}`}
                 className="group overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
               >
                 <div className="flex h-64 items-center justify-center bg-white p-4">

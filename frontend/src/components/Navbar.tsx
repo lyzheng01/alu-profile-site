@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { supportedLanguages } from '../services/translationService';
 import { useTranslation } from '../contexts/TranslationContext';
 import { API_ENDPOINTS } from '../config/api';
+import { getProductCategoryLabel } from '../data/productCategoryGuides';
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -12,6 +13,7 @@ const Navbar: React.FC = () => {
   const [productCategories, setProductCategories] = useState<Array<{
     id: number, 
     name: string, 
+    slug?: string,
     subcategories?: Array<{id: number, name: string}>
   }>>([]);
   const { currentLanguage, changeLanguage, t, isLoading } = useTranslation();
@@ -28,12 +30,14 @@ const Navbar: React.FC = () => {
         const categories = data.results || data;
         setProductCategories(categories.map((category: {
           id: number;
+          slug?: string;
           name?: string;
           translated_name?: string;
           subcategories?: Array<{ id: number; name?: string; translated_name?: string }>;
         }) => ({
           ...category,
-          name: category.translated_name || category.name || '',
+          name: getProductCategoryLabel(category.slug, currentLanguage, category.translated_name || category.name || ''),
+          slug: category.slug,
           subcategories: category.subcategories?.map((subcategory) => ({
             ...subcategory,
             name: subcategory.translated_name || subcategory.name || '',
@@ -46,6 +50,7 @@ const Navbar: React.FC = () => {
         setProductCategories([
           { 
             id: 1, 
+            slug: 'cabinet-profiles',
             name: t('product_category_cabinet', 'Aluminium Cabinet Profile'),
             subcategories: [
               { id: 11, name: '门窗' },
@@ -54,6 +59,7 @@ const Navbar: React.FC = () => {
           },
           { 
             id: 2, 
+            slug: 'industrial-profiles',
             name: t('product_category_industry', 'Aluminium Industry Profile'),
             subcategories: [
               { id: 21, name: '工业型材' },
@@ -62,6 +68,7 @@ const Navbar: React.FC = () => {
           },
           { 
             id: 3, 
+            slug: 't-slot-profiles',
             name: t('product_category_t_slot', 'Aluminium T Slot Profiles and Accessories'),
             subcategories: [
               { id: 31, name: 'T型槽' },
@@ -70,6 +77,7 @@ const Navbar: React.FC = () => {
           },
           { 
             id: 4, 
+            slug: 'windows-doors',
             name: t('product_category_window_door', 'Aluminium Window and Door Profile'),
             subcategories: [
               { id: 41, name: '窗框' },
@@ -78,6 +86,7 @@ const Navbar: React.FC = () => {
           },
           { 
             id: 5, 
+            slug: 'standard-aluminium-profiles',
             name: t('product_category_standard', 'Standard Aluminium Profile'),
             subcategories: [
               { id: 51, name: '标准型材' },
@@ -214,7 +223,9 @@ const Navbar: React.FC = () => {
                           {productCategories.map((category) => (
                             <div key={category.id} className="group">
                               <Link
-                                to={`/${currentLanguage}/products?category=${category.id}`}
+                                to={category.slug
+                                  ? `/${currentLanguage}/products/category/${category.slug}`
+                                  : `/${currentLanguage}/products?category=${category.id}`}
                                 onClick={() => setIsProductsMenuOpen(false)}
                                 className="block px-4 py-2 text-sm text-slate-800 hover:text-slate-950 hover:bg-slate-100 transition-colors font-medium"
                               >
@@ -365,7 +376,9 @@ const Navbar: React.FC = () => {
                       {productCategories.map((category) => (
                         <div key={category.id}>
                           <Link
-                            to={`/${currentLanguage}/products?category=${category.id}`}
+                            to={category.slug
+                              ? `/${currentLanguage}/products/category/${category.slug}`
+                              : `/${currentLanguage}/products?category=${category.id}`}
                             onClick={() => {
                               setIsProductsMenuOpen(false);
                               setIsMobileMenuOpen(false);

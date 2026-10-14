@@ -12,15 +12,28 @@ interface TranslationContextType {
 
 const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
 
+export const resolveInitialLanguage = (pathname: string, fallbackLanguage: string = 'en'): string => {
+  const firstSegment = pathname.split('/').filter(Boolean)[0];
+  return supportedLanguages.some((language) => language.code === firstSegment)
+    ? firstSegment
+    : fallbackLanguage;
+};
+
 export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentLanguage, setCurrentLanguage] = React.useState(translationService.getCurrentLanguage());
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [currentLanguage, setCurrentLanguage] = React.useState(() => resolveInitialLanguage(
+    typeof window === 'undefined' ? '/' : window.location.pathname,
+    translationService.getCurrentLanguage()
+  ));
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [translationsReady, setTranslationsReady] = React.useState(false);
   const [, forceUpdate] = React.useState({}); // 用于强制刷新
   const location = useLocation();
 
   // 初始化时根据URL设置语言
   useEffect(() => {
     const initTranslations = async () => {
+      setIsLoading(true);
+      setTranslationsReady(false);
       const pathSegments = location.pathname.split('/').filter(Boolean);
       const firstSegment = pathSegments[0];
       const urlLanguage = supportedLanguages.some((language) => language.code === firstSegment)
@@ -29,9 +42,14 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
       const savedLanguage = localStorage.getItem('language') || 'en';
       const targetLanguage = urlLanguage || savedLanguage;
       
-      await translationService.loadTranslations(targetLanguage);
-      setCurrentLanguage(targetLanguage);
-      forceUpdate({});
+      try {
+        const translations = await translationService.loadTranslations(targetLanguage);
+        setCurrentLanguage(targetLanguage);
+        setTranslationsReady(Object.keys(translations).length > 0);
+        forceUpdate({});
+      } finally {
+        setIsLoading(false);
+      }
     };
     
     initTranslations();
@@ -55,9 +73,11 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
   // 切换语言
   const changeLanguage = async (language: string) => {
     setIsLoading(true);
+    setTranslationsReady(false);
     try {
-      await translationService.loadTranslations(language);
+      const translations = await translationService.loadTranslations(language);
       setCurrentLanguage(language);
+      setTranslationsReady(Object.keys(translations).length > 0);
       localStorage.setItem('language', language); // 保存到localStorage
       forceUpdate({}); // 关键：强制刷新所有依赖翻译的组件
     } catch (error) {
@@ -87,7 +107,9 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   return (
     <TranslationContext.Provider value={value}>
-      {children}
+      <div style={{ display: 'contents' }} data-translation-ready={translationsReady && !isLoading ? 'true' : 'false'}>
+        {children}
+      </div>
     </TranslationContext.Provider>
   );
 };

@@ -144,6 +144,9 @@ class TranslationService:
                 texts_to_translate[f"title_{obj.id}"] = obj.title
                 texts_to_translate[f"content_{obj.id}"] = obj.content
                 texts_to_translate[f"excerpt_{obj.id}"] = obj.excerpt
+                texts_to_translate[f"meta_title_{obj.id}"] = obj.meta_title
+                texts_to_translate[f"meta_description_{obj.id}"] = obj.meta_description
+                texts_to_translate[f"meta_keywords_{obj.id}"] = obj.meta_keywords
             elif model_name == 'contact_info':
                 texts_to_translate[f"name_{obj.id}"] = obj.name
                 texts_to_translate[f"value_{obj.id}"] = obj.value
@@ -159,12 +162,13 @@ class TranslationService:
         # 批量翻译
         translated_count = 0
         for key, text in texts_to_translate.items():
-            if force or key not in translations:
+            if text and (force or key not in translations):
                 translated_text = self.translate_text(text, target_lang)
+                if not translated_text or translated_text == text:
+                    break
                 translations[key] = translated_text
                 translated_count += 1
-                # 添加延迟避免API限制
-                time.sleep(0.2)
+                time.sleep(1.1)
         
         # 保存到文件
         if translated_count > 0:
@@ -197,6 +201,9 @@ class TranslationService:
             texts_to_translate[f"title_{obj.id}"] = obj.title
             texts_to_translate[f"content_{obj.id}"] = obj.content
             texts_to_translate[f"excerpt_{obj.id}"] = obj.excerpt
+            texts_to_translate[f"meta_title_{obj.id}"] = obj.meta_title
+            texts_to_translate[f"meta_description_{obj.id}"] = obj.meta_description
+            texts_to_translate[f"meta_keywords_{obj.id}"] = obj.meta_keywords
         elif model_name == 'contact_info':
             texts_to_translate[f"name_{obj.id}"] = obj.name
             texts_to_translate[f"value_{obj.id}"] = obj.value
@@ -211,9 +218,13 @@ class TranslationService:
         
         # 翻译
         for key, text in texts_to_translate.items():
+            if not text:
+                continue
             translated_text = self.translate_text(text, target_lang)
+            if not translated_text or translated_text == text:
+                continue
             translations[key] = translated_text
-            time.sleep(0.2)  # 延迟避免API限制
+            time.sleep(1.1)
         
         # 保存到文件
         self._save_translations_to_file(model_name, target_lang, translations)

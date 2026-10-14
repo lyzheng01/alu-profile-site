@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { API_ENDPOINTS } from '../config/api';
 import { useTranslation } from '../contexts/TranslationContext';
 import { useSeoMeta } from '../hooks/useSeoMeta';
+import { SITE_ORIGIN } from '../config/site';
 import { useStructuredData } from '../hooks/useStructuredData';
 
 interface CompanyInfo {
@@ -48,7 +49,7 @@ const About: React.FC = () => {
       'Learn how LingYe coordinates aluminum profile requirements, manufacturing resources, and export project inquiries.'
     ),
     canonicalPath: `/${currentLanguage}/about`,
-    ogImage: 'https://lingyealuminum.com/logo.jpg?v=3',
+    ogImage: `${SITE_ORIGIN}/logo.jpg?v=3`,
     ogTitle: t('about_meta_title', 'About LingYe Aluminum | Projects and Capabilities'),
     ogDescription: t(
       'about_meta_description',
@@ -61,8 +62,8 @@ const About: React.FC = () => {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'LingYe Aluminum',
-    url: 'https://lingyealuminum.com',
-    logo: 'https://lingyealuminum.com/logo.jpg?v=3',
+    url: SITE_ORIGIN,
+    logo: `${SITE_ORIGIN}/logo.jpg?v=3`,
     description: 'Aluminum profile solutions for industrial and architectural applications.',
     sameAs: [
       'https://facebook.com/lingyealu',
@@ -75,7 +76,7 @@ const About: React.FC = () => {
   useStructuredData('about-organization', organizationStructuredData);
 
   const breadcrumbStructuredData = React.useMemo(() => {
-    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealuminum.com';
+    const base = typeof window !== 'undefined' ? window.location.origin : SITE_ORIGIN;
     return {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',

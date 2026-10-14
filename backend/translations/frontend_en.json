@@ -20,7 +20,7 @@
   "slide_2_subtitle": "Aluminum profile options for international projects",
   "slide_2_cta": "View Products",
   "slide_3_title": "Advanced Technology",
-  "slide_3_subtitle": "Innovative manufacturing processes",
+  "slide_3_subtitle": "Supplier production resources coordinated to project needs",
   "slide_3_cta": "Contact Us",
   
   "advantage_1_title": "Project Requirement Coordination",
@@ -77,7 +77,7 @@
   "news_published": "Published",
   "news_author": "Author",
   "news_tags": "Tags",
-  "news_seo_title": "Aluminum Industry News and Technical Insights | LingYe Aluminum",
+  "news_seo_title": "Aluminum Industry News & Insights | LingYe",
   "news_seo_description": "Read aluminum market trends, extrusion technology, surface finishing, T-slot products, and project cooperation insights.",
   "news_collection_name": "Aluminum Industry News | LingYe Aluminum",
   "news_collection_description": "Aluminum market trends, processing technology, and product updates.",
@@ -129,8 +129,8 @@
   "contact_technical_support": "Technical Support",
   "contact_sales_inquiry": "Sales Inquiry",
   
-  "factory_showcase": "Manufacturing Capabilities",
-  "factory_subtitle": "Production scenes and manufacturing resources for project-specific aluminum profile requirements.",
+  "factory_showcase": "Production References & Supplier Resources",
+  "factory_subtitle": "Examples of supplier production environments and resources for project-specific aluminum profile requirements.",
   
   "footer_brand": "LingYe Aluminum",
   "footer_slogan": "Aluminum profile solutions for global projects",
@@ -157,9 +157,9 @@
   "home_explore_company_title": "Explore Our Company",
   "home_explore_company_subtitle": "From production and product offerings to inventory, see how we bring quality to life.",
   
-  "home_factory_production_line": "Factory Production Line",
+  "home_factory_production_line": "Supplier Extrusion Line Reference",
   "home_production_equipment": "Production Equipment",
-  "home_production_equipment_desc": "Advanced manufacturing facilities with cutting-edge technology",
+  "home_production_equipment_desc": "Production equipment references to help discuss project requirements",
   
   "home_product_storage": "Product Storage",
   "home_inventory_management": "Inventory Management",
@@ -332,6 +332,7 @@
   ,"product_detail_quality_grade": "Quality Grade"
   ,"product_detail_temper_state": "Temper State"
   ,"product_detail_description": "Product Description"
+  ,"product_detail_description_pending": "Project-specific details are confirmed against the approved drawing and specification."
   ,"product_detail_features": "Product Features"
   ,"product_detail_specification_name": "Specification Name"
   ,"product_detail_specification_value": "Specification Value"
@@ -344,5 +345,14 @@
   ,"product_detail_related_products": "Related Products"
   ,"factory_showcase_about_cta": "Learn about our approach"
   ,"factory_extrusion_line_alt": "Aluminum extrusion production line"
-  ,"factory_crane_alt": "Aluminum extrusion factory crane"
+  ,"factory_crane_alt": "Aluminum extrusion factory crane",
+  "footer_friend_links": "Useful Links",
+  "product_category_cabinet": "Aluminium Cabinet Profiles",
+  "product_category_industry": "Industrial Aluminium Profiles",
+  "product_category_t_slot": "T-slot Aluminium Profiles and Accessories",
+  "product_category_window_door": "Aluminium Window and Door Profiles",
+  "product_category_standard": "Standard Aluminium Profiles",
+  "products_no_products": "No products match your current filters",
+  "products_no_products_desc": "Try changing or clearing your filters to see more products.",
+  "products_found_count": "Products: {count}"
 }

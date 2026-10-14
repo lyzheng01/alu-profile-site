@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { API_ENDPOINTS } from '../config/api';
 import { useSeoMeta } from '../hooks/useSeoMeta';
+import { SITE_ORIGIN } from '../config/site';
 import { useStructuredData } from '../hooks/useStructuredData';
 import { useTranslation } from '../contexts/TranslationContext';
 import { resolveMediaUrl } from '../utils/url';
@@ -56,7 +57,7 @@ interface LandingPageData {
 const landingPages: Record<string, LandingPageData> = {
   'aluminum-profile-supplier-for-construction-projects': {
     slug: 'aluminum-profile-supplier-for-construction-projects',
-    title: 'Aluminum Profile Supplier for Construction Projects | LingYe Aluminum',
+    title: 'Construction Aluminum Profiles | LingYe',
     h1: 'Aluminum Profile Supplier for Construction Projects',
     description:
       'Aluminum profile references for construction projects. Share drawings, finish requirements, quantity, and destination to discuss a project-specific quotation.',
@@ -116,7 +117,7 @@ const landingPages: Record<string, LandingPageData> = {
   },
   'industrial-aluminum-extrusion-manufacturer-in-china': {
     slug: 'industrial-aluminum-extrusion-manufacturer-in-china',
-    title: 'Industrial Aluminum Profiles for Equipment and Automation | LingYe Aluminum',
+    title: 'Industrial Aluminum Profiles for Automation | LingYe',
     h1: 'Industrial Aluminum Profiles for Equipment and Automation',
     description:
       'Explore industrial aluminum profile references for equipment frames, automation, transport, and mechanical projects. Share drawings to discuss project requirements.',
@@ -143,7 +144,7 @@ const landingPages: Record<string, LandingPageData> = {
     productSlugs: ['2020-3030-4040-t-slot-aluminium-profiles', '2020-t-slot-aluminium-extrusion-profile-industrial', 'industrial-profile-extrude-aluminium-framing-40x40'],
     relatedLinks: [
       { label: 'Explore industrial-ready products', to: '/en/products' },
-      { label: 'T-slot aluminum extrusion profiles', to: '/en/products/2020-3030-4040-t-slot-aluminium-profiles' },
+      { label: 'T-slot aluminum extrusion profiles', to: '/en/products/category/t-slot-profiles' },
       { label: 'Check latest company updates', to: '/en/news' },
     ],
     faqs: [
@@ -176,7 +177,7 @@ const landingPages: Record<string, LandingPageData> = {
   },
   'custom-aluminum-profile-factory-for-oem-orders': {
     slug: 'custom-aluminum-profile-factory-for-oem-orders',
-    title: 'Custom Aluminum Profiles for OEM Projects | LingYe Aluminum',
+    title: 'Custom Aluminum Profiles for OEM Projects | LingYe',
     h1: 'Custom Aluminum Profiles for OEM Projects',
     description:
       'Discuss custom aluminum profile requirements for OEM projects. Share drawings and confirm tooling, finish, order, and delivery options for your project.',
@@ -246,7 +247,7 @@ const LongtailLanding: React.FC = () => {
     title: page?.title,
     description: page?.description,
     canonicalPath: page ? `/en/${page.slug}` : undefined,
-    ogImage: 'https://lingyealuminum.com/logo.jpg?v=3',
+    ogImage: `${SITE_ORIGIN}/logo.jpg?v=3`,
     ogTitle: page?.title,
     ogDescription: page?.description,
     language: 'en',
@@ -276,17 +277,17 @@ const LongtailLanding: React.FC = () => {
     if (!page) return null;
     return {
       '@context': 'https://schema.org',
-      '@type': 'Product',
+      '@type': 'WebPage',
       name: page.h1,
       description: page.description,
-      brand: { '@type': 'Brand', name: 'LingYe Aluminum' },
-      url: typeof window !== 'undefined' ? window.location.href : `https://lingyealuminum.com/en/${page.slug}`,
+      publisher: { '@type': 'Organization', name: 'LingYe Aluminum', url: SITE_ORIGIN },
+      url: typeof window !== 'undefined' ? window.location.href : `${SITE_ORIGIN}/en/${page.slug}`,
     };
   }, [page]);
 
   const breadcrumbData = React.useMemo(() => {
     if (!page) return null;
-    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealuminum.com';
+    const base = typeof window !== 'undefined' ? window.location.origin : SITE_ORIGIN;
     return {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',

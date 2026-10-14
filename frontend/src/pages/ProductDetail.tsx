@@ -5,23 +5,30 @@ import FloatingContactButtons from '../components/FloatingContactButtons';
 import InquiryForm from '../components/InquiryForm';
 import FactoryShowcase from '../components/FactoryShowcase';
 import { useSeoMeta } from '../hooks/useSeoMeta';
+import { SITE_ORIGIN } from '../config/site';
 import { useStructuredData } from '../hooks/useStructuredData';
 import { useTranslation } from '../contexts/TranslationContext';
+import { getSeoLocaleLabels } from '../data/seoLocaleLabels';
+import { getProductSeoTitle } from '../data/productSeoTitles';
+import { getProductPageGuide } from '../data/productPageGuides';
 // 模板系统已集成到后端API，前端直接使用API返回的数据即可
 
 interface Product {
   id: number;
   slug: string;
   name: string;
+  translated_name?: string;
   description: string;
   category: {
     id: number;
     name: string;
+    translated_name?: string;
     slug?: string;
   };
   subcategory?: {
     id: number;
     name: string;
+    translated_name?: string;
     slug?: string;
   };
   features: string | Array<Record<string, any>>;
@@ -95,6 +102,9 @@ const ILLUSTRATIVE_NOTICES: Record<string, string> = {
   pt: 'Imagem meramente ilustrativa. Confirme a secção final, a compatibilidade do sistema e os detalhes do projeto com os desenhos e especificações aprovados.',
 };
 
+const getRelatedProductName = (product: Product): string =>
+  product.translated_name?.trim() || product.name?.trim() || product.slug.replace(/-/g, ' ');
+
 const ProductDetail: React.FC = () => {
   const { productSlug } = useParams<{ productSlug: string }>();
   const navigate = useNavigate();
@@ -104,7 +114,9 @@ const ProductDetail: React.FC = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { t, currentLanguage: contextLanguage } = useTranslation();
   const currentLanguage = contextLanguage || 'zh';
+  const seoLabels = getSeoLocaleLabels(currentLanguage);
   const illustrativeNotice = ILLUSTRATIVE_NOTICES[currentLanguage] || ILLUSTRATIVE_NOTICES.en;
+  const productPageGuide = product ? getProductPageGuide(product.slug, currentLanguage) : null;
 
   const resolveProductMediaUrl = (imageUrl?: string | null) => {
     if (!imageUrl) return null;
@@ -124,15 +136,15 @@ const ProductDetail: React.FC = () => {
   };
 
   useSeoMeta({
-    title: product ? `${product.name} | LingYe Aluminum` : undefined,
+    title: product ? getProductSeoTitle(product.slug, product.name, currentLanguage) : undefined,
     description: product
       ? (product.description || `Explore ${product.name} from LingYe Aluminum with custom aluminum extrusion and global supply support.`)
       : undefined,
     canonicalPath: product?.slug ? `/${currentLanguage}/products/${product.slug}` : undefined,
     ogImage: product?.images?.[0]?.image
-      ? (product.images[0].image.startsWith('http') ? product.images[0].image : `https://lingyealuminum.com${product.images[0].image}`)
-      : 'https://lingyealuminum.com/logo.jpg?v=3',
-    ogTitle: product ? `${product.name} | LingYe Aluminum` : undefined,
+      ? (product.images[0].image.startsWith('http') ? product.images[0].image : `${SITE_ORIGIN}${product.images[0].image}`)
+      : `${SITE_ORIGIN}/logo.jpg?v=3`,
+    ogTitle: product ? getProductSeoTitle(product.slug, product.name, currentLanguage) : undefined,
     ogDescription: product?.description || undefined,
     language: currentLanguage,
   });
@@ -149,18 +161,17 @@ const ProductDetail: React.FC = () => {
         imageUrl = image.startsWith('/') ? `${origin}${image}` : `${origin}/${image}`;
       }
     }
+    const grade = product.grade?.trim() || '';
+    const hasConfirmedAlloy = /\b(?:6\d{3}|7\d{3})(?:[- ]?T\d{1,2})?\b/i.test(grade);
+    const isProjectPlaceholder = /confirm|specif|project|proyecto|projeto|根据|图纸|规格|按.*确定/i.test(grade);
     return {
       '@context': 'https://schema.org',
       '@type': 'Product',
       name: product.name,
       description: product.description || undefined,
       image: imageUrl ? [imageUrl] : undefined,
-      brand: {
-        '@type': 'Brand',
-        name: 'LingYe Aluminum',
-      },
-      category: product.category?.name || undefined,
-      sku: String(product.id),
+      category: product.category?.translated_name || product.category?.name || undefined,
+      ...(hasConfirmedAlloy && !isProjectPlaceholder ? { material: grade } : {}),
       url: typeof window !== 'undefined' ? window.location.href : undefined,
     };
   }, [product]);
@@ -169,7 +180,7 @@ const ProductDetail: React.FC = () => {
 
   const breadcrumbStructuredData = React.useMemo(() => {
     if (!product) return null;
-    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealuminum.com';
+    const base = typeof window !== 'undefined' ? window.location.origin : SITE_ORIGIN;
     return {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
@@ -177,13 +188,13 @@ const ProductDetail: React.FC = () => {
         {
           '@type': 'ListItem',
           position: 1,
-          name: 'Home',
+          name: seoLabels.home,
           item: `${base}/${currentLanguage}`,
         },
         {
           '@type': 'ListItem',
           position: 2,
-          name: 'Products',
+          name: seoLabels.products,
           item: `${base}/${currentLanguage}/products`,
         },
         {
@@ -194,7 +205,7 @@ const ProductDetail: React.FC = () => {
         },
       ],
     };
-  }, [product, currentLanguage]);
+  }, [product, currentLanguage, seoLabels]);
 
   useStructuredData('product-breadcrumb', breadcrumbStructuredData);
 
@@ -220,7 +231,18 @@ const ProductDetail: React.FC = () => {
           }
 
           // 后端API已经自动合并了模板数据，直接使用
-          setProduct(productData);
+          setProduct({
+            ...productData,
+            category: productData.category ? {
+              ...productData.category,
+              name: productData.category.translated_name || productData.category.name || '',
+            } : productData.category,
+            subcategory: productData.subcategory ? {
+              ...productData.subcategory,
+              name: productData.subcategory.translated_name || productData.subcategory.name || '',
+            } : productData.subcategory,
+          });
+          setLoading(false);
 
           // Get other products in the same category
           if (productData.category?.id) {
@@ -455,7 +477,7 @@ const ProductDetail: React.FC = () => {
   }
 
   return (
-    <div>
+    <div data-testid="product-detail-page" data-product-ready="true">
       {/* Breadcrumb navigation */}
       <div className="bg-gray-50 py-4">
         <div className="max-w-7xl mx-auto px-8">
@@ -639,14 +661,18 @@ const ProductDetail: React.FC = () => {
                       <span className="text-gray-900 flex-1">{product.colors}</span>
                     </div>
                   )}
-                  <div className="flex items-start gap-4 py-2 border-b border-gray-100">
+                  {product.grade && (
+                    <div className="flex items-start gap-4 py-2 border-b border-gray-100">
                     <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_quality_grade', 'Quality Grade')}:</span>
-                    <span className="text-gray-900 flex-1">6061, 6063</span>
-                  </div>
-                  <div className="flex items-start gap-4 py-2 border-b border-gray-100">
+                      <span className="text-gray-900 flex-1">{product.grade}</span>
+                    </div>
+                  )}
+                  {product.temper && (
+                    <div className="flex items-start gap-4 py-2 border-b border-gray-100">
                     <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_temper_state', 'Temper State')}:</span>
-                    <span className="text-gray-900 flex-1">{product.temper || t('product_detail_temper_default', 'T5, T6')}</span>
-                  </div>
+                      <span className="text-gray-900 flex-1">{product.temper}</span>
+                    </div>
+                  )}
                   {product.oem_available !== undefined && (
                     <div className="flex items-start gap-4 py-2 border-b border-gray-100">
                       <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_oem', 'OEM')}:</span>
@@ -708,12 +734,11 @@ const ProductDetail: React.FC = () => {
               <div className="p-6 space-y-4">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('product_detail_description', 'PRODUCT DESCRIPTION')}</h2>
                 <p className="text-gray-600 text-lg leading-relaxed whitespace-pre-line">
-                  {product.description?.trim()
-                    ? product.description
-                    : `Aluminium tile trim is a durable edging profile designed to protect tile edges and create clean, professional finishes in wall and floor installations.
-Made from high-quality aluminum, it prevents chipping, improves overall appearance, and ensures long-lasting protection.
-Available in various shapes, sizes, and surface finishes, aluminium tile trims are widely used in bathrooms, kitchens, stair areas, and commercial spaces.`}
+                  {product.description?.trim() || t('product_detail_description_pending', 'Project-specific details are confirmed against the approved drawing and specification.')}
                 </p>
+                {productPageGuide && (
+                  <p className="text-gray-600 leading-relaxed">{productPageGuide.description}</p>
+                )}
               </div>
             </div>
 
@@ -999,8 +1024,8 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                     <table className="w-full">
                       <thead>
                         <tr className="bg-gray-50">
-                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 border-b">Specification Name</th>
-                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 border-b">Specification Value</th>
+                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 border-b">{t('product_detail_specification_name', 'Specification Name')}</th>
+                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 border-b">{t('product_detail_specification_value', 'Specification Value')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1021,7 +1046,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
               </div>
             ) : null}
 
-            {(product.application_items && product.application_items.length > 0) || product.applications ? (
+            {(product.application_items && product.application_items.length > 0) || product.applications || productPageGuide ? (
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                 <div className="p-6">
                   <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('product_detail_applications', 'Product Applications')}</h2>
@@ -1044,6 +1069,9 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                   ) : product.applications && product.applications.trim() ? (
                     <pre className="whitespace-pre-wrap text-gray-700 text-lg leading-relaxed">{String(product.applications)}</pre>
                   ) : null}
+                  {productPageGuide && (
+                    <p className="mt-6 text-gray-600 leading-relaxed">{productPageGuide.applications}</p>
+                  )}
                 </div>
               </div>
             ) : null}
@@ -1109,7 +1137,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                     {relatedProduct.images && relatedProduct.images.length > 0 ? (
                       <img
                         src={resolveProductMediaUrl(relatedProduct.images[0].image) || ''}
-                        alt={relatedProduct.name}
+                        alt={getRelatedProductName(relatedProduct)}
                         className="w-full h-full object-cover"
                         loading="lazy"
                         decoding="async"
@@ -1121,7 +1149,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                     )}
                   </div>
                   <div className="p-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{relatedProduct.name}</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{getRelatedProductName(relatedProduct)}</h3>
                     <div className="flex gap-2">
                       <Link
                         to={`/${currentLanguage}/products/${relatedProduct.slug}`}
