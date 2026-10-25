@@ -36,6 +36,7 @@ type FactoryImage = {
 
 const temporaryAluslinkImages = {
   hero: '/images/home-hero-aluminum-anodizing-line.webp',
+  qualityInspection: '/images/home-hero-quality-inspection.webp',
   heroAlt: 'https://aluslink.com/wp-content/uploads/2026/04/2024010857569425.jpg',
   productLine: 'https://aluslink.com/wp-content/uploads/2025/08/Aluminium-Home6--400x300.webp',
   category: 'https://aluslink.com/wp-content/uploads/2024/09/400x400.png',
@@ -217,7 +218,7 @@ const Home: React.FC = () => {
       .map((item) => cleanMediaUrl(item.image))
       .filter((image) => Boolean(image) && image !== heroImage);
 
-    return [heroImage, ...dynamicImages].slice(0, 3);
+    return [heroImage, temporaryAluslinkImages.qualityInspection, ...dynamicImages].slice(0, 3);
   }, [factoryImages, heroImage]);
 
   const galleryImages = useMemo(
