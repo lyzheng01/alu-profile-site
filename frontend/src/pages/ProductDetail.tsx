@@ -896,70 +896,6 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
               </div>
             </div>
 
-            {/* Factory Images */}
-            {product.factory_images && product.factory_images.length > 0 && (
-              <div className="space-y-10">
-                <h2 className="text-xl font-semibold text-gray-900">OUR FACTORY</h2>
-                {(() => {
-                  // 先过滤掉所有不需要的照片
-                  const filteredImages = product.factory_images
-                    .filter((factoryImg: any) => {
-                      // 过滤掉 ANODIZED WORKSHOP 照片
-                      const title = (factoryImg.title || '').toUpperCase();
-                      return !title.includes('ANODIZED WORKSHOP');
-                    })
-                    .filter((factoryImg: any, index: number) => {
-                      // 过滤掉第二张（index 1）和第四张（index 3）照片
-                      return index !== 1 && index !== 3;
-                    });
-                  
-                  // 去掉最后一张照片
-                  const displayImages = filteredImages.slice(0, filteredImages.length - 1);
-                  
-                  return displayImages.map((factoryImg: any, index: number) => {
-                  let imageUrl = factoryImg.image;
-                  if (imageUrl && !imageUrl.startsWith('http')) {
-                    const origin = window.location.origin;
-                    if (imageUrl.startsWith('/media/')) {
-                      imageUrl = `${origin}${imageUrl}`;
-                    } else if (imageUrl.startsWith('media/')) {
-                      imageUrl = `${origin}/${imageUrl}`;
-                    } else {
-                      const baseUrl = API_ENDPOINTS.PRODUCTS.replace('/api/products/', '');
-                      imageUrl = `${baseUrl}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
-                    }
-                  }
-                  
-                  return (
-                    <div key={factoryImg.id || index} className="w-full">
-                      <div className="w-full bg-gray-50 rounded-2xl overflow-hidden flex items-center justify-center min-h-[360px]">
-                        {imageUrl ? (
-                          <img 
-                            src={imageUrl} 
-                            alt={factoryImg.title || `Factory Image ${index + 1}`}
-                            className="w-full h-auto max-h-[720px] object-contain"
-                            loading="lazy"
-                            decoding="async"
-                            width="800"
-                            height="600"
-                            onError={(e) => {
-                              console.error('Failed to load factory image:', imageUrl);
-                              (e.target as HTMLImageElement).style.display = 'none';
-                            }}
-                          />
-                        ) : (
-                          <div className="w-full h-[420px] bg-gray-100 flex items-center justify-center rounded-2xl">
-                            <p className="text-gray-500 text-sm">{factoryImg.title || 'Factory Image'}</p>
-                          </div>
-                        )}
-                      </div>
-                      {factoryImg.description && (
-                        <p className="text-sm text-gray-600 mt-3">{factoryImg.description}</p>
-                      )}
-                    </div>
-                  );
-                });
-                })()}
                 {surfaceTreatmentImageUrl && (
                   <div className="bg-white rounded-lg shadow-md">
                     <div className="p-6">
@@ -1027,8 +963,6 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                     ))}
                   </div>
                 </div>
-              </div>
-            )}
 
             {(product.specification_items && product.specification_items.length > 0) || product.specifications ? (
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
@@ -1105,6 +1039,58 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
             </div>
           </div>
         </div>
+
+
+        {product.factory_images && product.factory_images.length > 0 && (
+          <section className="mb-16 w-full space-y-8" aria-labelledby="our-factory-heading">
+            <h2 id="our-factory-heading" className="text-2xl font-semibold text-gray-900">OUR FACTORY</h2>
+            <div className="space-y-8">
+              {product.factory_images.map((factoryImg: any, index: number) => {
+                let imageUrl = factoryImg.image;
+                if (imageUrl && !imageUrl.startsWith('http')) {
+                  const origin = window.location.origin;
+                  if (imageUrl.startsWith('/media/')) {
+                    imageUrl = `${origin}${imageUrl}`;
+                  } else if (imageUrl.startsWith('media/')) {
+                    imageUrl = `${origin}/${imageUrl}`;
+                  } else {
+                    const baseUrl = API_ENDPOINTS.PRODUCTS.replace('/api/products/', '');
+                    imageUrl = `${baseUrl}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
+                  }
+                }
+
+                return (
+                  <figure key={factoryImg.id || index} className="w-full">
+                    <div className="w-full bg-gray-50 rounded-2xl overflow-hidden flex items-center justify-center min-h-[280px] md:min-h-[360px]">
+                      {imageUrl ? (
+                        <img
+                          src={imageUrl}
+                          alt={factoryImg.title || `Factory Image ${index + 1}`}
+                          className="w-full h-auto max-h-[720px] object-contain"
+                          loading="lazy"
+                          decoding="async"
+                          width="1200"
+                          height="800"
+                          onError={(e) => {
+                            console.error('Failed to load factory image:', imageUrl);
+                            (e.target as HTMLImageElement).style.display = 'none';
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-[420px] bg-gray-100 flex items-center justify-center rounded-2xl">
+                          <p className="text-gray-500 text-sm">{factoryImg.title || 'Factory Image'}</p>
+                        </div>
+                      )}
+                    </div>
+                    {factoryImg.description && (
+                      <figcaption className="text-sm text-gray-600 mt-3">{factoryImg.description}</figcaption>
+                    )}
+                  </figure>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         {currentLanguage === 'en' && (
           <div className="mb-12 rounded-xl border border-gray-200 bg-white p-6">
