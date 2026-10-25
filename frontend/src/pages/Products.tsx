@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, Link, useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useSearchParams, Link, useParams, useLocation } from 'react-router-dom';
 import { API_ENDPOINTS } from '../config/api';
 import FloatingContactButtons from '../components/FloatingContactButtons';
 import { useTranslation } from '../contexts/TranslationContext';
@@ -65,7 +65,6 @@ const Products: React.FC = () => {
   const { pathname } = useLocation();
   const pathLanguage = pathname.split('/').filter(Boolean)[0];
   const urlLanguage = pathLanguage && ['en', 'zh', 'es', 'pt'].includes(pathLanguage) ? pathLanguage : routeLanguage;
-  const navigate = useNavigate();
   const { t, currentLanguage: translationLanguage } = useTranslation();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -74,7 +73,7 @@ const Products: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState<number | null>(null);
   const [currentLanguage, setCurrentLanguage] = useState(urlLanguage);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const categoryDescription = categorySlug ? CATEGORY_COPY[currentLanguage]?.[categorySlug] : undefined;
   const categoryLabel = categories.find((category) => category.slug === categorySlug)?.name || categorySlug || '';
   const fallbackProductImage = 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=900&h=700&fit=crop';
@@ -144,15 +143,7 @@ const Products: React.FC = () => {
     }
   }, [searchParams]);
 
-  const handleCategorySelect = (categoryId: number | null) => {
-    setSelectedCategory(categoryId);
-    setSelectedSubcategory(null);
-    if (categoryId === null) {
-      setSearchParams({});
-    } else {
-      setSearchParams({ category: String(categoryId) });
-    }
-  };
+
 
   // 获取产品数据
   useEffect(() => {
@@ -275,42 +266,6 @@ const Products: React.FC = () => {
       </section>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
-        <div className="mb-8 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <h2 className="text-lg font-semibold text-slate-900">{t('products_browse_title', 'Browse by profile type')}</h2>
-              <p className="mt-1 text-sm text-slate-600">{t('products_browse_desc', 'Filter by category first, then open a product page for specifications and inquiry details.')}</p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => categorySlug ? navigate('/' + currentLanguage + '/products') : handleCategorySelect(null)}
-                className={`min-h-[44px] rounded-lg border px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-sky-500 ${
-                  effectiveCategoryId === null
-                    ? 'border-sky-700 bg-sky-700 text-white'
-                    : 'border-slate-200 bg-white text-slate-700 hover:border-sky-400 hover:text-sky-700'
-                }`}
-              >
-                {t('product_detail_all_products', 'All Products')}
-              </button>
-              {categories.map((category) => (
-                <button
-                  key={category.id}
-                  type="button"
-                  onClick={() => navigate('/' + currentLanguage + '/products/category/' + category.slug)}
-                  className={`min-h-[44px] rounded-lg border px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-sky-500 ${
-                    effectiveCategoryId === category.id
-                      ? 'border-sky-700 bg-sky-700 text-white'
-                      : 'border-slate-200 bg-white text-slate-700 hover:border-sky-400 hover:text-sky-700'
-                  }`}
-                >
-                  {category.name}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
         {/* 分类文字说明（在产品前展示） */}
         {activeCategory && (
           <div className="mb-8 rounded-xl border border-sky-100 bg-white p-6">
@@ -345,11 +300,11 @@ const Products: React.FC = () => {
                   className="group flex h-full flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
                 >
                   <Link to={`/${currentLanguage}/products/${product.slug}`} className="block">
-                    <div className="h-64 bg-slate-100 overflow-hidden relative product-image-container flex-shrink-0">
+                    <div className="h-64 bg-white overflow-hidden relative product-image-container flex-shrink-0 flex items-center justify-center">
                       <img
                         src={getProductImage(product)}
                         alt={getProductTitle(product)}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-contain p-3"
                         loading="lazy"
                         decoding="async"
                       />
