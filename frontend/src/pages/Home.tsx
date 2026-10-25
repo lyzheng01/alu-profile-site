@@ -35,7 +35,7 @@ type FactoryImage = {
 };
 
 const temporaryAluslinkImages = {
-  hero: 'https://aluslink.com/wp-content/uploads/2025/08/aluminum-extrusions-inside-plant.jpg',
+  hero: '/images/home-hero-aluminum-anodizing-line.webp',
   heroAlt: 'https://aluslink.com/wp-content/uploads/2026/04/2024010857569425.jpg',
   productLine: 'https://aluslink.com/wp-content/uploads/2025/08/Aluminium-Home6--400x300.webp',
   category: 'https://aluslink.com/wp-content/uploads/2024/09/400x400.png',
@@ -103,7 +103,7 @@ const Home: React.FC = () => {
     canonicalPath: `/${currentLanguage}`,
     ogTitle: 'LingYe Aluminum | China Aluminum Profile Manufacturer',
     ogDescription: 'Factory-direct aluminum extrusion, finishing, and export RFQ support for global buyers.',
-    ogImage: temporaryAluslinkImages.hero,
+    ogImage: 'https://lingyealu.com/images/home-hero-aluminum-anodizing-line.webp',
     language: currentLanguage,
   });
 
@@ -210,23 +210,14 @@ const Home: React.FC = () => {
     fetchHomepageData();
   }, [currentLanguage]);
 
-  const heroImage = useMemo(() => {
-    const preferredFactoryImage = factoryImages.find((item) => (item.title || '').includes('首页图片1'));
-    return cleanMediaUrl(preferredFactoryImage?.image) || temporaryAluslinkImages.hero;
-  }, [factoryImages]);
+  const heroImage = temporaryAluslinkImages.hero;
 
   const slideImages = useMemo(() => {
     const dynamicImages = factoryImages
       .map((item) => cleanMediaUrl(item.image))
-      .filter(Boolean) as string[];
+      .filter((image) => Boolean(image) && image !== heroImage);
 
-    const fallbackImages = [
-      heroImage,
-      temporaryAluslinkImages.heroAlt,
-      temporaryAluslinkImages.productLine,
-    ];
-
-    return [...dynamicImages, ...fallbackImages].slice(0, 3);
+    return [heroImage, ...dynamicImages].slice(0, 3);
   }, [factoryImages, heroImage]);
 
   const galleryImages = useMemo(
