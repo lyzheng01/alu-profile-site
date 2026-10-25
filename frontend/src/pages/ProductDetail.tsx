@@ -76,6 +76,83 @@ interface Product {
   created_at: string;
 }
 
+type FactoryLanguage = 'en' | 'zh' | 'es' | 'pt';
+
+const factorySectionHeadings: Record<FactoryLanguage, string> = {
+  en: 'OUR FACTORY',
+  zh: '我们的工厂',
+  es: 'NUESTRA FÁBRICA',
+  pt: 'NOSSA FÁBRICA',
+};
+
+const factoryContentTranslations: Record<string, Record<FactoryLanguage, string>> = {
+  '铝型材挤压生产环节': {
+    en: 'Aluminum extrusion production process',
+    zh: '铝型材挤压生产环节',
+    es: 'Proceso de extrusión de perfiles de aluminio',
+    pt: 'Processo de extrusão de perfis de alumínio',
+  },
+  '展示铝型材挤压生产线及型材下线区域。照片用于介绍项目可对接的生产环节；具体生产主体与能力以项目确认信息为准。': {
+    en: 'Shows the aluminum extrusion line and profile runout area. This photo illustrates production stages that may be coordinated for a project; the actual production entity and capabilities are subject to project confirmation.',
+    zh: '展示铝型材挤压生产线及型材下线区域。照片用于介绍项目可对接的生产环节；具体生产主体与能力以项目确认信息为准。',
+    es: 'Muestra la línea de extrusión de aluminio y la zona de salida de los perfiles. La imagen ilustra las etapas de producción que pueden coordinarse para un proyecto; la entidad productora y sus capacidades concretas se confirmarán para cada proyecto.',
+    pt: 'Mostra a linha de extrusão de alumínio e a área de saída dos perfis. A imagem ilustra as etapas de produção que podem ser coordenadas para um projeto; a unidade produtora e suas capacidades serão confirmadas para cada projeto.',
+  },
+  '表面处理生产线': {
+    en: 'Surface treatment production line',
+    zh: '表面处理生产线',
+    es: 'Línea de tratamiento de superficies',
+    pt: 'Linha de tratamento de superfícies',
+  },
+  '表面处理生产现场参考图，展示铝型材表面处理环节。不同项目的工艺路线和承制工厂以订单确认信息为准。': {
+    en: 'Reference photo of a surface-treatment production area, showing the finishing stage for aluminum profiles. The process route and contracted factory may vary by project and are confirmed with each order.',
+    zh: '表面处理生产现场参考图，展示铝型材表面处理环节。不同项目的工艺路线和承制工厂以订单确认信息为准。',
+    es: 'Imagen de referencia de una zona de producción de tratamiento de superficies que muestra esta etapa para perfiles de aluminio. El proceso y la fábrica contratada pueden variar según el proyecto y se confirman con cada pedido.',
+    pt: 'Imagem de referência de uma área de produção de tratamento de superfícies, mostrando essa etapa dos perfis de alumínio. O processo e a fábrica contratada podem variar conforme o projeto e são confirmados em cada pedido.',
+  },
+  '铝型材挤压车间': {
+    en: 'Aluminum extrusion workshop',
+    zh: '铝型材挤压车间',
+    es: 'Taller de extrusión de aluminio',
+    pt: 'Oficina de extrusão de alumínio',
+  },
+  '铝型材挤压与型材输送生产现场。图片用于说明制造环节，具体设备及生产安排以项目供应方确认信息为准。': {
+    en: 'Production area for aluminum extrusion and profile handling. This image illustrates a manufacturing stage; the specific equipment and production arrangements are confirmed with the project supplier.',
+    zh: '铝型材挤压与型材输送生产现场。图片用于说明制造环节，具体设备及生产安排以项目供应方确认信息为准。',
+    es: 'Zona de producción de extrusión y traslado de perfiles de aluminio. La imagen muestra una etapa de fabricación; el equipo y la planificación concretos se confirman con el proveedor del proyecto.',
+    pt: 'Área de produção de extrusão e movimentação de perfis de alumínio. A imagem mostra uma etapa de fabricação; os equipamentos e o planejamento específicos são confirmados com o fornecedor do projeto.',
+  },
+  '型材包装作业': {
+    en: 'Profile packaging operations',
+    zh: '型材包装作业',
+    es: 'Operaciones de embalaje de perfiles',
+    pt: 'Operações de embalagem de perfis',
+  },
+  '型材包装作业现场，展示成品整理与防护包装环节。实际包装方式按订单规格、运输路线与项目要求确认。': {
+    en: 'Profile packaging area showing finished-product organization and protective packaging. The packaging method is confirmed according to order specifications, shipping route, and project requirements.',
+    zh: '型材包装作业现场，展示成品整理与防护包装环节。实际包装方式按订单规格、运输路线与项目要求确认。',
+    es: 'Zona de embalaje de perfiles que muestra la organización del producto terminado y su protección. El método de embalaje se confirma según las especificaciones del pedido, la ruta de transporte y los requisitos del proyecto.',
+    pt: 'Área de embalagem de perfis que mostra a organização dos produtos acabados e sua proteção. O método de embalagem é confirmado conforme as especificações do pedido, a rota de transporte e os requisitos do projeto.',
+  },
+  '模具存放现场': {
+    en: 'Die storage area',
+    zh: '模具存放现场',
+    es: 'Área de almacenamiento de matrices',
+    pt: 'Área de armazenamento de matrizes',
+  },
+  '模具存放与管理现场参考图。具体模具资源及配套条件按项目确认。': {
+    en: 'Reference photo of a die storage and management area. The available tooling and supporting resources are confirmed for each project.',
+    zh: '模具存放与管理现场参考图。具体模具资源及配套条件按项目确认。',
+    es: 'Imagen de referencia de una zona de almacenamiento y gestión de matrices. Las matrices disponibles y los recursos asociados se confirman para cada proyecto.',
+    pt: 'Imagem de referência de uma área de armazenamento e gestão de matrizes. As matrizes disponíveis e os recursos de apoio são confirmados para cada projeto.',
+  },
+};
+
+const translateFactoryContent = (content: string | undefined, language: FactoryLanguage): string => {
+  if (!content) return '';
+  return factoryContentTranslations[content.trim()]?.[language] || content;
+};
+
 const ProductDetail: React.FC = () => {
   const { t } = useTranslation();
   const { pathname } = useLocation();
@@ -1043,7 +1120,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
 
         {product.factory_images && product.factory_images.length > 0 && (
           <section className="mb-16 w-full space-y-8" aria-labelledby="our-factory-heading">
-            <h2 id="our-factory-heading" className="text-2xl font-semibold text-gray-900">OUR FACTORY</h2>
+            <h2 id="our-factory-heading" className="text-2xl font-semibold text-gray-900">{factorySectionHeadings[currentLanguage as FactoryLanguage] || factorySectionHeadings.en}</h2>
             <div className="space-y-8">
               {product.factory_images.map((factoryImg: any, index: number) => {
                 let imageUrl = factoryImg.image;
@@ -1059,13 +1136,16 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                   }
                 }
 
+                const localizedFactoryTitle = translateFactoryContent(factoryImg.title, currentLanguage as FactoryLanguage) || `${currentLanguage === 'zh' ? '工厂图片' : currentLanguage === 'es' ? 'Imagen de fábrica' : currentLanguage === 'pt' ? 'Imagem da fábrica' : 'Factory Image'} ${index + 1}`;
+                const localizedFactoryDescription = translateFactoryContent(factoryImg.description, currentLanguage as FactoryLanguage);
+
                 return (
                   <figure key={factoryImg.id || index} className="w-full">
                     <div className="w-full bg-gray-50 rounded-2xl overflow-hidden flex items-center justify-center min-h-[280px] md:min-h-[360px]">
                       {imageUrl ? (
                         <img
                           src={imageUrl}
-                          alt={factoryImg.title || `Factory Image ${index + 1}`}
+                          alt={localizedFactoryTitle}
                           className="w-full h-auto max-h-[720px] object-contain"
                           loading="lazy"
                           decoding="async"
@@ -1078,12 +1158,12 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                         />
                       ) : (
                         <div className="w-full h-[420px] bg-gray-100 flex items-center justify-center rounded-2xl">
-                          <p className="text-gray-500 text-sm">{factoryImg.title || 'Factory Image'}</p>
+                          <p className="text-gray-500 text-sm">{localizedFactoryTitle}</p>
                         </div>
                       )}
                     </div>
-                    {factoryImg.description && (
-                      <figcaption className="text-sm text-gray-600 mt-3">{factoryImg.description}</figcaption>
+                    {localizedFactoryDescription && (
+                      <figcaption className="text-sm text-gray-600 mt-3">{localizedFactoryDescription}</figcaption>
                     )}
                   </figure>
                 );
