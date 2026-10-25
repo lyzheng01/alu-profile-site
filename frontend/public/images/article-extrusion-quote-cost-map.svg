@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
+  <title id="title">A like-for-like aluminum extrusion quotation comparison</title>
+  <desc id="desc">Six linked cost stages: section and wall specification, extrusion and weight, finishing and fabrication, tooling and quantity, packaging and freight, and destination customs.</desc>
+  <rect width="1200" height="640" fill="#f6f8fb"/>
+  <text x="600" y="60" text-anchor="middle" fill="#12345a" font-family="Arial, sans-serif" font-size="32" font-weight="700">Build the comparison from the drawing to landed cost</text>
+  <text x="600" y="100" text-anchor="middle" fill="#536c83" font-family="Arial, sans-serif" font-size="19">Align scope first; keep quoted, estimated and broker-confirmed values distinct.</text>
+  <g font-family="Arial, sans-serif" text-anchor="middle">
+    <g transform="translate(70 165)">
+      <rect width="310" height="130" rx="8" fill="#dceaf5" stroke="#2370a8" stroke-width="3"/>
+      <circle cx="36" cy="34" r="22" fill="#2370a8"/><text x="36" y="42" fill="#fff" font-size="22" font-weight="700">1</text>
+      <text x="170" y="48" fill="#12345a" font-size="22" font-weight="700">Section &amp; wall</text>
+      <text x="155" y="86" fill="#294d6d" font-size="17">Drawing • revision • tolerances</text>
+      <text x="155" y="112" fill="#294d6d" font-size="17">Unit weight • alloy • temper</text>
+    </g>
+    <g transform="translate(445 165)">
+      <rect width="310" height="130" rx="8" fill="#e2f0ed" stroke="#2c8270" stroke-width="3"/>
+      <circle cx="36" cy="34" r="22" fill="#2c8270"/><text x="36" y="42" fill="#fff" font-size="22" font-weight="700">2</text>
+      <text x="170" y="48" fill="#12345a" font-size="22" font-weight="700">Finish &amp; fabrication</text>
+      <text x="155" y="86" fill="#294d6d" font-size="17">Coating • cut • CNC</text>
+      <text x="155" y="112" fill="#294d6d" font-size="17">Inspection • sample approval</text>
+    </g>
+    <g transform="translate(820 165)">
+      <rect width="310" height="130" rx="8" fill="#fff0d8" stroke="#bd791c" stroke-width="3"/>
+      <circle cx="36" cy="34" r="22" fill="#bd791c"/><text x="36" y="42" fill="#fff" font-size="22" font-weight="700">3</text>
+      <text x="170" y="48" fill="#12345a" font-size="22" font-weight="700">Tooling &amp; quantity</text>
+      <text x="155" y="86" fill="#294d6d" font-size="17">Die • setup • MOQ</text>
+      <text x="155" y="112" fill="#294d6d" font-size="17">Price breaks • trial costs</text>
+    </g>
+    <path d="M382 230h55m-12-10 12 10-12 10M757 230h55m-12-10 12 10-12 10" fill="none" stroke="#657d91" stroke-width="4"/>
+    <g transform="translate(70 365)">
+      <rect width="310" height="130" rx="8" fill="#e7e5f3" stroke="#665a9a" stroke-width="3"/>
+      <circle cx="36" cy="34" r="22" fill="#665a9a"/><text x="36" y="42" fill="#fff" font-size="22" font-weight="700">4</text>
+      <text x="170" y="48" fill="#12345a" font-size="22" font-weight="700">Pack &amp; freight</text>
+      <text x="155" y="86" fill="#294d6d" font-size="17">Protection • dimensions</text>
+      <text x="155" y="112" fill="#294d6d" font-size="17">Route • named delivery place</text>
+    </g>
+    <g transform="translate(445 365)">
+      <rect width="310" height="130" rx="8" fill="#f6e3e2" stroke="#b9534e" stroke-width="3"/>
+      <circle cx="36" cy="34" r="22" fill="#b9534e"/><text x="36" y="42" fill="#fff" font-size="22" font-weight="700">5</text>
+      <text x="170" y="48" fill="#12345a" font-size="22" font-weight="700">Customs treatment</text>
+      <text x="155" y="86" fill="#294d6d" font-size="17">Classification • origin</text>
+      <text x="155" y="112" fill="#294d6d" font-size="17">Duty • taxes • trade measures</text>
+    </g>
+    <g transform="translate(820 365)">
+      <rect width="310" height="130" rx="8" fill="#dcebe4" stroke="#37765c" stroke-width="3"/>
+      <circle cx="36" cy="34" r="22" fill="#37765c"/><text x="36" y="42" fill="#fff" font-size="22" font-weight="700">6</text>
+      <text x="170" y="48" fill="#12345a" font-size="22" font-weight="700">Landed comparison</text>
+      <text x="155" y="86" fill="#294d6d" font-size="17">Same currency • same units</text>
+      <text x="155" y="112" fill="#294d6d" font-size="17">Known scope • open items listed</text>
+    </g>
+    <path d="M380 430h55m-12-10 12 10-12 10M755 430h55m-12-10 12 10-12 10" fill="none" stroke="#657d91" stroke-width="4"/>
+  </g>
+  <text x="600" y="560" text-anchor="middle" fill="#536c83" font-family="Arial, sans-serif" font-size="18">Customs amounts must be verified for the importing country, product and shipment date.</text>
+</svg>

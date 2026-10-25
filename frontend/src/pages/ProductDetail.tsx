@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { API_ENDPOINTS } from '../config/api';
 import FloatingContactButtons from '../components/FloatingContactButtons';
 import InquiryForm from '../components/InquiryForm';
 import { useSeoMeta } from '../hooks/useSeoMeta';
 import { useStructuredData } from '../hooks/useStructuredData';
+import { useTranslation } from '../contexts/TranslationContext';
 // 模板系统已集成到后端API，前端直接使用API返回的数据即可
 
 interface Product {
   id: number;
   slug: string;
-  name: string;
+  name?: string;
+  translated_name?: string;
   description: string;
   category: {
     id: number;
@@ -75,17 +77,25 @@ interface Product {
 }
 
 const ProductDetail: React.FC = () => {
+  const { t } = useTranslation();
+  const { pathname } = useLocation();
+  const pathLanguage = pathname.split('/').filter(Boolean)[0];
+  const routeLanguage = pathLanguage && ['en', 'zh', 'es', 'pt'].includes(pathLanguage) ? pathLanguage : 'en';
   const { productSlug } = useParams<{ productSlug: string }>();
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [currentLanguage, setCurrentLanguage] = useState('zh');
+  const [currentLanguage, setCurrentLanguage] = useState(routeLanguage);
+  const localizedProductName = product?.translated_name || product?.name || t('product_detail_aluminum_profile', 'Aluminum Profile');
+  const getLocalizedProductName = (item: Product) => item.translated_name || item.name || t('product_detail_aluminum_profile', 'Aluminum Profile');
 
   const resolveProductMediaUrl = (imageUrl?: string | null) => {
     if (!imageUrl) return null;
-    if (imageUrl.startsWith('http')) return imageUrl;
+    if (imageUrl.startsWith('http')) {
+      return imageUrl.replace(/^https?:\/\/(?:www\.)?lingyealuminum\.com(?=\/)/i, window.location.origin);
+    }
     if (typeof window !== 'undefined') {
       const origin = window.location.origin;
       if (imageUrl.startsWith('/media/')) {
@@ -100,22 +110,24 @@ const ProductDetail: React.FC = () => {
     return imageUrl;
   };
 
-  // Get current language
+  const formatParameterValue = (value?: string | null) =>
+    value ? value.replace(/^[^:：]{1,80}[:：]\s*/, '').trim() : '';
+
+  // Keep product API requests and metadata aligned with the language in the URL.
   useEffect(() => {
-    const savedLanguage = localStorage.getItem('language') || 'zh';
-    setCurrentLanguage(savedLanguage);
-  }, []);
+    setCurrentLanguage(routeLanguage);
+  }, [routeLanguage]);
 
   useSeoMeta({
-    title: product ? `${product.name} | LingYe Aluminum` : undefined,
+    title: product ? `${localizedProductName} | LingYe Aluminum` : undefined,
     description: product
-      ? (product.description || `Explore ${product.name} from LingYe Aluminum with custom aluminum extrusion and global supply support.`)
+      ? (product.description || `Explore ${localizedProductName} from LingYe Aluminum with custom aluminum extrusion and global supply support.`)
       : undefined,
     canonicalPath: product?.slug ? `/${currentLanguage}/products/${product.slug}` : undefined,
     ogImage: product?.images?.[0]?.image
-      ? (product.images[0].image.startsWith('http') ? product.images[0].image : `https://lingyealu.cn${product.images[0].image}`)
-      : 'https://lingyealu.cn/logo.jpg?v=3',
-    ogTitle: product ? `${product.name} | LingYe Aluminum` : undefined,
+      ? resolveProductMediaUrl(product.images[0].image) || undefined
+      : 'https://lingyealu.com/logo.jpg?v=3',
+    ogTitle: product ? `${localizedProductName} | LingYe Aluminum` : undefined,
     ogDescription: product?.description || undefined,
     language: currentLanguage,
   });
@@ -125,17 +137,12 @@ const ProductDetail: React.FC = () => {
     const image = product.images?.[0]?.image;
     let imageUrl: string | undefined;
     if (image) {
-      if (image.startsWith('http')) {
-        imageUrl = image;
-      } else if (typeof window !== 'undefined') {
-        const origin = window.location.origin;
-        imageUrl = image.startsWith('/') ? `${origin}${image}` : `${origin}/${image}`;
-      }
+      imageUrl = resolveProductMediaUrl(image) || undefined;
     }
     return {
       '@context': 'https://schema.org',
       '@type': 'Product',
-      name: product.name,
+      name: localizedProductName,
       description: product.description || undefined,
       image: imageUrl ? [imageUrl] : undefined,
       brand: {
@@ -150,13 +157,13 @@ const ProductDetail: React.FC = () => {
       sku: String(product.id),
       url: typeof window !== 'undefined' ? window.location.href : undefined,
     };
-  }, [product]);
+  }, [product, localizedProductName]);
 
   useStructuredData('product', productStructuredData);
 
   const breadcrumbStructuredData = React.useMemo(() => {
     if (!product) return null;
-    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.cn';
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.com';
     return {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
@@ -176,7 +183,7 @@ const ProductDetail: React.FC = () => {
         {
           '@type': 'ListItem',
           position: 3,
-          name: product.name,
+          name: localizedProductName,
           item: `${base}/${currentLanguage}/products/${product.slug}`,
         },
       ],
@@ -196,8 +203,25 @@ const ProductDetail: React.FC = () => {
         : `${API_ENDPOINTS.PRODUCTS}by-slug/${productSlug}/?lang=${currentLanguage}`;
 
       try {
+        // Retry transient network or server errors before treating a valid product URL as missing.
+        let productResponse: Response | null = null;
+        let lastError: unknown;
+        for (let attempt = 0; attempt < 2; attempt += 1) {
+          try {
+            const response = await fetch(detailUrl, { signal: AbortSignal.timeout(15000) });
+            if (response.status < 500 || attempt === 1) {
+              productResponse = response;
+              break;
+            }
+            lastError = new Error(`Product API returned ${response.status}`);
+          } catch (error) {
+            lastError = error;
+            if (attempt === 1) throw error;
+          }
+          await new Promise((resolve) => setTimeout(resolve, 300));
+        }
+        if (!productResponse) throw lastError || new Error('Product request failed');
         // Get product details
-        const productResponse = await fetch(detailUrl);
         if (productResponse.ok) {
           const productData = await productResponse.json();
 
@@ -208,15 +232,21 @@ const ProductDetail: React.FC = () => {
 
           // 后端API已经自动合并了模板数据，直接使用
           setProduct(productData);
+          setLoading(false);
 
           // Get other products in the same category
           if (productData.category?.id) {
-            const relatedResponse = await fetch(`${API_ENDPOINTS.PRODUCTS}?category=${productData.category.id}&lang=${currentLanguage}&limit=4`);
-            if (relatedResponse.ok) {
-              const relatedData = await relatedResponse.json();
-              // Filter out current product
-              const filteredRelated = relatedData.results?.filter((p: Product) => p.id !== productData.id) || [];
-              setRelatedProducts(filteredRelated.slice(0, 4));
+            try {
+              const relatedResponse = await fetch(`${API_ENDPOINTS.PRODUCTS}?category=${productData.category.id}&lang=${currentLanguage}&limit=4`, { signal: AbortSignal.timeout(12000) });
+              if (relatedResponse.ok) {
+                const relatedData = await relatedResponse.json();
+                // Filter out current product
+                const filteredRelated = relatedData.results?.filter((p: Product) => p.id !== productData.id) || [];
+                setRelatedProducts(filteredRelated.slice(0, 4));
+              }
+            } catch (relatedError) {
+              console.warn('Failed to fetch related products:', relatedError);
+              setRelatedProducts([]);
             }
           }
         } else {
@@ -491,7 +521,7 @@ const ProductDetail: React.FC = () => {
                   <svg className="flex-shrink-0 h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                   </svg>
-                  <span className="ml-4 text-gray-700">{product.name}</span>
+                  <span className="ml-4 text-gray-700">{localizedProductName}</span>
                 </div>
               </li>
             </ol>
@@ -503,7 +533,7 @@ const ProductDetail: React.FC = () => {
         {/* Product title */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {product.name}
+            {localizedProductName}
             {product.category && (
               <span className="text-2xl font-normal text-gray-600 ml-2">
                 - {product.category.name}
@@ -527,7 +557,7 @@ const ProductDetail: React.FC = () => {
                   <div className="relative h-80 bg-gray-200 group sm:h-[24rem]">
                     <img
                       src={resolveProductMediaUrl(product.images[currentImageIndex].image) || ''}
-                      alt={product.name}
+                      alt={localizedProductName}
                       className="w-full h-full object-cover"
                       loading="eager"
                       fetchPriority="high"
@@ -591,7 +621,7 @@ const ProductDetail: React.FC = () => {
                           >
                             <img
                               src={resolveProductMediaUrl(image.image) || ''}
-                              alt={`${product.name} ${index + 1}`}
+                              alt={`${localizedProductName} ${index + 1}`}
                               className="w-full h-full object-cover"
                               loading="lazy"
                               decoding="async"
@@ -618,40 +648,44 @@ const ProductDetail: React.FC = () => {
           <div className="flex-1 space-y-10">
             <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
               <div className="p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">Product Parameters</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">{t('product_detail_parameters', 'Product Parameters')}</h3>
                 <div className="space-y-3">
                   {product.range_param && (
                     <div className="flex items-start gap-4 py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Specification Range:</span>
-                      <span className="text-gray-900 flex-1">{product.range_param}</span>
+                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_specification_range', 'Specification Range')}:</span>
+                      <span className="text-gray-900 flex-1">{formatParameterValue(product.range_param)}</span>
                     </div>
                   )}
                   {product.type_param && (
                     <div className="flex items-start gap-4 py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Product Type:</span>
-                      <span className="text-gray-900 flex-1">{product.type_param}</span>
+                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_product_type', 'Product Type')}:</span>
+                      <span className="text-gray-900 flex-1">{formatParameterValue(product.type_param)}</span>
                     </div>
                   )}
                   {product.surface_treatment && (
                     <div className="flex items-start gap-4 py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Surface Treatment:</span>
-                      <span className="text-gray-900 flex-1">{product.surface_treatment}</span>
+                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_surface_treatment', 'Surface Treatment')}:</span>
+                      <span className="text-gray-900 flex-1">{formatParameterValue(product.surface_treatment)}</span>
                     </div>
                   )}
                   {product.colors && (
                     <div className="flex items-start gap-4 py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Color Specification:</span>
-                      <span className="text-gray-900 flex-1">{product.colors}</span>
+                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_color_specification', 'Color Specification')}:</span>
+                      <span className="text-gray-900 flex-1">{formatParameterValue(product.colors)}</span>
                     </div>
                   )}
-                  <div className="flex items-start gap-4 py-2 border-b border-gray-100">
-                    <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Quality Grade:</span>
-                    <span className="text-gray-900 flex-1">6061, 6063</span>
-                  </div>
-                  <div className="flex items-start gap-4 py-2 border-b border-gray-100">
-                    <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Temper State:</span>
-                    <span className="text-gray-900 flex-1">T5, T6</span>
-                  </div>
+                  {product.grade && (
+                    <div className="flex items-start gap-4 py-2 border-b border-gray-100">
+                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_quality_grade', 'Alloy grade')}:</span>
+                      <span className="text-gray-900 flex-1">{formatParameterValue(product.grade)}</span>
+                    </div>
+                  )}
+                  {product.temper && (
+                    <div className="flex items-start gap-4 py-2 border-b border-gray-100">
+                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_temper_state', 'Temper state')}:</span>
+                      <span className="text-gray-900 flex-1">{formatParameterValue(product.temper)}</span>
+                    </div>
+                  )}
                   {product.oem_available !== undefined && (
                     <div className="flex items-start gap-4 py-2 border-b border-gray-100">
                       <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">OEM:</span>
@@ -711,7 +745,7 @@ const ProductDetail: React.FC = () => {
 
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="p-6 space-y-4">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">PRODUCT DESCRIPTION</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('product_detail_description', 'Product Description')}</h2>
                 <p className="text-gray-600 text-lg leading-relaxed whitespace-pre-line">
                   {product.description?.trim()
                     ? product.description
@@ -843,7 +877,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                           >
                             <img
                               src={resolveProductMediaUrl(image.image) || ''}
-                              alt={`${product.name} view ${index + 1}`}
+                              alt={`${localizedProductName} view ${index + 1}`}
                               className="w-full h-auto object-contain"
                               loading={isFirstImage ? 'eager' : 'lazy'}
                               fetchPriority={isFirstImage ? 'high' : 'auto'}
@@ -1065,7 +1099,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
             {/* Inquiry form */}
             <div>
               <InquiryForm 
-                productName={product.name}
+                productName={localizedProductName}
                 productLink={window.location.href}
               />
             </div>
@@ -1092,7 +1126,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
         {/* Related products */}
         {relatedProducts.length > 0 && (
           <div className="mb-16">
-            <h2 className="text-2xl font-bold text-gray-900 mb-8">Related Products</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-8">{t('product_detail_related_products', 'Related Products')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {relatedProducts.map((relatedProduct) => (
                 <div key={relatedProduct.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
@@ -1100,7 +1134,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                     {relatedProduct.images && relatedProduct.images.length > 0 ? (
                       <img
                         src={resolveProductMediaUrl(relatedProduct.images[0].image) || ''}
-                        alt={relatedProduct.name}
+                        alt={getLocalizedProductName(relatedProduct)}
                         className="w-full h-full object-cover"
                         loading="lazy"
                         decoding="async"
@@ -1112,13 +1146,13 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                     )}
                   </div>
                   <div className="p-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{relatedProduct.name}</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{getLocalizedProductName(relatedProduct)}</h3>
                     <div className="flex gap-2">
                       <Link
                         to={`/${currentLanguage}/products/${relatedProduct.slug}`}
                         className="flex-1 bg-blue-600 text-white text-sm px-3 py-1 rounded hover:bg-blue-700 transition-colors text-center"
                       >
-                        Read more
+                        {t('products_view_details', 'View details')}
                       </Link>
                     </div>
                   </div>

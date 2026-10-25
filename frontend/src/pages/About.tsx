@@ -3,6 +3,7 @@ import { API_ENDPOINTS } from '../config/api';
 import { useTranslation } from '../contexts/TranslationContext';
 import { useSeoMeta } from '../hooks/useSeoMeta';
 import { useStructuredData } from '../hooks/useStructuredData';
+import { resolveMediaUrl } from '../utils/url';
 
 interface CompanyInfo {
   id: number;
@@ -42,12 +43,12 @@ const About: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useSeoMeta({
-    title: 'About Us | LingYe Aluminum',
-    description: 'Professional aluminum profile manufacturer with 15 years of experience, serving 60+ countries worldwide.',
+    title: t('about_seo_title', 'About LingYe Aluminum'),
+    description: t('about_seo_description', 'Learn how LingYe Aluminum coordinates aluminum profile requirements, drawings, manufacturing resources, and export inquiries.'),
     canonicalPath: `/${currentLanguage}/about`,
-    ogImage: 'https://lingyealu.cn/logo.jpg?v=3',
-    ogTitle: 'About Us | LingYe Aluminum',
-    ogDescription: 'Professional aluminum profile manufacturer with 15 years of experience, serving 60+ countries worldwide.',
+    ogImage: 'https://lingyealu.com/logo.jpg?v=3',
+    ogTitle: t('about_seo_title', 'About LingYe Aluminum'),
+    ogDescription: t('about_seo_description', 'Learn how LingYe Aluminum coordinates aluminum profile requirements, drawings, manufacturing resources, and export inquiries.'),
     language: currentLanguage,
   });
 
@@ -55,30 +56,30 @@ const About: React.FC = () => {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'LingYe Aluminum',
-    url: 'https://lingyealu.cn',
-    logo: 'https://lingyealu.cn/logo.jpg?v=3',
-    description: 'Aluminum profile manufacturer for industrial and architectural applications.',
+    url: 'https://lingyealu.com',
+    logo: 'https://lingyealu.com/logo.jpg?v=3',
+    description: t('about_seo_description', 'Learn how LingYe Aluminum coordinates aluminum profile requirements, drawings, manufacturing resources, and export inquiries.'),
     sameAs: [
       'https://facebook.com/lingyealu',
       'https://youtube.com/@lingyealu',
       'https://linkedin.com/company/lingyealu',
       'https://tiktok.com/@lingyealu'
     ],
-  }), []);
+  }), [t]);
 
   useStructuredData('about-organization', organizationStructuredData);
 
   const breadcrumbStructuredData = React.useMemo(() => {
-    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.cn';
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.com';
     return {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: `${base}/${currentLanguage}` },
-        { '@type': 'ListItem', position: 2, name: 'About Us', item: `${base}/${currentLanguage}/about` },
+        { '@type': 'ListItem', position: 1, name: t('nav_home', 'Home'), item: `${base}/${currentLanguage}` },
+        { '@type': 'ListItem', position: 2, name: t('about_title', 'About Us'), item: `${base}/${currentLanguage}/about` },
       ],
     };
-  }, [currentLanguage]);
+  }, [currentLanguage, t]);
 
   useStructuredData('about-breadcrumb', breadcrumbStructuredData);
 
@@ -128,6 +129,11 @@ const About: React.FC = () => {
     const info = companyInfo.find(item => item.key === key);
     return info ? info.value : '';
   };
+  const companyStats = [
+    { key: 'years_experience', label: t('about_years_experience', 'Years of Experience') },
+    { key: 'export_countries', label: t('about_export_countries', 'Export Countries') },
+    { key: 'annual_production', label: t('about_annual_production', 'Annual Production (tons)') },
+  ].map((item) => ({ ...item, value: getCompanyInfo(item.key) })).filter((item) => item.value);
 
   if (loading) {
     return (
@@ -135,7 +141,7 @@ const About: React.FC = () => {
         <div className="max-w-7xl mx-auto px-8 py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading...</p>
+            <p className="mt-4 text-gray-600">{t('status_loading', 'Loading...')}</p>
           </div>
         </div>
       </div>
@@ -152,7 +158,7 @@ const About: React.FC = () => {
               {t('about_title', 'About Us')}
             </h1>
             <p className="text-xl opacity-90 max-w-3xl mx-auto">
-              {t('about_subtitle', 'Professional aluminum profile manufacturer, your trusted partner')}
+              {t('about_subtitle', 'Aluminum profile requirements and export project coordination')}
             </p>
           </div>
         </div>
@@ -168,13 +174,13 @@ const About: React.FC = () => {
               </h2>
               <div className="prose text-gray-600 leading-relaxed">
                 <p className="mb-4">
-                  {getCompanyInfo('company_introduction') || t('about_company_intro_content', 'We are a professional aluminum profile manufacturer with 15 years of industry experience. We are committed to providing customers with high-quality aluminum products and solutions, with products exported to more than 60 countries and regions worldwide.')}
+                  {getCompanyInfo('company_introduction') || t('about_company_intro_content', 'LingYe Aluminum helps buyers clarify aluminum profile requirements, coordinate manufacturing resources, and move export inquiries forward.')}
                 </p>
                 <p className="mb-4">
-                  {getCompanyInfo('company_mission') || t('about_company_mission', 'Our mission is to create greater value for customers through innovative technology and quality service, and to become a leader in the aluminum profile industry.')}
+                  {getCompanyInfo('company_mission') || t('about_company_mission', 'Our work focuses on clarifying product requirements, coordinating manufacturing resources, and keeping project communication practical.')}
                 </p>
                 <p>
-                  {getCompanyInfo('company_vision') || t('about_company_vision', 'We are committed to sustainable development, focusing on environmental protection and quality, providing customers with the best products and services.')}
+                  {getCompanyInfo('company_vision') || t('about_company_vision', 'We aim to make aluminum profile sourcing easier through clear drawings, confirmed specifications, and responsive project coordination.')}
                 </p>
               </div>
             </div>
@@ -182,7 +188,7 @@ const About: React.FC = () => {
               <div className="bg-gray-200 h-96 rounded-lg overflow-hidden">
                 {factoryImages.length > 0 ? (
                   <img
-                    src={factoryImages[0].image}
+                    src={resolveMediaUrl(factoryImages[0].image)}
                     alt="Company Factory"
                     className="w-full h-full object-cover"
                   />
@@ -198,35 +204,19 @@ const About: React.FC = () => {
           </div>
         </div>
 
-        {/* 公司数据 */}
-        <div className="mb-16">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600 mb-2">
-                {getCompanyInfo('years_experience') || '15'}
-              </div>
-              <div className="text-gray-600">
-                {t('about_years_experience', 'Years of Experience')}
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600 mb-2">
-                {getCompanyInfo('export_countries') || '60+'}
-              </div>
-              <div className="text-gray-600">
-                {t('about_export_countries', 'Export Countries')}
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600 mb-2">
-                {getCompanyInfo('annual_production') || '50000'}
-              </div>
-              <div className="text-gray-600">
-                {t('about_annual_production', 'Annual Production (tons)')}
-              </div>
+        {/* Only show company figures configured in the backend. */}
+        {companyStats.length > 0 && (
+          <div className="mb-16">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+              {companyStats.map((item) => (
+                <div key={item.key} className="text-center">
+                  <div className="mb-2 text-4xl font-bold text-blue-600">{item.value}</div>
+                  <div className="text-gray-600">{item.label}</div>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
+        )}
 
         {/* 公司优势 */}
         {advantages.length > 0 && (
@@ -275,7 +265,7 @@ const About: React.FC = () => {
                 <div key={certificate.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
                   <div className="h-48 bg-gray-200 overflow-hidden">
                     <img
-                      src={certificate.image}
+                      src={resolveMediaUrl(certificate.image)}
                       alt={certificate.name}
                       className="w-full h-full object-cover"
                     />
@@ -313,7 +303,7 @@ const About: React.FC = () => {
                 <div key={image.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
                   <div className="h-64 bg-gray-200 overflow-hidden">
                     <img
-                      src={image.image}
+                      src={resolveMediaUrl(image.image)}
                       alt={image.title}
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                     />

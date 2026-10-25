@@ -10,9 +10,11 @@ interface SeoMetaOptions {
   robots?: string;
   language?: string;
   ogImage?: string;
+  alternateLanguages?: string[];
 }
 
 const SUPPORTED_LANGUAGES = ['en', 'zh', 'es', 'pt'];
+const SITE_ORIGIN = 'https://lingyealu.com';
 
 const upsertMeta = (attr: 'name' | 'property', key: string, content?: string) => {
   if (!content || typeof document === 'undefined') return;
@@ -27,7 +29,7 @@ const upsertMeta = (attr: 'name' | 'property', key: string, content?: string) =>
 
 const upsertCanonical = (canonicalPath?: string) => {
   if (!canonicalPath || typeof document === 'undefined' || typeof window === 'undefined') return;
-  const url = `${window.location.origin}${canonicalPath.startsWith('/') ? canonicalPath : `/${canonicalPath}`}`;
+  const url = `${SITE_ORIGIN}${canonicalPath.startsWith('/') ? canonicalPath : `/${canonicalPath}`}`;
   let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
   if (!link) {
     link = document.createElement('link');
@@ -38,7 +40,7 @@ const upsertCanonical = (canonicalPath?: string) => {
 };
 
 const resolveAlternateUrl = (lang: string, basePath: string): string => {
-  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.cn';
+  const origin = SITE_ORIGIN;
   const segments = basePath.split('/').filter(Boolean);
   if (segments.length > 0 && SUPPORTED_LANGUAGES.includes(segments[0])) {
     segments[0] = lang;
@@ -48,7 +50,7 @@ const resolveAlternateUrl = (lang: string, basePath: string): string => {
   return `${origin}/${segments.join('/')}`;
 };
 
-const updateHreflang = (language: string, canonicalPath?: string) => {
+const updateHreflang = (language: string, canonicalPath?: string, alternateLanguages?: string[]) => {
   if (typeof document === 'undefined' || typeof window === 'undefined') return;
   const basePath = canonicalPath || window.location.pathname;
   document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(el => el.remove());
@@ -59,11 +61,14 @@ const updateHreflang = (language: string, canonicalPath?: string) => {
     link.setAttribute('href', resolveAlternateUrl(lang, basePath));
     document.head.appendChild(link);
   };
-  addLink('x-default', 'en');
-  SUPPORTED_LANGUAGES.forEach(lang => addLink(lang, lang));
+  const languages = (alternateLanguages || SUPPORTED_LANGUAGES)
+    .filter(lang => SUPPORTED_LANGUAGES.includes(lang));
+  const defaultLanguage = languages.includes('en') ? 'en' : languages[0] || language;
+  addLink('x-default', defaultLanguage);
+  languages.forEach(lang => addLink(lang, lang));
 };
 
-export const useSeoMeta = ({ title, description, keywords, canonicalPath, ogTitle, ogDescription, robots, language, ogImage }: SeoMetaOptions) => {
+export const useSeoMeta = ({ title, description, keywords, canonicalPath, ogTitle, ogDescription, robots, language, ogImage, alternateLanguages }: SeoMetaOptions) => {
   useEffect(() => {
     if (language) document.documentElement.lang = language;
     if (title) document.title = title;
@@ -72,12 +77,12 @@ export const useSeoMeta = ({ title, description, keywords, canonicalPath, ogTitl
     upsertMeta('name', 'robots', robots);
     upsertMeta('property', 'og:title', ogTitle || title);
     upsertMeta('property', 'og:description', ogDescription || description);
-    upsertMeta('property', 'og:url', canonicalPath && typeof window !== 'undefined' ? `${window.location.origin}${canonicalPath}` : undefined);
+    upsertMeta('property', 'og:url', canonicalPath ? `${SITE_ORIGIN}${canonicalPath}` : undefined);
     upsertMeta('property', 'og:image', ogImage);
     upsertMeta('name', 'twitter:title', ogTitle || title);
     upsertMeta('name', 'twitter:description', ogDescription || description);
     upsertMeta('name', 'twitter:image', ogImage);
     upsertCanonical(canonicalPath);
-    updateHreflang(language || 'en', canonicalPath);
-  }, [title, description, keywords, canonicalPath, ogTitle, ogDescription, robots, language, ogImage]);
+    updateHreflang(language || 'en', canonicalPath, alternateLanguages);
+  }, [title, description, keywords, canonicalPath, ogTitle, ogDescription, robots, language, ogImage, alternateLanguages]);
 };

@@ -2,8 +2,13 @@
 const fs = require('fs');
 const path = require('path');
 
-const SITE_URL = process.env.SITE_URL || 'https://lingyealu.cn';
-const API_BASE = process.env.RSS_API_BASE || 'http://127.0.0.1:9001/api';
+const CANONICAL_SITE_URL = 'https://lingyealu.com';
+const SITE_URL = process.env.SITE_URL || CANONICAL_SITE_URL;
+if (SITE_URL !== CANONICAL_SITE_URL) throw new Error(`SITE_URL must be ${CANONICAL_SITE_URL}`);
+const API_BASE = process.env.RSS_API_BASE || 'https://lingyealu.com/api';
+const BUILD_DIR = process.env.BUILD_PATH
+  ? path.resolve(__dirname, '..', process.env.BUILD_PATH)
+  : path.join(__dirname, '..', 'build');
 const LANGS = ['en', 'zh', 'es', 'pt'];
 
 const fetchJson = async (url) => {
@@ -63,7 +68,7 @@ ${entries.join('\n')}
 </rss>`;
 
     const publicPath = path.join(__dirname, '..', 'public', 'rss.xml');
-    const buildPath = path.join(__dirname, '..', 'build', 'rss.xml');
+    const buildPath = path.join(BUILD_DIR, 'rss.xml');
     fs.writeFileSync(publicPath, rss, 'utf8');
     fs.writeFileSync(buildPath, rss, 'utf8');
     console.log(`[rss] generated: ${publicPath} (${articles.length} articles)`);

@@ -1,268 +1,143 @@
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import FloatingContactButtons from '../components/FloatingContactButtons';
 import InquiryForm from '../components/InquiryForm';
 import { useTranslation } from '../contexts/TranslationContext';
 import { useSeoMeta } from '../hooks/useSeoMeta';
 import { useStructuredData } from '../hooks/useStructuredData';
 
-const heroImages = [
-  'https://images.unsplash.com/photo-1505692794400-25d77c2d0f66?auto=format&fit=crop&w=1600&q=80',
-  'https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1600&q=80',
-];
-
-const productImages = [
-  'https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1600&q=80',
-  'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1600&q=80',
-  'https://images.unsplash.com/photo-1505692794400-25d77c2d0f66?auto=format&fit=crop&w=1600&q=80',
-];
-
-const factoryImages = [
-  'https://images.unsplash.com/photo-1502767089025-6572583495b0?auto=format&fit=crop&w=1600&q=80',
-  'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=80',
-  'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1600&q=80',
-];
-
-const finishes = [
-  { title: 'Anodized', desc: '10-25μm anodizing layer, matte or bright tone', tone: 'Matte Silver' },
-  { title: 'Powder Coated', desc: 'Akzo Nobel powder, any RAL color available', tone: 'RAL 7016 / 9016' },
-  { title: 'PVDF Painting', desc: 'Excellent UV resistance for curtain walls', tone: 'Metallic Champagne' },
-  { title: 'Wood Grain Transfer', desc: 'Faux wood feel with anti-scratch coat', tone: 'Golden Oak / Walnut' },
-];
-
-const qaChecklist = [
-  'Dimensional accuracy ±0.08 mm ensured with inline laser gauges',
-  'Hardness testing for each batch (HB 8-12) after aging furnace',
-  'Neutral salt spray testing ≥ 1,000 h for PVDF and powder layers',
-  'Double inspection for corner joining strength and surface finish',
-];
-
-const applicationScenarios = [
-  { title: 'Luxury Sliding Doors', detail: 'Large-span panoramic openings with slim interlocks (31 mm)', icon: '🚪' },
-  { title: 'Passive House Windows', detail: 'Triple glazing ready profiles with multi-cavity thermal break', icon: '🏠' },
-  { title: 'Commercial Curtain Walls', detail: 'Unitized façade frames with hidden drainage design', icon: '🏢' },
-  { title: 'Villa Folding Doors', detail: 'Heavy-duty rollers for 120 kg leaf, flush sill threshold', icon: '🌳' },
-];
-
-const manufacturingSteps = [
-  { step: '01', title: 'Billet Preparation', desc: 'High purity 6063/6061 billets inspected & homogenized' },
-  { step: '02', title: 'Precision Extrusion', desc: '1,800-3,600T presses with online quenching & stretchers' },
-  { step: '03', title: 'Aging & Machining', desc: 'Automatic aging furnaces + CNC cutting, punching & milling' },
-  { step: '04', title: 'Surface Finishing', desc: 'Vertical powder line & 12+ anodizing tanks for stylish finishes' },
-  { step: '05', title: 'Assembly & QA', desc: 'Pre-assembly mock-up, hardware fitting & full inspection report' },
-];
+const profileImage = '/images/thermal-break-window-system.webp';
+const decisionPoints = [
+  ['showcase_drawing_title', 'showcase_drawing_desc'],
+  ['showcase_interfaces_title', 'showcase_interfaces_desc'],
+  ['showcase_project_title', 'showcase_project_desc'],
+] as const;
+const quoteDetails = [
+  'showcase_quote_drawing',
+  'showcase_quote_interfaces',
+  'showcase_quote_finish',
+  'showcase_quote_quantity',
+] as const;
 
 const ProductShowcase: React.FC = () => {
-  const { currentLanguage } = useTranslation();
+  const { pathname } = useLocation();
+  const { t, currentLanguage: contextLanguage } = useTranslation();
+  const pathLanguage = pathname.split('/').filter(Boolean)[0];
+  const currentLanguage = pathLanguage && ['en', 'zh', 'es', 'pt'].includes(pathLanguage) ? pathLanguage : contextLanguage;
+  const canonicalPath = `/${currentLanguage}/products/windows-doors/showcase`;
+  const title = t('showcase_meta_title', 'Window and Door Aluminium Profiles | LingYe Aluminum');
+  const description = t('showcase_meta_description', 'Review window and door profile requirements from section drawings, glazing and hardware interfaces, finish, quantities, and destination market.');
 
   useSeoMeta({
-    title: 'Aluminium Windows & Doors System | LingYe Aluminum',
-    description: 'Custom-engineered thermal break aluminum profiles for windows, doors, curtain walls and villa folding doors. European-class quality control.',
-    canonicalPath: `/${currentLanguage}/products/windows-doors/showcase`,
-    ogImage: 'https://lingyealu.cn/logo.jpg?v=3',
+    title,
+    description,
+    canonicalPath,
+    ogImage: profileImage,
+    ogTitle: title,
+    ogDescription: description,
     language: currentLanguage,
   });
 
-  const productStructuredData = React.useMemo(() => ({
+  const pageStructuredData = React.useMemo(() => ({
     '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: 'Aluminium Windows & Doors System',
-    description: 'Custom-engineered thermal break aluminum profiles for windows, doors, curtain walls and villa folding doors.',
-    brand: { '@type': 'Brand', name: 'LingYe Aluminum' },
-    category: 'Aluminum Profiles for Windows and Doors',
-    image: ['https://lingyealu.cn/logo.jpg?v=3'],
-  }), []);
+    '@type': 'WebPage',
+    name: title,
+    description,
+    url: `https://lingyealu.com${canonicalPath}`,
+    isPartOf: { '@type': 'WebSite', name: 'LingYe Aluminum', url: 'https://lingyealu.com' },
+    primaryImageOfPage: {
+      '@type': 'ImageObject',
+      contentUrl: `https://lingyealu.com${profileImage}`,
+      caption: t('showcase_image_alt', 'Thermal-break aluminum window profile section'),
+    },
+  }), [canonicalPath, description, t, title]);
 
-  useStructuredData('showcase-product', productStructuredData);
+  useStructuredData('showcase-page', pageStructuredData);
 
   const breadcrumbStructuredData = React.useMemo(() => {
-    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.cn';
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.com';
     return {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: `${base}/${currentLanguage}` },
-        { '@type': 'ListItem', position: 2, name: 'Products', item: `${base}/${currentLanguage}/products` },
-        { '@type': 'ListItem', position: 3, name: 'Windows & Doors System', item: `${base}/${currentLanguage}/products/windows-doors/showcase` },
+        { '@type': 'ListItem', position: 1, name: t('nav_home', 'Home'), item: `${base}/${currentLanguage}` },
+        { '@type': 'ListItem', position: 2, name: t('nav_products', 'Products'), item: `${base}/${currentLanguage}/products` },
+        { '@type': 'ListItem', position: 3, name: t('showcase_title', 'Window and Door Aluminium Profiles'), item: `${base}${canonicalPath}` },
       ],
     };
-  }, [currentLanguage]);
+  }, [canonicalPath, currentLanguage, t]);
 
   useStructuredData('showcase-breadcrumb', breadcrumbStructuredData);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
-      <div className="relative overflow-hidden py-16 lg:py-20">
-        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.25),_transparent_50%)]" />
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <p className="text-sm uppercase tracking-[0.4em] text-blue-500 font-semibold">Signature Series</p>
-              <h1 className="text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight">
-                Aluminium Extrusion System for Windows & Doors
-              </h1>
-              <p className="text-lg text-slate-600 leading-relaxed">
-                Custom-engineered thermal break profiles optimized for contemporary façades, villas and commercial towers.
-                Built with Lingye’s strict European-class quality control and extensive finish library.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <div className="px-5 py-3 bg-white border border-blue-100 rounded-2xl shadow-sm">
-                  <p className="text-3xl font-bold text-blue-600">2.6 W/m²·K</p>
-                  <p className="text-xs uppercase tracking-wide text-slate-500">Thermal Transmittance</p>
-                </div>
-                <div className="px-5 py-3 bg-white border border-blue-100 rounded-2xl shadow-sm">
-                  <p className="text-3xl font-bold text-blue-600">120 kg</p>
-                  <p className="text-xs uppercase tracking-wide text-slate-500">Max Leaf Load</p>
-                </div>
-                <div className="px-5 py-3 bg-white border border-blue-100 rounded-2xl shadow-sm">
-                  <p className="text-3xl font-bold text-blue-600">1,000+</p>
-                  <p className="text-xs uppercase tracking-wide text-slate-500">Global Projects</p>
-                </div>
-              </div>
-            </div>
-            <div className="relative group">
-              <div className="absolute -inset-4 bg-gradient-to-r from-blue-200 via-blue-400 to-blue-600 rounded-3xl opacity-30 blur-2xl group-hover:opacity-60 transition" />
-              <div className="relative rounded-[32px] overflow-hidden shadow-2xl border border-white/40">
-                <div className="grid grid-cols-2 gap-2">
-                  {heroImages.map((img, idx) => (
-                    <img key={idx} src={img} alt={`Aluminium window and door profile showcase ${idx + 1}`} className="w-full h-full object-cover" />
-                  ))}
-                </div>
-              </div>
+    <div className="min-h-screen bg-slate-50">
+      <section className="bg-gradient-to-br from-slate-950 via-slate-900 to-sky-950 text-white">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 px-6 py-14 lg:grid-cols-2 lg:px-8 lg:py-20">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-300">{t('showcase_eyebrow', 'Window and door systems')}</p>
+            <h1 className="mt-4 text-4xl font-bold leading-tight md:text-5xl">{t('showcase_title', 'Window and Door Aluminium Profiles')}</h1>
+            <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-200">{t('showcase_intro', 'Review profile sections, glazing and hardware interfaces, finish, and project requirements against your drawings. Final dimensions and specifications are confirmed for each project.')}</p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a href="#quote" className="rounded-lg bg-sky-400 px-5 py-3 font-semibold text-slate-950 transition hover:bg-sky-300">{t('showcase_quote_button', 'Send a project inquiry')}</a>
+              <Link to={`/${currentLanguage}/products/category/windows-doors`} className="rounded-lg border border-white/40 px-5 py-3 font-semibold text-white transition hover:bg-white/10">{t('showcase_browse_button', 'Browse window and door profiles')}</Link>
             </div>
           </div>
+          <figure className="overflow-hidden rounded-2xl border border-white/15 bg-white shadow-2xl">
+            <img src={profileImage} alt={t('showcase_image_alt', 'Thermal-break aluminum window profile section')} className="max-h-[460px] w-full object-contain" width="344" height="279" fetchPriority="high" decoding="async" />
+            <figcaption className="bg-white px-4 py-3 text-sm text-slate-600">{t('showcase_image_caption', 'Reference image. Confirm the selected system and section against project drawings.')}</figcaption>
+          </figure>
         </div>
-      </div>
+      </section>
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-16 space-y-16">
-        <section className="grid md:grid-cols-2 gap-10">
-          {productImages.map((img, idx) => (
-            <div key={idx} className="w-full bg-white rounded-3xl overflow-hidden shadow-lg border border-slate-100">
-              <img src={img} alt={`Aluminium extrusion profile product photo ${idx + 1}`} className="w-full h-[420px] object-cover" />
-            </div>
-          ))}
-        </section>
-
-        <section className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 bg-white rounded-3xl p-8 shadow-xl border border-slate-100">
-            <h2 className="text-2xl font-bold text-slate-900 mb-6">Performance & Specifications</h2>
-            <div className="grid sm:grid-cols-2 gap-4 text-sm text-slate-600">
-              <div className="p-4 rounded-2xl bg-slate-50">
-                <p className="text-xs uppercase tracking-wide text-slate-500">Profile Alloy</p>
-                <p className="text-lg font-semibold text-slate-900">6063-T5 / 6061-T6</p>
-              </div>
-              <div className="p-4 rounded-2xl bg-slate-50">
-                <p className="text-xs uppercase tracking-wide text-slate-500">Wall Thickness</p>
-                <p className="text-lg font-semibold text-slate-900">1.4 mm – 3.0 mm</p>
-              </div>
-              <div className="p-4 rounded-2xl bg-slate-50">
-                <p className="text-xs uppercase tracking-wide text-slate-500">Thermal Break</p>
-                <p className="text-lg font-semibold text-slate-900">PA66 GF25 Insulating Strips</p>
-              </div>
-              <div className="p-4 rounded-2xl bg-slate-50">
-                <p className="text-xs uppercase tracking-wide text-slate-500">Hardware Compatibility</p>
-                <p className="text-lg font-semibold text-slate-900">Siegenia / Roto / HOPO</p>
-              </div>
-            </div>
+      <main className="mx-auto max-w-7xl space-y-12 px-6 py-12 lg:px-8 lg:py-16">
+        <section aria-labelledby="system-review-title">
+          <div className="max-w-3xl">
+            <h2 id="system-review-title" className="text-3xl font-bold text-slate-900">{t('showcase_review_title', 'Check the system against the project')}</h2>
+            <p className="mt-3 leading-7 text-slate-600">{t('showcase_review_intro', 'A profile should be reviewed as part of the complete window or door assembly. The information below helps clarify fit and scope before a quotation.')}</p>
           </div>
-          <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-3xl p-8 text-white shadow-xl">
-            <h3 className="text-xl font-semibold mb-4">Project Services</h3>
-            <ul className="space-y-4 text-sm tracking-wide">
-              <li>• BIM & shop drawing support (Autodesk Revit / CAD)</li>
-              <li>• Custom die opening within 7 days</li>
-              <li>• Mock-up fabrication & onsite guidance</li>
-              <li>• 15-year surface warranty for PVDF systems</li>
-            </ul>
-          </div>
-        </section>
-
-        <section className="space-y-8">
-          <h2 className="text-2xl font-bold text-slate-900">Finishes & Textures</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {finishes.map((finish) => (
-              <div key={finish.title} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <p className="text-sm uppercase tracking-widest text-blue-500">{finish.title}</p>
-                <p className="text-lg font-semibold text-slate-900 mt-2">{finish.tone}</p>
-                <p className="text-sm text-slate-600 mt-2">{finish.desc}</p>
-              </div>
+          <div className="mt-7 grid gap-5 md:grid-cols-3">
+            {decisionPoints.map(([titleKey, descKey], index) => (
+              <article key={titleKey} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                <p className="text-sm font-semibold text-sky-700">0{index + 1}</p>
+                <h3 className="mt-3 text-xl font-semibold text-slate-900">{t(titleKey, '')}</h3>
+                <p className="mt-2 leading-7 text-slate-600">{t(descKey, '')}</p>
+              </article>
             ))}
           </div>
         </section>
 
-        <section className="space-y-8">
-          <h2 className="text-2xl font-bold text-slate-900">Application Highlights</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {applicationScenarios.map((item) => (
-              <div key={item.title} className="bg-white rounded-3xl p-6 shadow border border-slate-100">
-                <div className="text-3xl">{item.icon}</div>
-                <h3 className="text-lg font-semibold text-slate-900 mt-4">{item.title}</h3>
-                <p className="text-sm text-slate-600 mt-2">{item.detail}</p>
-              </div>
-            ))}
+        <section className="grid items-center gap-8 rounded-2xl border border-slate-200 bg-white p-6 md:grid-cols-2 md:p-9">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-900">{t('showcase_finish_title', 'Specify finish and fabrication needs')}</h2>
+            <p className="mt-3 leading-7 text-slate-600">{t('showcase_finish_desc', 'Describe the required appearance, exposure conditions, machining, and assembly. Confirm the finish, color reference, samples, and any project testing before production.')}</p>
           </div>
+          <ul className="grid gap-3 text-slate-700 sm:grid-cols-2">
+            {['showcase_finish_item_1', 'showcase_finish_item_2', 'showcase_finish_item_3', 'showcase_finish_item_4'].map((key) => (
+              <li key={key} className="rounded-lg bg-slate-50 p-4">{t(key, '')}</li>
+            ))}
+          </ul>
         </section>
 
-        <section className="bg-white rounded-3xl p-8 border border-slate-100 shadow-lg">
-          <div className="grid lg:grid-cols-2 gap-10">
+        <section id="quote" className="scroll-mt-8 rounded-2xl bg-slate-900 p-6 text-white md:p-9">
+          <div className="grid gap-8 lg:grid-cols-2">
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 mb-4">Quality Assurance</h2>
-              <ul className="space-y-4 text-slate-600">
-                {qaChecklist.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-50 text-blue-600 font-semibold text-xs flex items-center justify-center">{idx + 1}</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-sky-300">{t('showcase_quote_eyebrow', 'For a useful quotation')}</p>
+              <h2 className="mt-3 text-3xl font-bold">{t('showcase_quote_title', 'Share the details available so far')}</h2>
+              <p className="mt-3 leading-7 text-slate-300">{t('showcase_quote_intro', 'If a specification is not final, send the current drawing and note which points still need review. No unconfirmed dimensions or performance values are assumed.')}</p>
+              <ul className="mt-6 space-y-3 text-slate-200">
+                {quoteDetails.map((key) => <li key={key} className="flex gap-3"><span className="text-sky-300">•</span><span>{t(key, '')}</span></li>)}
               </ul>
             </div>
-            <div className="grid gap-4">
-              {factoryImages.map((img, idx) => (
-                <div key={idx} className="w-full rounded-2xl overflow-hidden border border-slate-100">
-                  <img src={img} alt={`LingYe Aluminum factory and production facility ${idx + 1}`} className="w-full h-56 object-cover" />
-                </div>
-              ))}
+            <div className="rounded-xl bg-white p-5 text-slate-900 md:p-7">
+              <h3 className="mb-5 text-xl font-semibold">{t('showcase_form_title', 'Window and door profile inquiry')}</h3>
+              <InquiryForm productName={t('showcase_form_product', 'Window and Door Aluminium Profiles')} productLink={typeof window !== 'undefined' ? window.location.href : ''} />
             </div>
           </div>
         </section>
-
-        <section className="space-y-6">
-          <h2 className="text-2xl font-bold text-slate-900">Manufacturing Journey</h2>
-          <div className="grid lg:grid-cols-5 gap-4">
-            {manufacturingSteps.map((step) => (
-              <div key={step.step} className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
-                <p className="text-sm font-mono text-blue-500">{step.step}</p>
-                <h4 className="text-lg font-semibold text-slate-900 mt-2">{step.title}</h4>
-                <p className="text-sm text-slate-600 mt-1">{step.desc}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl p-10 text-white shadow-2xl">
-          <div className="grid lg:grid-cols-2 gap-10">
-            <div className="space-y-4">
-              <p className="text-sm uppercase tracking-[0.3em] text-white/70">Custom Project Support</p>
-              <h2 className="text-3xl font-bold leading-tight">Request detailed drawings, die opening and finish samples within 5 days</h2>
-              <p className="text-white/80">
-                Share your window/door schedule or façade elevation, and our engineering team will match the optimal profile system, glazing bead, mullion,
-                transom and accessory solution for faster installation onsite.
-              </p>
-              <div className="flex flex-wrap gap-6 text-sm text-white/70">
-                <span>• BIM & CNC files</span>
-                <span>• Hardware pairing</span>
-                <span>• Mock-up fabrication</span>
-              </div>
-            </div>
-            <div className="bg-white rounded-2xl p-6 text-slate-900 shadow-xl">
-              <InquiryForm productName="Aluminium Window & Door System" productLink={typeof window !== 'undefined' ? window.location.href : ''} />
-            </div>
-          </div>
-        </section>
-      </div>
-
+      </main>
       <FloatingContactButtons />
     </div>
   );
 };
 
 export default ProductShowcase;
-

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">Convert linear weight to piece and order weight</title>
+  <desc id="desc">Illustration showing linear weight in kilograms per metre multiplied by a cut length in metres to estimate theoretical kilograms per piece.</desc>
+  <defs><linearGradient id="bg" x2="0" y2="1"><stop stop-color="#f8fafb"/><stop offset="1" stop-color="#e4edf0"/></linearGradient><linearGradient id="bar" x2="0" y2="1"><stop stop-color="#f9fcfd"/><stop offset=".4" stop-color="#bccbd1"/><stop offset="1" stop-color="#738a96"/></linearGradient></defs>
+  <rect width="1200" height="675" rx="30" fill="url(#bg)"/>
+  <text x="70" y="83" font-family="Arial,sans-serif" font-size="25" font-weight="700" letter-spacing="2" fill="#1d4559">FROM kg/m TO ONE PIECE</text>
+  <g transform="translate(142 171)"><path d="M0 62 720 0l105 38-720 63z" fill="#f8fcfd" stroke="#526d7a" stroke-width="3"/><path d="M0 62 720 0v49L0 112z" fill="url(#bar)" stroke="#526d7a" stroke-width="3"/><path d="m720 0 105 38v48L720 49z" fill="#718995" stroke="#526d7a" stroke-width="3"/><circle cx="808" cy="54" r="11" fill="#16818b"/></g>
+  <path d="M145 328h824" stroke="#16818b" stroke-width="4" stroke-linecap="round"/><path d="m145 328 18-11v22zm824 0-18-11v22z" fill="#16818b"/>
+  <text x="557" y="368" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" fill="#52707e">cut length</text>
+  <g transform="translate(110 430)"><rect width="340" height="116" rx="20" fill="#fff" stroke="#d2e0e5" stroke-width="2"/><text x="170" y="50" text-anchor="middle" font-family="Arial,sans-serif" font-size="32" font-weight="700" fill="#153c51">kg/m</text><text x="170" y="84" text-anchor="middle" font-family="Arial,sans-serif" font-size="19" fill="#5b7582">linear weight</text></g>
+  <text x="505" y="501" text-anchor="middle" font-family="Arial,sans-serif" font-size="45" font-weight="700" fill="#16818b">×</text>
+  <g transform="translate(574 430)"><rect width="205" height="116" rx="20" fill="#fff" stroke="#d2e0e5" stroke-width="2"/><text x="102" y="50" text-anchor="middle" font-family="Arial,sans-serif" font-size="32" font-weight="700" fill="#153c51">L (m)</text><text x="102" y="84" text-anchor="middle" font-family="Arial,sans-serif" font-size="19" fill="#5b7582">cut length</text></g>
+  <text x="830" y="501" text-anchor="middle" font-family="Arial,sans-serif" font-size="45" font-weight="700" fill="#16818b">=</text>
+  <g transform="translate(882 430)"><rect width="230" height="116" rx="20" fill="#dff0f1" stroke="#9fcdd0" stroke-width="2"/><text x="115" y="50" text-anchor="middle" font-family="Arial,sans-serif" font-size="31" font-weight="700" fill="#153c51">kg / piece</text><text x="115" y="84" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" fill="#466b78">theoretical net</text></g>
+  <text x="600" y="613" text-anchor="middle" font-family="Arial,sans-serif" font-size="19" fill="#587482">Multiply by quantity for a theoretical net total; packaging is separate.</text>
+</svg>

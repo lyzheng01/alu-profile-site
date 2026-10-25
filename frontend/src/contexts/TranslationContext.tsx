@@ -38,6 +38,7 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
       const targetLanguage = urlLanguage || savedLanguage;
       
       await translationService.loadTranslations(targetLanguage);
+      document.documentElement.dataset.translationLanguage = targetLanguage;
       setCurrentLanguage(targetLanguage);
       forceUpdate({});
     };
@@ -49,6 +50,7 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
   useEffect(() => {
     const handleTranslationChange = () => {
       const lang = translationService.getCurrentLanguage();
+      document.documentElement.dataset.translationLanguage = lang;
       setCurrentLanguage(lang);
       forceUpdate({}); // 关键：强制刷新所有依赖翻译的组件
     };
@@ -65,6 +67,7 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setIsLoading(true);
     try {
       await translationService.loadTranslations(language);
+      document.documentElement.dataset.translationLanguage = language;
       setCurrentLanguage(language);
       localStorage.setItem('language', language); // 保存到localStorage
       forceUpdate({}); // 关键：强制刷新所有依赖翻译的组件

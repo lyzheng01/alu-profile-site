@@ -173,6 +173,13 @@ class TranslatedProductSerializer(serializers.ModelSerializer):
     translated_description = serializers.SerializerMethodField()
     translated_features = serializers.SerializerMethodField()
     translated_applications = serializers.SerializerMethodField()
+    translated_specifications = serializers.SerializerMethodField()
+    translated_range_param = serializers.SerializerMethodField()
+    translated_type_param = serializers.SerializerMethodField()
+    translated_surface_treatment = serializers.SerializerMethodField()
+    translated_colors = serializers.SerializerMethodField()
+    translated_grade = serializers.SerializerMethodField()
+    translated_temper = serializers.SerializerMethodField()
     images = ProductImageSerializer(many=True, read_only=True)
     specification_items = ProductSpecificationSerializer(many=True, read_only=True)
     feature_items = ProductFeatureSerializer(many=True, read_only=True)
@@ -182,7 +189,9 @@ class TranslatedProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = [
             'id', 'category', 'category_id', 'subcategory', 'subcategory_id', 'translated_name', 'translated_description',
-            'translated_features', 'translated_applications', 'specifications', 'range_param', 'type_param', 'surface_treatment', 'colors', 'grade', 'temper',
+            'translated_features', 'translated_applications', 'translated_specifications', 'translated_range_param', 'translated_type_param',
+            'translated_surface_treatment', 'translated_colors', 'translated_grade', 'translated_temper',
+            'specifications', 'range_param', 'type_param', 'surface_treatment', 'colors', 'grade', 'temper',
             'slug', 'is_featured', 'is_active', 'order', 'created_at', 'updated_at', 'images',
             'specification_items', 'feature_items', 'application_items'
         ]
@@ -203,6 +212,32 @@ class TranslatedProductSerializer(serializers.ModelSerializer):
     def get_translated_applications(self, obj):
         language = self.context.get('language', 'zh')
         return translation_service.get_translated_text('product', obj.id, 'applications', language) or obj.applications
+
+    def get_translated_specifications(self, obj):
+        language = self.context.get('language', 'zh')
+        return translation_service.get_translated_text('product', obj.id, 'specifications', language) or obj.specifications
+
+    def _translated_parameter(self, obj, field_name):
+        language = self.context.get('language', 'zh')
+        return translation_service.get_translated_text('product', obj.id, field_name, language) or getattr(obj, field_name)
+
+    def get_translated_range_param(self, obj):
+        return self._translated_parameter(obj, 'range_param')
+
+    def get_translated_type_param(self, obj):
+        return self._translated_parameter(obj, 'type_param')
+
+    def get_translated_surface_treatment(self, obj):
+        return self._translated_parameter(obj, 'surface_treatment')
+
+    def get_translated_colors(self, obj):
+        return self._translated_parameter(obj, 'colors')
+
+    def get_translated_grade(self, obj):
+        return self._translated_parameter(obj, 'grade')
+
+    def get_translated_temper(self, obj):
+        return self._translated_parameter(obj, 'temper')
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
@@ -255,6 +290,13 @@ class TranslatedProductDetailSerializer(serializers.ModelSerializer):
     translated_description = serializers.SerializerMethodField()
     translated_features = serializers.SerializerMethodField()
     translated_applications = serializers.SerializerMethodField()
+    translated_specifications = serializers.SerializerMethodField()
+    translated_range_param = serializers.SerializerMethodField()
+    translated_type_param = serializers.SerializerMethodField()
+    translated_surface_treatment = serializers.SerializerMethodField()
+    translated_colors = serializers.SerializerMethodField()
+    translated_grade = serializers.SerializerMethodField()
+    translated_temper = serializers.SerializerMethodField()
     images = ProductImageSerializer(many=True, read_only=True)
     specification_items = ProductSpecificationSerializer(many=True, read_only=True)
     feature_items = ProductFeatureSerializer(many=True, read_only=True)
@@ -264,7 +306,9 @@ class TranslatedProductDetailSerializer(serializers.ModelSerializer):
         model = Product
         fields = [
             'id', 'category', 'category_id', 'subcategory', 'subcategory_id', 'translated_name', 'translated_description',
-            'translated_features', 'translated_applications', 'specifications', 'range_param', 'type_param', 'surface_treatment', 'colors', 'grade', 'temper',
+            'translated_features', 'translated_applications', 'translated_specifications', 'translated_range_param', 'translated_type_param',
+            'translated_surface_treatment', 'translated_colors', 'translated_grade', 'translated_temper',
+            'specifications', 'range_param', 'type_param', 'surface_treatment', 'colors', 'grade', 'temper',
             'slug', 'is_featured', 'is_active', 'order', 'created_at', 'updated_at', 'images',
             'specification_items', 'feature_items', 'application_items'
         ]
@@ -285,6 +329,32 @@ class TranslatedProductDetailSerializer(serializers.ModelSerializer):
     def get_translated_applications(self, obj):
         language = self.context.get('language', 'zh')
         return translation_service.get_translated_text('product', obj.id, 'applications', language) or obj.applications
+
+    def get_translated_specifications(self, obj):
+        language = self.context.get('language', 'zh')
+        return translation_service.get_translated_text('product', obj.id, 'specifications', language) or obj.specifications
+
+    def _translated_parameter(self, obj, field_name):
+        language = self.context.get('language', 'zh')
+        return translation_service.get_translated_text('product', obj.id, field_name, language) or getattr(obj, field_name)
+
+    def get_translated_range_param(self, obj):
+        return self._translated_parameter(obj, 'range_param')
+
+    def get_translated_type_param(self, obj):
+        return self._translated_parameter(obj, 'type_param')
+
+    def get_translated_surface_treatment(self, obj):
+        return self._translated_parameter(obj, 'surface_treatment')
+
+    def get_translated_colors(self, obj):
+        return self._translated_parameter(obj, 'colors')
+
+    def get_translated_grade(self, obj):
+        return self._translated_parameter(obj, 'grade')
+
+    def get_translated_temper(self, obj):
+        return self._translated_parameter(obj, 'temper')
     
     def to_representation(self, instance):
         """重写序列化方法，合并模板数据"""
@@ -300,8 +370,20 @@ class TranslatedProductDetailSerializer(serializers.ModelSerializer):
             data['features'] = data.pop('translated_features')
         if 'translated_applications' in data:
             data['applications'] = data.pop('translated_applications')
+        if 'translated_specifications' in data:
+            data['specifications'] = data.pop('translated_specifications')
         if 'translated_name' in data:
             data['name'] = data.pop('translated_name')
+        for translated_key, source_key in (
+            ('translated_range_param', 'range_param'),
+            ('translated_type_param', 'type_param'),
+            ('translated_surface_treatment', 'surface_treatment'),
+            ('translated_colors', 'colors'),
+            ('translated_grade', 'grade'),
+            ('translated_temper', 'temper'),
+        ):
+            if translated_key in data:
+                data[source_key] = data.pop(translated_key)
         
         # 获取匹配的模板
         template = get_product_template(instance)

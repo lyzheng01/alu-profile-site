@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="620" viewBox="0 0 900 620" role="img" aria-labelledby="title desc">
+  <title id="title">H-profile section measurement reference</title>
+  <desc id="desc">A generic H-shaped extrusion section showing overall width W, height H, side-leg thickness tf, web thickness tw and clear openings g1 and g2. Symbols are illustrative and do not define standard values.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse">
+      <path d="M0,0 L8,4 L0,8 z" fill="#087e8b"/>
+    </marker>
+  </defs>
+  <rect width="900" height="620" rx="24" fill="#f6f8fa"/>
+  <path d="M290 120 H334 V280 H566 V120 H610 V480 H566 V320 H334 V480 H290 Z" fill="#becbd3" stroke="#243746" stroke-width="5" stroke-linejoin="round"/>
+  <g stroke="#087e8b" stroke-width="3" fill="none" marker-start="url(#arrow)" marker-end="url(#arrow)">
+    <line x1="236" y1="120" x2="236" y2="480"/>
+    <line x1="258" y1="120" x2="290" y2="120"/>
+    <line x1="258" y1="480" x2="290" y2="480"/>
+    <line x1="290" y1="535" x2="610" y2="535"/>
+    <line x1="290" y1="492" x2="290" y2="548"/>
+    <line x1="610" y1="492" x2="610" y2="548"/>
+    <line x1="290" y1="184" x2="334" y2="184"/>
+    <line x1="646" y1="280" x2="646" y2="320"/>
+    <line x1="610" y1="280" x2="660" y2="280"/>
+    <line x1="610" y1="320" x2="660" y2="320"/>
+    <line x1="710" y1="120" x2="710" y2="280"/>
+    <line x1="610" y1="120" x2="724" y2="120"/>
+    <line x1="566" y1="280" x2="724" y2="280"/>
+    <line x1="760" y1="320" x2="760" y2="480"/>
+    <line x1="610" y1="320" x2="774" y2="320"/>
+    <line x1="610" y1="480" x2="774" y2="480"/>
+  </g>
+  <g fill="#163544" font-family="Arial, sans-serif" font-size="24" font-weight="700">
+    <text x="204" y="306" text-anchor="middle">H</text>
+    <text x="450" y="578" text-anchor="middle">W</text>
+    <text x="312" y="168" text-anchor="middle">t<tspan baseline-shift="sub" font-size="16">f</tspan></text>
+    <text x="674" y="309">t<tspan baseline-shift="sub" font-size="16">w</tspan></text>
+    <text x="734" y="210">g1</text>
+    <text x="784" y="410">g2</text>
+  </g>
+  <text x="450" y="608" text-anchor="middle" fill="#52636c" font-family="Arial, sans-serif" font-size="14">Guide notation only — confirm critical dimensions on the project drawing</text>
+</svg>

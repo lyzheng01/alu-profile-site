@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">Three separate aluminum extrusion tolerance checks</title>
+  <desc id="desc">Cross-section dimensions, straightness along the extrusion, and twist around its length are shown as separate checks.</desc>
+  <defs>
+    <linearGradient id="bg" x2="0" y2="1"><stop stop-color="#f5f8fc"/><stop offset="1" stop-color="#e9f0f7"/></linearGradient>
+    <linearGradient id="metal" x2="0" y2="1"><stop stop-color="#e5edf4"/><stop offset=".5" stop-color="#9eb1c2"/><stop offset="1" stop-color="#dce6ee"/></linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#087e8b"/></marker>
+    <style>
+      text{font-family:Arial,'Microsoft YaHei',sans-serif;fill:#172b3a}.title{font-size:42px;font-weight:700}.sub{font-size:22px;fill:#536879}.card{fill:#fff;stroke:#d4e0e9;stroke-width:2}.head{font-size:25px;font-weight:700}.label{font-size:19px;fill:#41596a}.tiny{font-size:16px;fill:#52697a}.dim{stroke:#087e8b;stroke-width:3;marker-start:url(#arrow);marker-end:url(#arrow)}.guide{stroke:#90a5b5;stroke-width:2;stroke-dasharray:7 7}.profile{fill:url(#metal);stroke:#60798c;stroke-width:3}
+    </style>
+  </defs>
+  <rect width="1440" height="900" fill="url(#bg)"/>
+  <text x="80" y="90" class="title">Three checks. Three different requirements.</text>
+  <text x="80" y="132" class="sub">Keep fit dimensions, lengthwise bow and cross-section rotation separate on the drawing.</text>
+  <g transform="translate(70 190)">
+    <rect class="card" width="400" height="620" rx="22"/>
+    <text x="34" y="58" class="head">1  Cross-section size</text>
+    <text x="34" y="94" class="label">Will the profile fit its mating part?</text>
+    <path class="profile" fill-rule="evenodd" d="M112 270h178v60h-55v-25h-67v25h-56z M143 294h25v12h-25z M210 294h25v12h-25z"/>
+    <line x1="112" y1="225" x2="290" y2="225" class="dim"/>
+    <line x1="112" y1="235" x2="112" y2="263" class="guide"/><line x1="290" y1="235" x2="290" y2="263" class="guide"/>
+    <text x="153" y="207" class="label">width / opening</text>
+    <line x1="320" y1="270" x2="320" y2="330" class="dim"/><text x="332" y="305" class="tiny">height</text>
+    <text x="35" y="430" class="label">Show:</text><text x="35" y="468" class="tiny">• functional faces and datums</text><text x="35" y="503" class="tiny">• wall, slot and cavity dimensions</text><text x="35" y="538" class="tiny">• which features control fit</text>
+    <text x="35" y="585" class="tiny">Measured across the section</text>
+  </g>
+  <g transform="translate(520 190)">
+    <rect class="card" width="400" height="620" rx="22"/>
+    <text x="34" y="58" class="head">2  Straightness</text>
+    <text x="34" y="94" class="label">Does the profile bow along its length?</text>
+    <path d="M72 274 Q210 255 328 278 L328 315 Q210 294 72 312Z" class="profile"/>
+    <line x1="72" y1="345" x2="328" y2="345" class="guide"/>
+    <line x1="72" y1="363" x2="328" y2="363" class="dim"/>
+    <text x="147" y="397" class="label">inspection length</text>
+    <line x1="215" y1="273" x2="215" y2="345" class="guide"/>
+    <text x="230" y="252" class="tiny">bow</text>
+    <text x="35" y="468" class="label">Specify:</text><text x="35" y="506" class="tiny">• full bar or cut-piece length</text><text x="35" y="541" class="tiny">• inspection span and support setup</text><text x="35" y="576" class="tiny">• allowed deviation, if function needs it</text>
+  </g>
+  <g transform="translate(970 190)">
+    <rect class="card" width="400" height="620" rx="22"/>
+    <text x="34" y="58" class="head">3  Twist</text>
+    <text x="34" y="94" class="label">Does the section rotate along its length?</text>
+    <path d="M76 274 L306 274 L328 297 L98 297Z M98 297 L328 297 L328 333 L98 333Z" class="profile"/>
+    <path d="M76 274 L98 297 L98 333 L76 310Z" fill="#8499aa" stroke="#60798c" stroke-width="3"/>
+    <path d="M306 274 L328 297 L328 333 L306 310Z" fill="#c8d5df" stroke="#60798c" stroke-width="3"/>
+    <path d="M95 257 L315 239" fill="none" stroke="#c56a18" stroke-width="4" stroke-dasharray="9 8"/>
+    <path d="M130 224 A52 30 0 0 1 195 227" fill="none" stroke="#087e8b" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="206" y="236" class="tiny">rotation</text>
+    <line x1="76" y1="366" x2="328" y2="366" class="dim"/><text x="151" y="397" class="label">inspection length</text>
+    <text x="35" y="468" class="label">Agree on:</text><text x="35" y="506" class="tiny">• reference face / datum</text><text x="35" y="541" class="tiny">• support and measurement method</text><text x="35" y="576" class="tiny">• length over which twist is checked</text>
+  </g>
+  <text x="80" y="858" class="sub">Values depend on the named standard, profile geometry and supplier capability. Confirm critical requirements before production.</text>
+</svg>

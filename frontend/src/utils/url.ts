@@ -18,6 +18,10 @@ export function resolveMediaUrl(url?: string): string {
     if (url.startsWith('http://') || url.startsWith('https://')) {
       // 获取当前页面的域名和协议
       const currentOrigin = typeof window !== 'undefined' ? window.location.origin : '';
+      const sourceUrl = new URL(url);
+      if (/^https?:\/\/(?:www\.)?lingyealuminum\.com$/i.test(sourceUrl.origin)) {
+        return `${currentOrigin}${sourceUrl.pathname}${sourceUrl.search}${sourceUrl.hash}`;
+      }
       
       // 如果是开发环境的地址，替换为生产环境地址
       if (url.includes('127.0.0.1:9001') || url.includes('localhost:9001')) {

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">Metal area in a hollow extrusion</title>
+  <desc id="desc">An illustrative hollow rectangular extrusion with the metal walls highlighted and the internal void left open.</desc>
+  <defs><linearGradient id="bg" x2="0" y2="1"><stop stop-color="#f7fafb"/><stop offset="1" stop-color="#e7eff2"/></linearGradient><linearGradient id="metal" x2="1" y2="1"><stop stop-color="#68bbc0"/><stop offset="1" stop-color="#167985"/></linearGradient><filter id="s"><feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#18384b" flood-opacity=".18"/></filter></defs>
+  <rect width="1200" height="675" rx="30" fill="url(#bg)"/>
+  <text x="70" y="88" font-family="Arial,sans-serif" font-size="27" font-weight="700" letter-spacing="2" fill="#1d4559">CROSS-SECTION AREA</text>
+  <text x="70" y="128" font-family="Arial,sans-serif" font-size="19" fill="#597382">Measure the aluminium itself; keep the hollow space empty.</text>
+  <g filter="url(#s)">
+    <path fill="url(#metal)" fill-rule="evenodd" d="M250 190h700v300H250z M320 260v160h560V260z"/>
+    <path d="M250 190h700v300H250z" fill="none" stroke="#0e5963" stroke-width="8"/>
+    <path d="M320 260v160h560V260z" fill="#fbfdfe" stroke="#0e5963" stroke-width="5"/>
+  </g>
+  <path d="M280 225 430 225" stroke="#fff" stroke-width="8" opacity=".8" stroke-linecap="round"/>
+  <path d="M915 220v245" stroke="#fff" stroke-width="7" opacity=".45" stroke-linecap="round"/>
+  <g font-family="Arial,sans-serif" fill="#173b50">
+    <text x="600" y="335" text-anchor="middle" font-size="47" font-weight="700">A = metal area</text>
+    <text x="600" y="379" text-anchor="middle" font-size="24">not the outside bounding rectangle</text>
+  </g>
+  <g transform="translate(194 544)"><rect width="812" height="60" rx="16" fill="#e0f0f1"/><circle cx="34" cy="30" r="12" fill="#16818b"/><text x="62" y="38" font-family="Arial,sans-serif" font-size="21" fill="#234a5b">Filled walls count toward cross-sectional area</text><rect x="520" y="18" width="24" height="24" rx="4" fill="#fff" stroke="#4c6d7d" stroke-width="2"/><text x="560" y="38" font-family="Arial,sans-serif" font-size="21" fill="#234a5b">Open void is excluded</text></g>
+</svg>

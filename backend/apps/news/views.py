@@ -25,7 +25,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
         
         # 检查是否需要翻译
         language = request.query_params.get('lang', 'zh')
-        if language != 'zh':
+        if language != 'en':
             serializer = TranslatedArticleSerializer(
                 articles, 
                 many=True, 
@@ -42,11 +42,22 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Article.objects.filter(status='published').order_by('-published_at', '-created_at')
     serializer_class = ArticleSerializer
     lookup_field = 'pk'
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['language'] = self.request.query_params.get('lang', 'zh')
+        return context
     
     def get_serializer_class(self):
         """根据action选择序列化器"""
         if self.action == 'retrieve':
+            language = self.request.query_params.get('lang', 'zh')
+            if language != 'en':
+                return TranslatedArticleSerializer
             return ArticleDetailSerializer
+        language = self.request.query_params.get('lang', 'zh')
+        if language != 'en':
+            return TranslatedArticleSerializer
         return super().get_serializer_class()
     
     def get_queryset(self):
@@ -80,7 +91,7 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
         
         # 检查是否需要翻译
         language = request.query_params.get('lang', 'zh')
-        if language != 'zh':
+        if language != 'en':
             serializer = TranslatedArticleSerializer(
                 articles, 
                 many=True, 
@@ -102,7 +113,9 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
         article.views += 1
         article.save(update_fields=['views'])
 
-        serializer = ArticleDetailSerializer(article)
+        language = request.query_params.get('lang', 'zh')
+        serializer_class = TranslatedArticleSerializer if language != 'en' else ArticleDetailSerializer
+        serializer = serializer_class(article, context={'language': language})
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
@@ -120,7 +133,7 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
         
         # 检查是否需要翻译
         language = request.query_params.get('lang', 'zh')
-        if language != 'zh':
+        if language != 'en':
             serializer = TranslatedArticleSerializer(
                 articles, 
                 many=True, 

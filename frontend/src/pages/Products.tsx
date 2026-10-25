@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { API_ENDPOINTS } from '../config/api';
 import FloatingContactButtons from '../components/FloatingContactButtons';
 import { useTranslation } from '../contexts/TranslationContext';
@@ -41,6 +41,7 @@ interface Product {
 
 interface Category {
   id: number;
+  slug: string;
   name: string;
   description: string;
   subcategories?: SubCategory[];
@@ -53,18 +54,29 @@ interface SubCategory {
   parent_category: number;
 }
 
+const CATEGORY_COPY: Record<string, Record<string, string>> = {
+ en: {'cabinet-profiles':'Profiles for cabinet doors and wardrobes. Check the section, panel fit, finish, and assembly before requesting a quote.','industrial-profiles':'For equipment frames and automation. Match section to load and connections; confirm alloy and finish.','t-slot-profiles':'For modular frames. Confirm slot series, connectors, fasteners, and cut list.','windows-doors':'For window and door systems. Confirm opening, glazing, thermal break, hardware, and local requirements.','standard-aluminium-profiles':'For general fabrication. Share a drawing or standard to check alloy, dimensions, and tolerances.'},
+ zh: {'cabinet-profiles':'适用于柜门和衣柜系统。询价前核对截面、板材适配、表面处理和装配方式。','industrial-profiles':'适用于设备框架和自动化结构。结合承载与连接方式选截面，并确认合金状态和表面处理。','t-slot-profiles':'适用于模块化框架。先确认槽口系列、连接件、紧固件和下料尺寸。','windows-doors':'适用于门窗系统。确认开启方式、玻璃、隔热条、五金及项目所在地规范。','standard-aluminium-profiles':'适用于通用加工。提供截面图或标准号，便于核对尺寸、合金状态和公差。'},
+ es: {'cabinet-profiles':'Para armarios. Compruebe sección, panel, acabado y montaje antes de cotizar.','industrial-profiles':'Para equipos y automatización. Defina carga y conexiones; confirme aleación y acabado.','t-slot-profiles':'Para estructuras modulares. Confirme ranura, conectores, fijaciones y lista de corte.','windows-doors':'Para ventanas y puertas. Confirme apertura, vidrio, aislamiento, herrajes y normas locales.','standard-aluminium-profiles':'Para fabricación general. Envíe plano o norma para revisar aleación, medidas y tolerancias.'},
+ pt: {'cabinet-profiles':'Para armários. Confira seção, painel, acabamento e montagem antes do orçamento.','industrial-profiles':'Para equipamentos e automação. Defina carga e conexões; confirme liga e acabamento.','t-slot-profiles':'Para estruturas modulares. Confirme canal, conectores, fixadores e plano de corte.','windows-doors':'Para janelas e portas. Confirme abertura, vidro, isolamento, ferragens e normas locais.','standard-aluminium-profiles':'Para fabricação geral. Envie desenho ou norma para conferir liga, dimensões e tolerâncias.'}
+};
 const Products: React.FC = () => {
-  const { t } = useTranslation();
+  const { lang: routeLanguage = 'en', categorySlug } = useParams<{ lang: string; categorySlug: string }>();
+  const { pathname } = useLocation();
+  const pathLanguage = pathname.split('/').filter(Boolean)[0];
+  const urlLanguage = pathLanguage && ['en', 'zh', 'es', 'pt'].includes(pathLanguage) ? pathLanguage : routeLanguage;
+  const navigate = useNavigate();
+  const { t, currentLanguage: translationLanguage } = useTranslation();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [productsLoaded, setProductsLoaded] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState<number | null>(null);
-  const [currentLanguage, setCurrentLanguage] = useState(() => {
-    if (typeof window === 'undefined') return 'zh';
-    return localStorage.getItem('language') || 'zh';
-  });
+  const [currentLanguage, setCurrentLanguage] = useState(urlLanguage);
   const [searchParams, setSearchParams] = useSearchParams();
+  const categoryDescription = categorySlug ? CATEGORY_COPY[currentLanguage]?.[categorySlug] : undefined;
+  const categoryLabel = categories.find((category) => category.slug === categorySlug)?.name || categorySlug || '';
   const fallbackProductImage = 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=900&h=700&fit=crop';
   const cleanEnglishCopy = (value?: string) =>
     (value || '')
@@ -75,48 +87,48 @@ const Products: React.FC = () => {
     const resolved = resolveMediaUrl(value);
     if (!resolved) return '';
     return resolved
-      .replace(/^http:\/\/lingyealu\.cn/i, 'https://lingyealuminum.com')
-      .replace(/^https:\/\/lingyealu\.cn/i, 'https://lingyealuminum.com');
+      .replace(/^http:\/\/lingyealu\.cn/i, 'https://lingyealu.com')
+      .replace(/^https:\/\/lingyealu\.cn/i, 'https://lingyealu.com');
   };
 
   // 获取当前语言
   useEffect(() => {
-    const savedLanguage = localStorage.getItem('language') || 'zh';
-    setCurrentLanguage(savedLanguage);
-  }, []);
+    setCurrentLanguage(urlLanguage);
+    localStorage.setItem('language', urlLanguage);
+  }, [urlLanguage]);
 
   useSeoMeta({
-    canonicalPath: `/${currentLanguage}/products`,
-    title: 'Aluminum Profile Product Catalog | LingYe Aluminum',
-    description:
-      'Browse architectural, industrial, trim, tube, and custom aluminum extrusion profiles with alloy, temper, finish, and RFQ details for export buyers.',
-    ogTitle: 'LingYe Aluminum Product Catalog',
-    ogDescription: 'Find aluminum profiles for windows, doors, industrial framing, trim, tubes, and OEM extrusion projects.',
-    ogImage: 'https://lingyealu.cn/logo.jpg?v=3',
+    canonicalPath: categorySlug ? '/' + currentLanguage + '/products/category/' + categorySlug : '/' + currentLanguage + '/products',
+    title: categorySlug ? categoryLabel + ' | LingYe Aluminum' : 'Aluminum Profile Product Catalog | LingYe Aluminum',
+    description: categoryDescription || 'Browse architectural, industrial, trim, tube, and custom aluminum extrusion profiles with alloy, temper, finish, and RFQ details for export buyers.',
+    ogTitle: categorySlug ? categoryLabel + ' | LingYe Aluminum' : 'LingYe Aluminum Product Catalog',
+    ogDescription: categoryDescription || 'Find aluminum profiles for windows, doors, industrial framing, trim, tubes, and OEM extrusion projects.',
+    ogImage: 'https://lingyealu.com/logo.jpg?v=3',
     language: currentLanguage,
   });
 
   const collectionStructuredData = React.useMemo(() => ({
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: 'Aluminum Profile Product Catalog | LingYe Aluminum',
-    description: 'Browse architectural, industrial, trim, tube, and custom aluminum extrusion profiles.',
-    isPartOf: { '@type': 'WebSite', name: 'LingYe Aluminum', url: 'https://lingyealu.cn' },
-  }), []);
+    name: categorySlug ? categoryLabel : 'Aluminum Profile Product Catalog | LingYe Aluminum',
+    description: categoryDescription || 'Browse architectural, industrial, trim, tube, and custom aluminum extrusion profiles.',
+    isPartOf: { '@type': 'WebSite', name: 'LingYe Aluminum', url: 'https://lingyealu.com' },
+  }), [categorySlug, categoryLabel, categoryDescription]);
 
   useStructuredData('products-collection', collectionStructuredData);
 
   const breadcrumbStructuredData = React.useMemo(() => {
-    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.cn';
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.com';
     return {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: `${base}/${currentLanguage}` },
-        { '@type': 'ListItem', position: 2, name: 'Products', item: `${base}/${currentLanguage}/products` },
+        { '@type': 'ListItem', position: 1, name: 'Home', item: base + '/' + currentLanguage },
+        { '@type': 'ListItem', position: 2, name: 'Products', item: base + '/' + currentLanguage + '/products' },
+        ...(categorySlug ? [{ '@type': 'ListItem', position: 3, name: categoryLabel, item: base + '/' + currentLanguage + '/products/category/' + categorySlug }] : []),
       ],
     };
-  }, [currentLanguage]);
+  }, [currentLanguage, categorySlug, categoryLabel]);
 
   useStructuredData('products-breadcrumb', breadcrumbStructuredData);
 
@@ -146,25 +158,31 @@ const Products: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`${API_ENDPOINTS.PRODUCTS}?lang=${currentLanguage}`);
-        if (response.ok) {
+        let nextUrl: string | null = API_ENDPOINTS.PRODUCTS + '?lang=' + currentLanguage;
+        const allProducts: any[] = [];
+        while (nextUrl) {
+          const response: Response = await fetch(nextUrl);
+          if (!response.ok) break;
           const data = await response.json();
-          setProducts(
-            (data.results || data).map((product: Product) => ({
-              ...product,
-              translated_name: cleanEnglishCopy(product.translated_name),
-              name: cleanEnglishCopy(product.name),
-              translated_description: cleanEnglishCopy(product.translated_description),
-              description: cleanEnglishCopy(product.description),
-              category: {
-                ...product.category,
-                name: cleanEnglishCopy(product.category?.name),
-              },
-            }))
-          );
+          if (Array.isArray(data)) { allProducts.push(...data); break; }
+          allProducts.push(...(data.results || []));
+          if (!data.next) break;
+          const next = new URL(data.next, window.location.origin);
+          nextUrl = window.location.origin + next.pathname + next.search;
         }
+        setProducts(allProducts.map((product: Product) => ({
+          ...product,
+          translated_name: cleanEnglishCopy(product.translated_name),
+          name: cleanEnglishCopy(product.name),
+          translated_description: cleanEnglishCopy(product.translated_description),
+          description: cleanEnglishCopy(product.description),
+          category: { ...product.category, name: cleanEnglishCopy(product.category?.name) },
+        })));
+
       } catch (error) {
         console.error('获取产品数据失败:', error);
+      } finally {
+        setProductsLoaded(true);
       }
     };
 
@@ -175,6 +193,7 @@ const Products: React.FC = () => {
           const data = await response.json();
           const list = (data.results || data).map((item: any) => ({
             id: item.id,
+            slug: item.slug,
             name: cleanEnglishCopy(item.translated_name || item.name),
             description: cleanEnglishCopy(item.translated_description || item.description),
             subcategories: item.subcategories ? item.subcategories.map((sub: any) => ({
@@ -188,21 +207,22 @@ const Products: React.FC = () => {
         }
       } catch (error) {
         console.error('获取分类数据失败:', error);
-      } finally {
-        setLoading(false);
       }
     };
 
-    fetchProducts();
-    fetchCategories();
+    setLoading(true);
+    setProductsLoaded(false);
+    Promise.all([fetchProducts(), fetchCategories()]).finally(() => setLoading(false));
   }, [currentLanguage]); // 当语言改变时重新获取数据
 
-  const activeCategory = selectedCategory ? categories.find(c => c.id === selectedCategory) : null;
+  const routeCategory = categorySlug ? categories.find(c => c.slug === categorySlug) : null;
+  const effectiveCategoryId = categorySlug ? routeCategory?.id ?? null : selectedCategory;
+  const activeCategory = effectiveCategoryId ? categories.find(c => c.id === effectiveCategoryId) : null;
   const activeSubcategory = selectedSubcategory ? activeCategory?.subcategories?.find(s => s.id === selectedSubcategory) : null;
 
   // 过滤产品（按分类和子分类筛选）
   const filteredProducts = products.filter(product => {
-    const matchesCategory = selectedCategory === null || product.category.id === selectedCategory;
+    const matchesCategory = effectiveCategoryId === null || product.category.id === effectiveCategoryId;
     const matchesSubcategory = selectedSubcategory === null || product.subcategory?.id === selectedSubcategory;
     return matchesCategory && matchesSubcategory;
   });
@@ -227,7 +247,7 @@ const Products: React.FC = () => {
   }
 
   return (
-    <div data-testid="products-page" className="bg-slate-50">
+    <div data-testid="products-page" data-products-loaded={productsLoaded ? 'true' : 'false'} data-translation-language={translationLanguage} className="bg-slate-50">
       <section className="relative overflow-hidden bg-slate-950 text-white">
         <div
           className="absolute inset-0 bg-cover bg-center opacity-45"
@@ -238,18 +258,18 @@ const Products: React.FC = () => {
         <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(2,6,23,0.92),rgba(12,74,110,0.74),rgba(15,23,42,0.70))]" />
         <div className="relative mx-auto max-w-7xl px-6 py-16 lg:px-8 lg:py-20">
           <div className="max-w-4xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-200">Product catalog</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-200">{t('products_catalog_label', 'Product catalog')}</p>
             <h1 className="mt-4 text-4xl font-semibold leading-tight md:text-5xl">
-              Aluminum Profile Product Center
+              {categorySlug ? categoryLabel : t('products_center_title', 'Aluminum Products Center')}
             </h1>
             <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-100">
-              Find architectural, industrial, trim, tube, and custom extrusion profiles with the details buyers need before sending drawings or RFQs.
+              {categoryDescription || t('products_center_desc', 'Browse our aluminum profile range and check specifications before sending a drawing or RFQ.')}
             </p>
           </div>
           <div className="mt-8 grid gap-4 text-sm text-slate-100 sm:grid-cols-3">
-            <div className="rounded-lg border border-white/15 bg-white/10 p-4 backdrop-blur">Custom extrusion and OEM projects</div>
-            <div className="rounded-lg border border-white/15 bg-white/10 p-4 backdrop-blur">Anodizing, powder coating, CNC support</div>
-            <div className="rounded-lg border border-white/15 bg-white/10 p-4 backdrop-blur">Export packaging and shipment planning</div>
+            <div className="rounded-lg border border-white/15 bg-white/10 p-4 backdrop-blur">{t('products_feature_custom', 'Custom extrusion and OEM projects')}</div>
+            <div className="rounded-lg border border-white/15 bg-white/10 p-4 backdrop-blur">{t('products_feature_finish', 'Anodizing, powder coating, and CNC support')}</div>
+            <div className="rounded-lg border border-white/15 bg-white/10 p-4 backdrop-blur">{t('products_feature_export', 'Export packaging and shipping planning')}</div>
           </div>
         </div>
       </section>
@@ -258,28 +278,28 @@ const Products: React.FC = () => {
         <div className="mb-8 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h2 className="text-lg font-semibold text-slate-900">Browse by profile type</h2>
-              <p className="mt-1 text-sm text-slate-600">Use categories as a fast starting point, then open a product page for parameters and RFQ details.</p>
+              <h2 className="text-lg font-semibold text-slate-900">{t('products_browse_title', 'Browse by profile type')}</h2>
+              <p className="mt-1 text-sm text-slate-600">{t('products_browse_desc', 'Filter by category first, then open a product page for specifications and inquiry details.')}</p>
             </div>
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"
-                onClick={() => handleCategorySelect(null)}
+                onClick={() => categorySlug ? navigate('/' + currentLanguage + '/products') : handleCategorySelect(null)}
                 className={`min-h-[44px] rounded-lg border px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-sky-500 ${
-                  selectedCategory === null
+                  effectiveCategoryId === null
                     ? 'border-sky-700 bg-sky-700 text-white'
                     : 'border-slate-200 bg-white text-slate-700 hover:border-sky-400 hover:text-sky-700'
                 }`}
               >
-                All Products
+                {t('product_detail_all_products', 'All Products')}
               </button>
               {categories.map((category) => (
                 <button
                   key={category.id}
                   type="button"
-                  onClick={() => handleCategorySelect(category.id)}
+                  onClick={() => navigate('/' + currentLanguage + '/products/category/' + category.slug)}
                   className={`min-h-[44px] rounded-lg border px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-sky-500 ${
-                    selectedCategory === category.id
+                    effectiveCategoryId === category.id
                       ? 'border-sky-700 bg-sky-700 text-white'
                       : 'border-slate-200 bg-white text-slate-700 hover:border-sky-400 hover:text-sky-700'
                   }`}
@@ -302,9 +322,9 @@ const Products: React.FC = () => {
                 </span>
               )}
             </h2>
-            {(activeCategory.description || activeSubcategory?.description) && (
+            {(categoryDescription || activeCategory.description || activeSubcategory?.description) && (
               <p className="text-slate-600 leading-7 whitespace-pre-line max-w-4xl">
-                {activeSubcategory?.description || activeCategory.description}
+                {categoryDescription || activeSubcategory?.description || activeCategory.description}
               </p>
             )}
           </div>
@@ -334,7 +354,7 @@ const Products: React.FC = () => {
                         decoding="async"
                       />
                       <div className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-800 shadow">
-                        {product.category?.name || 'Aluminum Profile'}
+                        {product.category?.name || t('product_detail_aluminum_profile', 'Aluminum Profile')}
                       </div>
                     </div>
                   </Link>
@@ -348,13 +368,13 @@ const Products: React.FC = () => {
                     <dl className="mt-5 grid gap-3 text-sm">
                       {product.range_param && (
                         <div className="rounded-lg bg-slate-50 p-3">
-                          <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Range</dt>
+                          <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">{t('products_range', 'Range')}</dt>
                           <dd className="mt-1 text-slate-900">{product.range_param}</dd>
                         </div>
                       )}
                       {(product.grade || product.temper) && (
                         <div className="rounded-lg bg-slate-50 p-3">
-                          <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Alloy / Temper</dt>
+                          <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">{t('products_alloy_temper', 'Alloy / Temper')}</dt>
                           <dd className="mt-1 text-slate-900">{[product.grade, product.temper].filter(Boolean).join(' / ')}</dd>
                         </div>
                       )}

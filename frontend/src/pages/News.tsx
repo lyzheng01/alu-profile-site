@@ -5,24 +5,27 @@ import { useTranslation } from '../contexts/TranslationContext';
 import FloatingContactButtons from '../components/FloatingContactButtons';
 import { useSeoMeta } from '../hooks/useSeoMeta';
 import { useStructuredData } from '../hooks/useStructuredData';
+import { resolveMediaUrl } from '../utils/url';
 
 interface Article {
   id: number;
   slug: string;
   title: string;
   content: string;
-  summary: string;
+  excerpt?: string;
+  summary?: string;
   tags: Array<{
     id: number;
     name: string;
   }>;
   created_at: string;
   updated_at: string;
-  author: string;
+  author?: string;
   featured_image?: string;
   meta_title?: string;
   meta_description?: string;
   meta_keywords?: string;
+  available_languages?: string[];
 }
 
 interface Tag {
@@ -31,6 +34,18 @@ interface Tag {
   description: string;
 }
 
+const normalizeLegacyArticleMedia = (value?: string) => {
+  if (!value) return value;
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.com';
+  return value.replace(/https?:\/\/(?:www\.)?lingyealuminum\.com/gi, origin);
+};
+
+const normalizeArticleMedia = (article: Article): Article => ({
+  ...article,
+  featured_image: resolveMediaUrl(normalizeLegacyArticleMedia(article.featured_image)),
+  content: normalizeLegacyArticleMedia(article.content) || '',
+});
+
 // 新闻详情页面组件
 const NewsDetail: React.FC = () => {
   const { articleRef } = useParams<{ articleRef: string }>();
@@ -38,18 +53,22 @@ const NewsDetail: React.FC = () => {
   const { t, currentLanguage } = useTranslation();
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
+  const seoLanguage = article && !article.available_languages?.includes(currentLanguage)
+    ? 'en'
+    : currentLanguage;
 
   // 设置页面标题
   useSeoMeta({
     title: article?.meta_title || (article ? `${article.title} | LingYe Aluminum` : undefined),
-    description: article?.meta_description || article?.summary || undefined,
+    description: article?.meta_description || article?.excerpt || article?.summary || undefined,
     keywords: article?.meta_keywords || undefined,
-    canonicalPath: article?.slug ? `/${currentLanguage}/news/${article.slug}` : undefined,
+    canonicalPath: article?.slug ? `/${seoLanguage}/news/${article.slug}` : undefined,
     ogTitle: article?.meta_title || article?.title || undefined,
-    ogDescription: article?.meta_description || article?.summary || undefined,
+    ogDescription: article?.meta_description || article?.excerpt || article?.summary || undefined,
     ogImage: article?.featured_image || undefined,
     robots: !article && !loading ? 'noindex,follow' : undefined,
-    language: currentLanguage,
+    language: seoLanguage,
+    alternateLanguages: article?.available_languages,
   });
 
   const articleStructuredData = React.useMemo(() => {
@@ -58,11 +77,11 @@ const NewsDetail: React.FC = () => {
       '@context': 'https://schema.org',
       '@type': 'Article',
       headline: article.title,
-      description: article.summary || undefined,
+      description: article.meta_description || article.excerpt || article.summary || undefined,
       datePublished: article.created_at,
       dateModified: article.updated_at || article.created_at,
       author: {
-        '@type': 'Person',
+        '@type': 'Organization',
         name: article.author || 'LingYe Aluminum',
       },
       publisher: {
@@ -78,7 +97,7 @@ const NewsDetail: React.FC = () => {
 
   const breadcrumbStructuredData = React.useMemo(() => {
     if (!article) return null;
-    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.cn';
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.com';
     return {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
@@ -86,13 +105,13 @@ const NewsDetail: React.FC = () => {
         {
           '@type': 'ListItem',
           position: 1,
-          name: 'Home',
+          name: t('news_breadcrumb_home', 'Home'),
           item: `${base}/${currentLanguage}`,
         },
         {
           '@type': 'ListItem',
           position: 2,
-          name: 'News',
+          name: t('news_breadcrumb_title', 'News'),
           item: `${base}/${currentLanguage}/news`,
         },
         {
@@ -103,7 +122,7 @@ const NewsDetail: React.FC = () => {
         },
       ],
     };
-  }, [article, currentLanguage]);
+  }, [article, currentLanguage, t]);
 
   useStructuredData('news-breadcrumb', breadcrumbStructuredData);
 
@@ -112,13 +131,13 @@ const NewsDetail: React.FC = () => {
       try {
         const isNumeric = /^\d+$/.test(articleRef || '');
         const detailUrl = isNumeric
-          ? `${API_ENDPOINTS.ARTICLES}${articleRef}/`
-          : `${API_ENDPOINTS.ARTICLES}by-slug/${articleRef}/`;
+          ? `${API_ENDPOINTS.ARTICLES}${articleRef}/?lang=${currentLanguage}`
+          : `${API_ENDPOINTS.ARTICLES}by-slug/${articleRef}/?lang=${currentLanguage}`;
 
         const response = await fetch(detailUrl);
         if (response.ok) {
           const data = await response.json();
-          setArticle(data);
+          setArticle(normalizeArticleMedia(data));
 
           // Keep backward compatibility for old id URLs and canonicalize to slug path.
           if (isNumeric && data?.slug) {
@@ -143,7 +162,8 @@ const NewsDetail: React.FC = () => {
   // 格式化日期
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
+    const locale = currentLanguage === 'zh' ? 'zh-CN' : currentLanguage === 'es' ? 'es-ES' : currentLanguage === 'pt' ? 'pt-BR' : 'en-US';
+    return date.toLocaleDateString(locale, {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -168,13 +188,13 @@ const NewsDetail: React.FC = () => {
       <div>
         <div className="max-w-4xl mx-auto px-8 py-12">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-800 mb-4">Article Not Found</h1>
-            <p className="text-gray-600 mb-6">The article you're looking for doesn't exist.</p>
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">{t('news_article_not_found', 'Article Not Found')}</h1>
+            <p className="text-gray-600 mb-6">{t('news_article_missing', "The article you're looking for doesn't exist.")}</p>
             <button
               onClick={() => navigate(`/${currentLanguage}/news`)}
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
             >
-              Back to News
+              {t('news_back_to_news', 'Back to News')}
             </button>
           </div>
         </div>
@@ -193,7 +213,7 @@ const NewsDetail: React.FC = () => {
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Back to News
+          {t('news_back_to_news', 'Back to News')}
         </Link>
 
         {/* 文章标题 */}
@@ -201,7 +221,7 @@ const NewsDetail: React.FC = () => {
 
         {/* 文章元信息 */}
         <div className="flex items-center text-gray-500 text-sm mb-6">
-          <span>By {article.author}</span>
+          <span>LingYe Aluminum</span>
           <span className="mx-2">•</span>
           <span>{formatDate(article.created_at)}</span>
         </div>
@@ -235,10 +255,10 @@ const NewsDetail: React.FC = () => {
         )}
 
         {/* 文章摘要 */}
-        {article.summary && (
+        {(article.excerpt || article.summary) && (
           <div className="mb-8 p-6 bg-gray-50 rounded-lg">
-            <h2 className="text-xl font-semibold text-gray-800 mb-3">Summary</h2>
-            <p className="text-gray-600 leading-relaxed">{article.summary}</p>
+            <h2 className="text-xl font-semibold text-gray-800 mb-3">{t('news_summary', 'Summary')}</h2>
+            <p className="text-gray-600 leading-relaxed">{article.excerpt || article.summary}</p>
           </div>
         )}
 
@@ -261,7 +281,6 @@ const NewsDetail: React.FC = () => {
 // 新闻列表页面组件
 const NewsList: React.FC = () => {
   const { t, currentLanguage } = useTranslation();
-  const navigate = useNavigate();
   const [articles, setArticles] = useState<Article[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
@@ -272,8 +291,8 @@ const NewsList: React.FC = () => {
   const canonicalQuery = currentPage > 1 ? `?page=${currentPage}` : selectedTag ? `?tag=${selectedTag}` : '';
 
   useSeoMeta({
-    title: currentPage > 1 ? `News Page ${currentPage} | Aluminum Industry News | LingYe Aluminum` : undefined,
-    description: 'Read latest aluminum market trends, processing insights, and product updates from LingYe Aluminum.',
+    title: currentPage > 1 ? `${t('news_seo_title', 'Aluminum Industry News')} - Page ${currentPage}` : t('news_seo_title', 'Aluminum Industry News'),
+    description: t('news_seo_description', 'Read latest aluminum market trends, processing insights, and product updates.'),
     canonicalPath: `/${currentLanguage}/news${canonicalQuery}`,
     robots: currentPage > 1 ? 'noindex,follow' : undefined,
     language: currentLanguage,
@@ -282,24 +301,24 @@ const NewsList: React.FC = () => {
   const collectionStructuredData = React.useMemo(() => ({
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: 'Aluminum Industry News | LingYe Aluminum',
-    description: 'Latest aluminum market trends, processing insights, and product updates.',
-    isPartOf: { '@type': 'WebSite', name: 'LingYe Aluminum', url: 'https://lingyealu.cn' },
-  }), []);
+    name: t('news_collection_name', 'Aluminum Industry News | LingYe Aluminum'),
+    description: t('news_collection_description', 'Latest aluminum market trends, processing insights, and product updates.'),
+    isPartOf: { '@type': 'WebSite', name: 'LingYe Aluminum', url: 'https://lingyealu.com' },
+  }), [t]);
 
   useStructuredData('news-list-collection', collectionStructuredData);
 
   const breadcrumbStructuredData = React.useMemo(() => {
-    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.cn';
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://lingyealu.com';
     return {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: `${base}/${currentLanguage}` },
-        { '@type': 'ListItem', position: 2, name: 'News', item: `${base}/${currentLanguage}/news` },
+        { '@type': 'ListItem', position: 1, name: t('news_breadcrumb_home', 'Home'), item: `${base}/${currentLanguage}` },
+        { '@type': 'ListItem', position: 2, name: t('news_breadcrumb_title', 'News'), item: `${base}/${currentLanguage}/news` },
       ],
     };
-  }, [currentLanguage]);
+  }, [currentLanguage, t]);
 
   useStructuredData('news-list-breadcrumb', breadcrumbStructuredData);
 
@@ -307,10 +326,10 @@ const NewsList: React.FC = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await fetch(API_ENDPOINTS.ARTICLES);
+        const response = await fetch(`${API_ENDPOINTS.ARTICLES}?lang=${currentLanguage}`);
         if (response.ok) {
           const data = await response.json();
-          setArticles(data.results || data);
+          setArticles((data.results || data).map(normalizeArticleMedia));
         }
       } catch (error) {
         console.error('获取新闻数据失败:', error);
@@ -319,7 +338,7 @@ const NewsList: React.FC = () => {
 
     const fetchTags = async () => {
       try {
-        const response = await fetch(API_ENDPOINTS.TAGS);
+        const response = await fetch(`${API_ENDPOINTS.TAGS}?lang=${currentLanguage}`);
         if (response.ok) {
           const data = await response.json();
           setTags(data.results || data);
@@ -333,7 +352,7 @@ const NewsList: React.FC = () => {
 
     fetchArticles();
     fetchTags();
-  }, []);
+  }, [currentLanguage, t]);
 
   // 过滤新闻（只按标签筛选，不搜索）
   const filteredArticles = articles.filter(article => {
@@ -351,7 +370,8 @@ const NewsList: React.FC = () => {
   // 格式化日期
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
+    const locale = currentLanguage === 'zh' ? 'zh-CN' : currentLanguage === 'es' ? 'es-ES' : currentLanguage === 'pt' ? 'pt-BR' : 'en-US';
+    return date.toLocaleDateString(locale, {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -421,7 +441,7 @@ const NewsList: React.FC = () => {
                 {filteredArticles.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg">{t('status_no_data', 'No news data')}</p>
-            <p className="text-gray-400 mt-2">Please add news in the admin panel</p>
+            <p className="text-gray-400 mt-2">{t('news_admin_hint', 'Please add news in the admin panel')}</p>
           </div>
         ) : (
           <>
@@ -454,7 +474,7 @@ const NewsList: React.FC = () => {
                   {/* 文章信息 */}
                   <div className="p-6">
                     <div className="flex items-center text-gray-500 text-sm mb-3">
-                      <span>{article.author}</span>
+                      <span>LingYe Aluminum</span>
                       <span className="mx-2">•</span>
                       <span>{formatDate(article.created_at)}</span>
                     </div>
@@ -464,7 +484,7 @@ const NewsList: React.FC = () => {
                     </h3>
                     
                                          <p className="text-gray-600 text-sm line-clamp-3 mb-4">
-                       {article.summary || (article.content ? article.content.substring(0, 150).replace(/\n/g, ' ') + '...' : 'No content available')}
+                       {article.excerpt || article.summary || (article.content ? article.content.replace(/<[^>]+>/g, ' ').substring(0, 150).replace(/\s+/g, ' ').trim() + '...' : t('news_no_content', 'No content available'))}
                      </p>
 
                     {/* 标签 */}
@@ -505,7 +525,7 @@ const NewsList: React.FC = () => {
                     disabled={currentPage === 1}
                     className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
                   >
-                    Previous
+                    {t('news_previous', 'Previous')}
                   </button>
                   
                   {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
@@ -527,7 +547,7 @@ const NewsList: React.FC = () => {
                     disabled={currentPage === totalPages}
                     className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
                   >
-                    Next
+                    {t('news_next', 'Next')}
                   </button>
                 </div>
               </div>
@@ -538,7 +558,7 @@ const NewsList: React.FC = () => {
         {/* 新闻统计 */}
         <div className="mt-12 text-center">
           <p className="text-gray-600">
-            Found <span className="font-semibold text-blue-600">{filteredArticles.length}</span> news articles
+            {t('news_found_articles', 'Found {count} news articles').replace('{count}', String(filteredArticles.length))}
           </p>
         </div>
       </div>

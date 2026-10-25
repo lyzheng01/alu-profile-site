@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">Aluminium extrusion weight per metre formula</title>
+  <desc id="desc">Formula: cross-sectional area in square millimetres multiplied by material density in grams per cubic centimetre and divided by one thousand equals kilograms per metre.</desc>
+  <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#122d42"/><stop offset="1" stop-color="#1f5866"/></linearGradient><filter id="shadow"><feDropShadow dx="0" dy="9" stdDeviation="12" flood-color="#051722" flood-opacity=".3"/></filter></defs>
+  <rect width="1200" height="675" rx="30" fill="url(#bg)"/>
+  <circle cx="1070" cy="105" r="185" fill="#68c2c0" opacity=".12"/><circle cx="80" cy="600" r="200" fill="#68c2c0" opacity=".08"/>
+  <text x="600" y="105" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" font-weight="700" letter-spacing="3" fill="#a9dce0">THEORETICAL LINEAR WEIGHT</text>
+  <g filter="url(#shadow)"><rect x="94" y="156" width="1012" height="172" rx="24" fill="#f6fafb"/></g>
+  <text x="600" y="218" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" fill="#426171">A (mm²) × ρ (g/cm³) ÷ 1,000</text>
+  <text x="600" y="284" text-anchor="middle" font-family="Arial,sans-serif" font-size="43" font-weight="700" fill="#123d52">= kg/m</text>
+  <text x="600" y="416" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" font-weight="700" letter-spacing="2" fill="#a9dce0">USE THE APPROVED SECTION AREA AND ALLOY DENSITY</text>
+  <text x="600" y="487" text-anchor="middle" font-family="Arial,sans-serif" font-size="21" fill="#d3e8eb">The numerical example belongs in the article text.</text>
+  <text x="600" y="542" text-anchor="middle" font-family="Arial,sans-serif" font-size="19" fill="#a9c5cd">Theoretical linear weight • confirm supplier data</text>
+</svg>

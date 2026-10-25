@@ -51,6 +51,7 @@ const AppContent: React.FC = () => {
           {supportedLanguages.map(lang => (
             <Route key={`${lang}-products`} path={`/${lang}/products`} element={<Products />} />
           ))}
+          <Route path="/:lang/products/category/:categorySlug" element={<Products />} />
           {supportedLanguages.map(lang => (
             <Route key={`${lang}-product-detail`} path={`/${lang}/products/:productSlug`} element={<ProductDetail />} />
           ))}

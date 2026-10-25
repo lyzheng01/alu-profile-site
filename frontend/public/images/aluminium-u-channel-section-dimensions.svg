@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">U-channel cross-section dimension reference</title>
+  <desc id="desc">A schematic U-channel cross-section with arrows for outside base width B, overall leg height H, wall thickness T, and clear opening W. No nominal dimensions are implied.</desc>
+  <defs>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4f7fa"/><stop offset=".48" stop-color="#d5dee7"/><stop offset="1" stop-color="#aebdca"/></linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#176b87"/></marker>
+    <style>.dim{stroke:#176b87;stroke-width:3;fill:none;marker-start:url(#arrow);marker-end:url(#arrow)}.ext{stroke:#7d97a8;stroke-width:2;stroke-dasharray:5 5;fill:none}.label{font:700 30px Inter,Arial,sans-serif;fill:#12384d}.small{font:600 20px Inter,Arial,sans-serif;letter-spacing:1.4px;fill:#557184}</style>
+  </defs>
+  <rect width="1200" height="680" rx="28" fill="#f7fafc"/>
+  <text x="72" y="78" class="small">U-CHANNEL · SCHEMATIC SECTION</text>
+  <text x="72" y="119" class="small">REFERENCE ONLY · NOT A PRODUCT DRAWING</text>
+  <path d="M300 190 V470 H900 V190 H820 V390 H380 V190 Z" fill="url(#metal)" stroke="#526b7c" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M380 390 H820" stroke="#ffffff" stroke-width="3" opacity=".82"/>
+  <path class="ext" d="M300 475 V565 M900 475 V565"/><path class="dim" d="M310 548 H890"/>
+  <rect x="572" y="526" width="56" height="42" rx="12" fill="#f7fafc"/><text x="600" y="557" text-anchor="middle" class="label">B</text>
+  <path class="ext" d="M295 190 H175 M295 470 H175"/><path class="dim" d="M198 200 V460"/>
+  <rect x="165" y="316" width="65" height="45" rx="12" fill="#f7fafc"/><text x="197" y="348" text-anchor="middle" class="label">H</text>
+  <path class="ext" d="M820 185 V145 M900 185 V145"/><path class="dim" d="M830 155 H890"/>
+  <rect x="840" y="128" width="42" height="38" rx="10" fill="#f7fafc"/><text x="861" y="156" text-anchor="middle" class="label">T</text>
+  <path class="ext" d="M380 395 V330 M820 395 V330"/><path class="dim" d="M390 340 H810"/>
+  <rect x="572" y="318" width="56" height="42" rx="12" fill="#f7fafc"/><text x="600" y="349" text-anchor="middle" class="label">W</text>
+  <text x="72" y="625" class="small">B · OUTSIDE BASE WIDTH     H · OVERALL LEG HEIGHT     T · WALL THICKNESS     W · CLEAR OPENING</text>
+</svg>
