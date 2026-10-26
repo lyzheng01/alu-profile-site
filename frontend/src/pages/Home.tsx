@@ -196,7 +196,7 @@ const Home: React.FC = () => {
           const categoryData = await categoriesResponse.json();
           const categoryList = (categoryData.results || categoryData || []) as CategoryItem[];
           setCategories(
-            categoryList.slice(0, 4).map((category) => ({
+            [...categoryList].sort((a, b) => { const order = ['4', '2', '3', '1']; const ai = order.indexOf(String(a.id)); const bi = order.indexOf(String(b.id)); return (ai < 0 ? order.length : ai) - (bi < 0 ? order.length : bi); }).slice(0, 4).map((category) => ({
               ...category,
               name: cleanEnglishCopy((category as any).translated_name || category.name),
               description: cleanEnglishCopy((category as any).translated_description || category.description),
@@ -213,25 +213,22 @@ const Home: React.FC = () => {
 
   const heroImage = temporaryAluslinkImages.hero;
 
-  const slideImages = useMemo(() => {
-    const dynamicImages = factoryImages
-      .map((item) => cleanMediaUrl(item.image))
-      .filter((image) => Boolean(image) && image !== heroImage);
+  const slideImages = useMemo(() => [heroImage, temporaryAluslinkImages.qualityInspection, '/images/home-banner-20261025.png'], [heroImage]);
 
-    return [heroImage, temporaryAluslinkImages.qualityInspection, ...dynamicImages].slice(0, 3);
-  }, [factoryImages, heroImage]);
-
-  const galleryImages = useMemo(
-    () =>
-      factoryImages
-        .map((item) => ({
-          title: item.title || 'Factory image',
-          image: cleanMediaUrl(item.image),
-        }))
-        .filter((item) => item.image)
-        .slice(0, 3),
-    [factoryImages]
-  );
+  const galleryImages = useMemo(() => {
+    const slidePaths = new Set(slideImages.map((image) => new URL(image, window.location.origin).pathname.toLowerCase()));
+    const seenPaths = new Set<string>();
+    return factoryImages
+      .map((item) => ({ title: item.title || 'Factory image', image: cleanMediaUrl(item.image) }))
+      .filter((item) => {
+        if (!item.image) return false;
+        const path = new URL(item.image, window.location.origin).pathname.toLowerCase();
+        if (slidePaths.has(path) || seenPaths.has(path) || path.endsWith('/factory-extrusion-workshop.png')) return false;
+        seenPaths.add(path);
+        return true;
+      })
+      .slice(0, 3);
+  }, [factoryImages, slideImages]);
 
   const primaryProduct = featuredProducts[0];
   const secondaryProducts = featuredProducts.slice(1, 4);

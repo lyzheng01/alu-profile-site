@@ -15,7 +15,7 @@ class AdvantageSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Advantage
-        fields = ['id', 'title', 'description', 'icon', 'image', 'order']
+        fields = ['id', 'title', 'description', 'icon', 'order']
 
 
 class CertificateSerializer(serializers.ModelSerializer):
@@ -43,7 +43,7 @@ class TranslatedAdvantageSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Advantage
-        fields = ['id', 'translated_title', 'translated_description', 'icon', 'image', 'order']
+        fields = ['id', 'translated_title', 'translated_description', 'icon', 'order']
     
     def get_translated_title(self, obj):
         from apps.products.services import translation_service

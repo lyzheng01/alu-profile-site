@@ -177,8 +177,8 @@ const Navbar: React.FC = () => {
   ];
 
   return (
-    <nav className={`sticky top-0 z-50 border-b border-slate-800 bg-slate-950 transition-all duration-300 
-      ${isScrolled ? 'shadow-lg shadow-slate-950/20' : 'shadow-none'}`}>
+    <nav className={`sticky top-0 z-50 border-b border-gray-800 bg-gray-900 transition-all duration-300 
+      ${isScrolled ? 'shadow-lg shadow-gray-950/20' : 'shadow-none'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -239,7 +239,7 @@ const Navbar: React.FC = () => {
                       {isProductsMenuOpen && (
                         <div
                           id="desktop-products-menu"
-                          className="absolute top-full left-0 mt-2 w-80 bg-slate-950 rounded-lg shadow-xl border border-white/10 py-2 z-50"
+                          className="absolute top-full left-0 mt-2 w-80 bg-gray-900 rounded-lg shadow-xl border border-white/10 py-2 z-50"
                         >
                           {productCategories.map((category) => (
                             <div key={category.id} className="group">
@@ -315,7 +315,7 @@ const Navbar: React.FC = () => {
 
             {/* Language Dropdown */}
             {isLanguageMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-slate-950 rounded-lg shadow-lg border border-white/10 py-2 z-50">
+              <div className="absolute right-0 mt-2 w-48 bg-gray-900 rounded-lg shadow-lg border border-white/10 py-2 z-50">
                 {supportedLanguages.map((language) => (
                   <button
                     key={language.code}

@@ -1,6 +1,52 @@
 import React, { useState } from 'react';
 import { API_ENDPOINTS } from '../config/api';
 import { trackEvent } from '../utils/analytics';
+import { useTranslation } from '../contexts/TranslationContext';
+
+type QuoteLanguage = 'en' | 'zh' | 'es' | 'pt';
+
+const quoteCopy: Record<QuoteLanguage, Record<string, string>> = {
+  en: {
+    title: 'Get a Quote', intro: 'Tell us what you need and our team will follow up with you.',
+    name: 'Name', namePlaceholder: 'Your full name', email: 'Email', emailPlaceholder: 'you@example.com',
+    company: 'Company name', companyPlaceholder: 'Your company name', country: 'Country / region', countryPlaceholder: 'Your country or region',
+    subject: 'Subject', subjectPlaceholder: 'What is your inquiry about?', message: 'Message',
+    messagePlaceholder: 'Share the specifications, quantity, finish, or delivery requirements you would like us to review.',
+    productLink: 'The product page link will be included with your inquiry.', submitting: 'Sending…', submit: 'Send inquiry',
+    success: 'Your inquiry has been sent. We will be in touch.', submitError: 'We could not send your inquiry. Please try again.',
+    networkError: 'Connection error. Check your internet connection and try again.',
+  },
+  zh: {
+    title: '获取报价', intro: '请告诉我们您的需求，我们会与您联系。',
+    name: '姓名', namePlaceholder: '请输入您的姓名', email: '电子邮箱', emailPlaceholder: 'you@example.com',
+    company: '公司名称', companyPlaceholder: '请输入公司名称', country: '国家/地区', countryPlaceholder: '请输入国家或地区',
+    subject: '咨询主题', subjectPlaceholder: '请简要说明咨询内容', message: '需求说明',
+    messagePlaceholder: '请填写产品规格、数量、表面处理或交付要求。',
+    productLink: '产品页面链接会随咨询内容一并发送。', submitting: '正在提交…', submit: '提交询价',
+    success: '询价已提交，我们会与您联系。', submitError: '询价未能提交，请重试。',
+    networkError: '网络连接失败，请检查网络后重试。',
+  },
+  es: {
+    title: 'Solicitar cotización', intro: 'Cuéntenos qué necesita y nuestro equipo se pondrá en contacto con usted.',
+    name: 'Nombre', namePlaceholder: 'Escriba su nombre completo', email: 'Correo electrónico', emailPlaceholder: 'nombre@ejemplo.com',
+    company: 'Empresa', companyPlaceholder: 'Nombre de su empresa', country: 'País o región', countryPlaceholder: 'País o región',
+    subject: 'Asunto', subjectPlaceholder: '¿Sobre qué trata su consulta?', message: 'Mensaje',
+    messagePlaceholder: 'Indique las especificaciones, la cantidad, el acabado o los requisitos de entrega que desea consultar.',
+    productLink: 'El enlace de este producto se incluirá en su consulta.', submitting: 'Enviando…', submit: 'Enviar consulta',
+    success: 'Su consulta se ha enviado. Nos pondremos en contacto con usted.', submitError: 'No se pudo enviar su consulta. Inténtelo de nuevo.',
+    networkError: 'Error de conexión. Compruebe su conexión a Internet e inténtelo de nuevo.',
+  },
+  pt: {
+    title: 'Solicitar orçamento', intro: 'Diga-nos o que precisa e a nossa equipa entrará em contacto consigo.',
+    name: 'Nome', namePlaceholder: 'Introduza o seu nome completo', email: 'E-mail', emailPlaceholder: 'nome@exemplo.com',
+    company: 'Empresa', companyPlaceholder: 'Nome da empresa', country: 'País/região', countryPlaceholder: 'País ou região',
+    subject: 'Assunto', subjectPlaceholder: 'Sobre o que pretende falar?', message: 'Mensagem',
+    messagePlaceholder: 'Indique as especificações, a quantidade, o acabamento ou os requisitos de entrega que pretende consultar.',
+    productLink: 'O link desta página do produto será incluído no seu pedido.', submitting: 'A enviar…', submit: 'Enviar pedido',
+    success: 'O seu pedido foi enviado. Entraremos em contacto consigo.', submitError: 'Não foi possível enviar o pedido. Tente novamente.',
+    networkError: 'Erro de ligação. Verifique a sua ligação à Internet e tente novamente.',
+  },
+};
 
 interface InquiryFormProps {
   productName?: string;
@@ -9,6 +55,8 @@ interface InquiryFormProps {
 }
 
 const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onSuccess }) => {
+  const { currentLanguage } = useTranslation();
+  const copy = quoteCopy[currentLanguage as QuoteLanguage] || quoteCopy.en;
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -85,12 +133,12 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
       } else {
         const errorData = await response.json();
         setSubmitStatus('error');
-        setErrorMessage(errorData.message || 'Failed to submit inquiry. Please try again.');
+        setErrorMessage(currentLanguage === 'en' && errorData.message ? errorData.message : copy.submitError);
       }
     } catch (error) {
       console.error('Error submitting inquiry:', error);
       setSubmitStatus('error');
-      setErrorMessage('Network error. Please check your connection and try again.');
+      setErrorMessage(copy.networkError);
     } finally {
       setIsSubmitting(false);
     }
@@ -99,8 +147,8 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
-        <h2 className="text-2xl font-bold text-white">Get a Quote</h2>
-        <p className="text-blue-100 text-sm mt-1">Fill out the form below and we'll get back to you as soon as possible</p>
+        <h2 className="text-2xl font-bold text-white">{copy.title}</h2>
+        <p className="text-blue-100 text-sm mt-1">{copy.intro}</p>
       </div>
       
       <form onSubmit={handleSubmit} className="p-6">
@@ -108,7 +156,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
           {/* Name */}
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-              Name <span className="text-red-500">*</span>
+              {copy.name} <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -118,14 +166,14 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
               value={formData.name}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-              placeholder="Your full name"
+              placeholder={copy.namePlaceholder}
             />
           </div>
 
           {/* Email */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-              Email <span className="text-red-500">*</span>
+              {copy.email} <span className="text-red-500">*</span>
             </label>
             <input
               type="email"
@@ -135,14 +183,14 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
               value={formData.email}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-              placeholder="your.email@example.com"
+              placeholder={copy.emailPlaceholder}
             />
           </div>
 
           {/* Company */}
           <div>
             <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
-              Company Name
+              {copy.company}
             </label>
             <input
               type="text"
@@ -151,14 +199,14 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
               value={formData.company}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-              placeholder="Your company name"
+              placeholder={copy.companyPlaceholder}
             />
           </div>
 
           {/* Country */}
           <div>
             <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">
-              Country
+              {copy.country}
             </label>
             <input
               type="text"
@@ -167,7 +215,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
               value={formData.country}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-              placeholder="Your country"
+              placeholder={copy.countryPlaceholder}
             />
           </div>
         </div>
@@ -175,7 +223,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
         {/* Subject */}
         <div className="mt-6">
           <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-            Subject <span className="text-red-500">*</span>
+            {copy.subject} <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -185,14 +233,14 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
             value={formData.subject}
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-            placeholder="Inquiry subject"
+            placeholder={copy.subjectPlaceholder}
           />
         </div>
 
         {/* Message */}
         <div className="mt-6">
           <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-            Your Message <span className="text-red-500">*</span>
+            {copy.message} <span className="text-red-500">*</span>
           </label>
           <textarea
             id="message"
@@ -202,11 +250,11 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
             value={formData.message}
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition resize-none"
-            placeholder="Please describe your inquiry in detail..."
+            placeholder={copy.messagePlaceholder}
           />
           {productLink && (
             <p className="text-xs text-gray-500 mt-1">
-              Product link will be automatically attached to your message
+              {copy.productLink}
             </p>
           )}
         </div>
@@ -228,10 +276,10 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Submitting...
+                {copy.submitting}
               </span>
             ) : (
-              'Submit Inquiry'
+              copy.submit
             )}
           </button>
         </div>
@@ -243,7 +291,7 @@ const InquiryForm: React.FC<InquiryFormProps> = ({ productName, productLink, onS
               <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
-              <p className="text-green-800 font-medium">Inquiry submitted successfully! We'll get back to you soon.</p>
+              <p className="text-green-800 font-medium">{copy.success}</p>
             </div>
           </div>
         )}

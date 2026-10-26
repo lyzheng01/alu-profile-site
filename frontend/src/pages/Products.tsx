@@ -219,6 +219,13 @@ const Products: React.FC = () => {
   });
 
   const getProductTitle = (product: Product) => product.translated_name || product.name || 'Aluminum Profile';
+  const getAlloyTemper = (product: Product) => {
+    const source = `${product.grade || ''},${product.temper || ''}`;
+    const allowed = ['6063', '6005', '6061', '6085'];
+    const matches = allowed.filter((alloy) => new RegExp(`(^|[^A-Za-z0-9])${alloy}([^A-Za-z0-9]|$)`).test(source));
+    if (/(^|[^A-Za-z0-9])T5\s*\/\s*T6([^A-Za-z0-9]|$)/i.test(source)) matches.push('T5/T6');
+    return matches.join(', ');
+  };
   const getProductDescription = (product: Product) =>
     product.translated_description || product.description || 'Custom aluminum extrusion profile with export-ready production support.';
   const getProductImage = (product: Product) =>
@@ -327,10 +334,10 @@ const Products: React.FC = () => {
                           <dd className="mt-1 text-slate-900">{product.range_param}</dd>
                         </div>
                       )}
-                      {(product.grade || product.temper) && (
+                      {getAlloyTemper(product) && (
                         <div className="rounded-lg bg-slate-50 p-3">
                           <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">{t('products_alloy_temper', 'Alloy / Temper')}</dt>
-                          <dd className="mt-1 text-slate-900">{[product.grade, product.temper].filter(Boolean).join(' / ')}</dd>
+                          <dd className="mt-1 text-slate-900">{getAlloyTemper(product)}</dd>
                         </div>
                       )}
                     </dl>

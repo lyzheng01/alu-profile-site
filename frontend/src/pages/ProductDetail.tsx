@@ -85,6 +85,48 @@ const factorySectionHeadings: Record<FactoryLanguage, string> = {
   pt: 'NOSSA FÁBRICA',
 };
 
+const productPageCopy: Record<FactoryLanguage, Record<string, string>> = {
+  en: { loading: 'Loading…', notFound: 'Product not found', backToProducts: 'Back to Products', breadcrumb: 'Breadcrumb', view: 'view', oemAvailable: 'Available', oemUnavailable: 'Not available', whyChooseUs: 'Why choose us?' },
+  zh: { loading: '正在加载…', notFound: '未找到该产品', backToProducts: '返回产品列表', breadcrumb: '面包屑导航', view: '图片', oemAvailable: '支持', oemUnavailable: '不支持', whyChooseUs: '为什么选择我们？' },
+  es: { loading: 'Cargando…', notFound: 'Producto no encontrado', backToProducts: 'Volver a los productos', breadcrumb: 'Ruta de navegación', view: 'vista', oemAvailable: 'Disponible', oemUnavailable: 'No disponible', whyChooseUs: '¿Por qué elegirnos?' },
+  pt: { loading: 'A carregar…', notFound: 'Produto não encontrado', backToProducts: 'Voltar aos produtos', breadcrumb: 'Navegação estrutural', view: 'vista', oemAvailable: 'Disponível', oemUnavailable: 'Não disponível', whyChooseUs: 'Por que nos escolher?' },
+};
+
+const factoryOverviewModules = [
+  {
+    id: 'surface-treatment-options',
+    image: '/images/surface-treatment-options.webp',
+    title: {
+      en: 'Surface Treatment Options',
+      zh: '表面处理方式',
+      es: 'Opciones de tratamiento de superficies',
+      pt: 'Opções de tratamento de superfície',
+    },
+    description: {
+      en: 'Visual reference for common profile finishes. Applicable processes, brands, coating thickness and color range are confirmed for each project.',
+      zh: '常见型材表面效果参考图。适用工艺、品牌、涂层厚度与颜色范围以具体项目确认信息为准。',
+      es: 'Referencia visual de acabados habituales para perfiles. Los procesos, las marcas, el espesor del recubrimiento y la gama de colores se confirman para cada proyecto.',
+      pt: 'Referência visual de acabamentos comuns para perfis. Os processos, as marcas, a espessura do revestimento e a gama de cores são confirmados para cada projeto.',
+    },
+  },
+  {
+    id: 'aluminum-profile-production-process',
+    image: '/images/aluminum-profile-process.webp',
+    title: {
+      en: 'Production Process',
+      zh: '铝型材生产流程',
+      es: 'Proceso de producción',
+      pt: 'Processo de produção',
+    },
+    description: {
+      en: 'Illustrative overview of mold development, extrusion, finishing, machining and packing. Applicable steps and the production route depend on the product and confirmed order requirements.',
+      zh: '模具开发、挤压、表面处理、深加工与包装流程示意。适用工序和具体生产路线以产品及已确认订单要求为准。',
+      es: 'Vista ilustrativa del desarrollo del molde, la extrusión, los acabados, el mecanizado y el embalaje. Las etapas y la ruta de producción aplicables dependen del producto y de los requisitos confirmados del pedido.',
+      pt: 'Visão ilustrativa do desenvolvimento do molde, extrusão, acabamentos, usinagem e embalagem. As etapas aplicáveis e o fluxo de produção dependem do produto e dos requisitos confirmados do pedido.',
+    },
+  },
+];
+
 const factoryContentTranslations: Record<string, Record<FactoryLanguage, string>> = {
   '铝型材挤压生产环节': {
     en: 'Aluminum extrusion production process',
@@ -123,16 +165,28 @@ const factoryContentTranslations: Record<string, Record<FactoryLanguage, string>
     pt: 'Área de produção de extrusão e movimentação de perfis de alumínio. A imagem mostra uma etapa de fabricação; os equipamentos e o planejamento específicos são confirmados com o fornecedor do projeto.',
   },
   '型材包装作业': {
-    en: 'Profile packaging operations',
-    zh: '型材包装作业',
-    es: 'Operaciones de embalaje de perfiles',
-    pt: 'Operações de embalagem de perfis',
+    en: 'Protective packaging & dispatch preparation',
+    zh: '防护包装与发运准备',
+    es: 'Embalaje protector y preparación del envío',
+    pt: 'Embalagem protetora e preparação para expedição',
   },
   '型材包装作业现场，展示成品整理与防护包装环节。实际包装方式按订单规格、运输路线与项目要求确认。': {
     en: 'Profile packaging area showing finished-product organization and protective packaging. The packaging method is confirmed according to order specifications, shipping route, and project requirements.',
     zh: '型材包装作业现场，展示成品整理与防护包装环节。实际包装方式按订单规格、运输路线与项目要求确认。',
     es: 'Zona de embalaje de perfiles que muestra la organización del producto terminado y su protección. El método de embalaje se confirma según las especificaciones del pedido, la ruta de transporte y los requisitos del proyecto.',
     pt: 'Área de embalagem de perfis que mostra a organização dos produtos acabados e sua proteção. O método de embalagem é confirmado conforme as especificações do pedido, a rota de transporte e os requisitos do projeto.',
+  },
+  '铝型材尺寸与外观检验': {
+    en: 'Aluminum profile dimensional inspection',
+    zh: '铝型材尺寸与外观检验',
+    es: 'Inspección dimensional de perfiles de aluminio',
+    pt: 'Inspeção dimensional de perfis de alumínio',
+  },
+  '展示铝型材尺寸检验参考场景。可按已确认图纸或样品核对关键尺寸与表面状态；检验项目按订单及验收要求确定。': {
+    en: 'Reference image of dimensional inspection for aluminum profiles. Critical dimensions and visible surfaces may be checked against the approved drawing or sample; inspection points depend on order and acceptance requirements.',
+    zh: '展示铝型材尺寸检验参考场景。可按已确认图纸或样品核对关键尺寸与表面状态；检验项目按订单及验收要求确定。',
+    es: 'Imagen de referencia de la inspección dimensional de perfiles de aluminio. Las dimensiones clave y las superficies visibles pueden comprobarse según el plano o la muestra aprobados; los puntos de inspección dependen del pedido y de los criterios de aceptación.',
+    pt: 'Imagem de referência da inspeção dimensional de perfis de alumínio. As dimensões principais e as superfícies visíveis podem ser verificadas conforme o desenho ou a amostra aprovados; os pontos de inspeção dependem do pedido e dos critérios de aceitação.',
   },
   '模具存放现场': {
     en: 'Die storage area',
@@ -165,6 +219,7 @@ const ProductDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentLanguage, setCurrentLanguage] = useState(routeLanguage);
+  const pageCopy = productPageCopy[currentLanguage as FactoryLanguage] || productPageCopy.en;
   const localizedProductName = product?.translated_name || product?.name || t('product_detail_aluminum_profile', 'Aluminum Profile');
   const getLocalizedProductName = (item: Product) => item.translated_name || item.name || t('product_detail_aluminum_profile', 'Aluminum Profile');
 
@@ -198,7 +253,7 @@ const ProductDetail: React.FC = () => {
   useSeoMeta({
     title: product ? `${localizedProductName} | LingYe Aluminum` : undefined,
     description: product
-      ? (product.description || `Explore ${localizedProductName} from LingYe Aluminum with custom aluminum extrusion and global supply support.`)
+      ? (product.description || t('product_detail_description_pending', 'Project-specific details are confirmed against the approved drawing and specification.'))
       : undefined,
     canonicalPath: product?.slug ? `/${currentLanguage}/products/${product.slug}` : undefined,
     ogImage: product?.images?.[0]?.image
@@ -248,13 +303,13 @@ const ProductDetail: React.FC = () => {
         {
           '@type': 'ListItem',
           position: 1,
-          name: 'Home',
+          name: t('product_detail_home', 'Home'),
           item: `${base}/${currentLanguage}`,
         },
         {
           '@type': 'ListItem',
           position: 2,
-          name: 'Products',
+          name: t('product_detail_products', 'Products'),
           item: `${base}/${currentLanguage}/products`,
         },
         {
@@ -265,7 +320,7 @@ const ProductDetail: React.FC = () => {
         },
       ],
     };
-  }, [product, currentLanguage]);
+  }, [product, currentLanguage, t]);
 
   useStructuredData('product-breadcrumb', breadcrumbStructuredData);
 
@@ -385,7 +440,7 @@ const ProductDetail: React.FC = () => {
     }
   }, []);
 
-  const { featureTableData, featureString, featureItems } = React.useMemo<{
+  const { featureString } = React.useMemo<{
     featureTableData: Array<Record<string, any>> | null;
     featureString: string;
     featureItems: Array<{ id?: number; name: string; description: string; order: number }> | null;
@@ -549,7 +604,7 @@ const ProductDetail: React.FC = () => {
         <div className="max-w-7xl mx-auto px-8 py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading...</p>
+            <p className="mt-4 text-gray-600">{pageCopy.loading}</p>
           </div>
         </div>
       </div>
@@ -561,9 +616,9 @@ const ProductDetail: React.FC = () => {
       <div>
         <div className="max-w-7xl mx-auto px-8 py-12">
           <div className="text-center">
-            <p className="text-gray-500 text-lg">Product not found</p>
+            <p className="text-gray-500 text-lg">{pageCopy.notFound}</p>
             <Link to={`/${currentLanguage}/products`} className="text-blue-600 hover:text-blue-800 mt-2 inline-block">
-              Back to Products
+              {pageCopy.backToProducts}
             </Link>
           </div>
         </div>
@@ -576,11 +631,11 @@ const ProductDetail: React.FC = () => {
       {/* Breadcrumb navigation */}
       <div className="bg-gray-50 py-4">
         <div className="max-w-7xl mx-auto px-8">
-          <nav className="flex" aria-label="Breadcrumb">
+          <nav className="flex" aria-label={pageCopy.breadcrumb}>
             <ol className="flex items-center space-x-4">
               <li>
                 <Link to={`/${currentLanguage}`} className="text-gray-500 hover:text-gray-700">
-                  Home
+                  {t('product_detail_home', 'Home')}
                 </Link>
               </li>
               <li>
@@ -589,7 +644,7 @@ const ProductDetail: React.FC = () => {
                     <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                   </svg>
                   <Link to={`/${currentLanguage}/products`} className="ml-4 text-gray-500 hover:text-gray-700">
-                    Products
+                    {t('product_detail_products', 'Products')}
                   </Link>
                 </div>
               </li>
@@ -765,43 +820,43 @@ const ProductDetail: React.FC = () => {
                   )}
                   {product.oem_available !== undefined && (
                     <div className="flex items-start gap-4 py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">OEM:</span>
-                      <span className="text-gray-900 flex-1">{product.oem_available ? 'Available' : 'Not Available'}</span>
+                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_oem', 'OEM')}:</span>
+                      <span className="text-gray-900 flex-1">{product.oem_available ? pageCopy.oemAvailable : pageCopy.oemUnavailable}</span>
                     </div>
                   )}
                   {product.free_samples && (
                     <div className="flex items-start gap-4 py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Free Samples:</span>
+                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_free_samples', 'Free samples')}:</span>
                       <span className="text-gray-900 flex-1">{product.free_samples}</span>
                     </div>
                   )}
                   {product.supply_ability && (
                     <div className="flex items-start gap-4 py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Supply Ability:</span>
+                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_supply_ability', 'Supply capacity')}:</span>
                       <span className="text-gray-900 flex-1">{product.supply_ability}</span>
                     </div>
                   )}
                   {product.payment_terms && (
                     <div className="flex items-start gap-4 py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Payment:</span>
+                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_payment', 'Payment terms')}:</span>
                       <span className="text-gray-900 flex-1">{product.payment_terms}</span>
                     </div>
                   )}
                   {product.product_origin && (
                     <div className="flex items-start gap-4 py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Product Origin:</span>
+                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_origin', 'Product origin')}:</span>
                       <span className="text-gray-900 flex-1">{product.product_origin}</span>
                     </div>
                   )}
                   {product.shipping_port && (
                     <div className="flex items-start gap-4 py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Shipping Port:</span>
+                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_shipping_port', 'Shipping port')}:</span>
                       <span className="text-gray-900 flex-1">{product.shipping_port}</span>
                     </div>
                   )}
                   {product.lead_time && (
                     <div className="flex items-start gap-4 py-2">
-                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Lead Time:</span>
+                      <span className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">{t('product_detail_lead_time', 'Lead time')}:</span>
                       <span className="text-gray-900 flex-1">{product.lead_time}</span>
                     </div>
                   )}
@@ -813,8 +868,8 @@ const ProductDetail: React.FC = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
                     </div>
-                    <p className="text-gray-500 text-lg">No product parameter information</p>
-                    <p className="text-gray-400 text-sm mt-1">Please contact us for detailed technical specifications</p>
+                    <p className="text-gray-500 text-lg">{t('product_detail_no_parameters', 'No product parameters available')}</p>
+                    <p className="text-gray-400 text-sm mt-1">{t('product_detail_contact_specs', 'Contact us for detailed technical specifications')}</p>
                   </div>
                 )}
               </div>
@@ -826,119 +881,15 @@ const ProductDetail: React.FC = () => {
                 <p className="text-gray-600 text-lg leading-relaxed whitespace-pre-line">
                   {product.description?.trim()
                     ? product.description
-                    : `Aluminium tile trim is a durable edging profile designed to protect tile edges and create clean, professional finishes in wall and floor installations.
-Made from high-quality aluminum, it prevents chipping, improves overall appearance, and ensures long-lasting protection.
-Available in various shapes, sizes, and surface finishes, aluminium tile trims are widely used in bathrooms, kitchens, stair areas, and commercial spaces.`}
+                    : t('product_detail_description_pending', 'Project-specific details are confirmed against the approved drawing and specification.')}
                 </p>
               </div>
             </div>
 
-            {(featureItems || featureTableData || featureString) && (
-              <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                <div className="p-6">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Product Features</h2>
-                  {featureItems ? (
-                    <div className="space-y-4">
-                      {featureItems.map((item, index) => (
-                        <div key={item.id || index} className="border-b border-gray-100 pb-4 last:border-b-0 last:pb-0">
-                          <div className="flex items-start gap-3">
-                            <svg className="flex-shrink-0 h-5 w-5 text-green-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
-                            <div className="flex-1">
-                              <h4 className="font-semibold text-gray-900 mb-1">{item.name}</h4>
-                              {item.description && (
-                                <p className="text-gray-600 text-sm leading-relaxed">{item.description}</p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : featureTableData ? (
-                    (() => {
-                      console.log('Rendering featureTableData:', featureTableData);
-                      return (
-                        <table className="w-full">
-                          <thead>
-                            <tr className="bg-gray-50">
-                              <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Specification Name</th>
-                              <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Specification Value</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {featureTableData.map((feature, index) => {
-                              console.log('Rendering feature:', feature, 'index:', index);
-                              // 如果 feature 有 name 和 value 字段，直接使用
-                              if (feature && typeof feature === 'object' && 'name' in feature && 'value' in feature) {
-                                return (
-                                  <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                                    <td className="px-4 py-3 text-sm text-gray-900">
-                                      <div className="flex items-center">
-                                        <svg className="flex-shrink-0 h-4 w-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                        </svg>
-                                        <span style={{ wordBreak: 'break-word' }}>{decodeText(String(feature.name))}</span>
-                                      </div>
-                                    </td>
-                                    <td className="px-4 py-3 text-sm text-gray-900">
-                                      <span style={{ wordBreak: 'break-word' }}>{decodeText(String(feature.value))}</span>
-                                    </td>
-                                  </tr>
-                                );
-                              }
-                              // 否则遍历所有键值对，每个键值对一行
-                              const entries = Object.entries(feature || {});
-                              return entries.map(([key, value], entryIndex) => (
-                                <tr key={`${index}-${entryIndex}`} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                                  <td className="px-4 py-3 text-sm text-gray-900">
-                                    <div className="flex items-center">
-                                      <svg className="flex-shrink-0 h-4 w-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                      </svg>
-                                      <span style={{ wordBreak: 'break-word' }}>{decodeText(String(key))}</span>
-                                    </div>
-                                  </td>
-                                  <td className="px-4 py-3 text-sm text-gray-900">
-                                    <span style={{ wordBreak: 'break-word' }}>{decodeText(String(value))}</span>
-                                  </td>
-                                </tr>
-                              ));
-                            })}
-                          </tbody>
-                        </table>
-                      );
-                    })()
-                  ) : featureString ? (
-                    <div className="p-4">
-                      <div className="whitespace-pre-wrap text-gray-600 leading-relaxed" 
-                           style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-                        {featureString.split('\n').map((line, index) => (
-                          <React.Fragment key={index}>
-                            {line}
-                            {index < featureString.split('\n').length - 1 && <br />}
-                          </React.Fragment>
-                        ))}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-center py-8">
-                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                      </div>
-                      <p className="text-gray-500 text-lg">No product feature data</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Product display images */}
+                        {/* Product display images */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">PRODUCT DISPLAY</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('product_detail_display', 'Product Display')}</h2>
                 {product.images && product.images.length > 0 ? (
                   <div className="space-y-8">
                     {product.images.slice(0, 4).map((image, index) => {
@@ -954,7 +905,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                           >
                             <img
                               src={resolveProductMediaUrl(image.image) || ''}
-                              alt={`${localizedProductName} view ${index + 1}`}
+                              alt={`${localizedProductName} ${pageCopy.view} ${index + 1}`}
                               className="w-full h-auto object-contain"
                               loading={isFirstImage ? 'eager' : 'lazy'}
                               fetchPriority={isFirstImage ? 'high' : 'auto'}
@@ -967,20 +918,36 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                   </div>
                 ) : (
                   <div className="text-center py-6">
-                    <p className="text-gray-500 text-sm">No product display images</p>
+                    <p className="text-gray-500 text-sm">{t('product_detail_no_image', 'No Image')}</p>
                   </div>
                 )}
               </div>
             </div>
 
+        <section className="mb-16 grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8" aria-label={currentLanguage === 'zh' ? '工厂工艺与生产流程' : currentLanguage === 'es' ? 'Procesos de fábrica y producción' : currentLanguage === 'pt' ? 'Processos de fábrica e produção' : 'Factory processes and production'}>
+          {factoryOverviewModules.map((module) => {
+            const moduleTitle = module.title[currentLanguage as FactoryLanguage] || module.title.en;
+            const moduleDescription = module.description[currentLanguage as FactoryLanguage] || module.description.en;
+            return (
+              <article key={module.id} className="overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 sm:p-6">
+                <h2 className="mb-4 text-xl font-semibold text-gray-900 sm:text-2xl">{moduleTitle}</h2>
+                <div className="flex h-[360px] items-center justify-center overflow-hidden rounded-xl bg-gray-50 sm:h-[420px] lg:h-[460px]">
+                  <img src={module.image} alt={moduleTitle} className="h-full w-full object-contain" loading="lazy" decoding="async" />
+                </div>
+                <p className="mt-4 text-sm leading-6 text-gray-600">{moduleDescription}</p>
+              </article>
+            );
+          })}
+        </section>
+
                 {surfaceTreatmentImageUrl && (
                   <div className="bg-white rounded-lg shadow-md">
                     <div className="p-6">
-                      <h2 className="text-xl font-semibold text-gray-900 mb-4 tracking-[0.3em]">SURFACE TREATMENT</h2>
+                      <h2 className="text-xl font-semibold text-gray-900 mb-4 tracking-[0.3em]">{t('product_detail_surface_title', 'Surface Treatment')}</h2>
                       <div className="w-full bg-gray-50 rounded-2xl flex items-center justify-center">
                         <img
                           src={surfaceTreatmentImageUrl}
-                          alt={surfaceTreatmentTitle || 'Surface Treatment'}
+                          alt={surfaceTreatmentTitle || t('product_detail_surface_title', 'Surface Treatment')}
                           className="w-full h-auto object-contain"
                           loading="lazy"
                           decoding="async"
@@ -1005,7 +972,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                     <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Why choose us?
+                    {pageCopy.whyChooseUs}
                   </h3>
                   <div className="grid grid-cols-1 gap-4">
                     {whyChooseUsItems.map((item, index) => (
@@ -1044,13 +1011,13 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
             {(product.specification_items && product.specification_items.length > 0) || product.specifications ? (
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                 <div className="p-6">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Technical Specifications</h2>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('product_detail_technical_specs', 'Technical Specifications')}</h2>
                   {product.specification_items && product.specification_items.length > 0 ? (
                     <table className="w-full">
                       <thead>
                         <tr className="bg-gray-50">
-                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 border-b">Specification Name</th>
-                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 border-b">Specification Value</th>
+                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 border-b">{t('product_detail_specification_name', 'Specification Name')}</th>
+                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 border-b">{t('product_detail_specification_value', 'Specification Value')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1074,7 +1041,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
             {(product.application_items && product.application_items.length > 0) || product.applications ? (
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                 <div className="p-6">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Product Applications</h2>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('product_detail_applications', 'Applications')}</h2>
                   {product.application_items && product.application_items.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {product.application_items
@@ -1101,19 +1068,12 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
             {product.packaging_details && (
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                 <div className="p-6">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Packaging Details</h2>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('product_detail_packaging', 'Packaging details')}</h2>
                   <p className="text-gray-700 text-lg leading-relaxed">{product.packaging_details}</p>
                 </div>
               </div>
             )}
 
-            {/* Inquiry form */}
-            <div>
-              <InquiryForm 
-                productName={localizedProductName}
-                productLink={window.location.href}
-              />
-            </div>
           </div>
         </div>
 
@@ -1121,7 +1081,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
         {product.factory_images && product.factory_images.length > 0 && (
           <section className="mb-16 w-full space-y-8" aria-labelledby="our-factory-heading">
             <h2 id="our-factory-heading" className="text-2xl font-semibold text-gray-900">{factorySectionHeadings[currentLanguage as FactoryLanguage] || factorySectionHeadings.en}</h2>
-            <div className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
               {product.factory_images.map((factoryImg: any, index: number) => {
                 let imageUrl = factoryImg.image;
                 if (imageUrl && !imageUrl.startsWith('http')) {
@@ -1141,12 +1101,12 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
 
                 return (
                   <figure key={factoryImg.id || index} className="w-full">
-                    <div className="w-full bg-gray-50 rounded-2xl overflow-hidden flex items-center justify-center min-h-[280px] md:min-h-[360px]">
+                    <div className="w-full h-[260px] sm:h-[300px] lg:h-[360px] bg-gray-50 rounded-2xl overflow-hidden flex items-center justify-center">
                       {imageUrl ? (
                         <img
                           src={imageUrl}
                           alt={localizedFactoryTitle}
-                          className="w-full h-auto max-h-[720px] object-contain"
+                          className="w-full h-full max-h-full object-contain"
                           loading="lazy"
                           decoding="async"
                           width="1200"
@@ -1174,7 +1134,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
 
         {currentLanguage === 'en' && (
           <div className="mb-12 rounded-xl border border-gray-200 bg-white p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Related buying guides</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('product_detail_related_guides', 'Related Buying Guides')}</h2>
             <div className="grid md:grid-cols-3 gap-3 text-sm">
               <Link className="text-blue-700 hover:text-blue-900 underline" to="/en/aluminum-profile-supplier-for-construction-projects">
                 Aluminum Profile Supplier for Construction Projects
@@ -1208,7 +1168,7 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
                         height="300"
                       />
                     ) : (
-                      <p className="text-gray-500 text-sm">No Image</p>
+                      <p className="text-gray-500 text-sm">{t('product_detail_no_image', 'No Image')}</p>
                     )}
                   </div>
                   <div className="p-4">
@@ -1228,7 +1188,12 @@ Available in various shapes, sizes, and surface finishes, aluminium tile trims a
           </div>
         )}
 
-        {/* Inquiry Form placeholder removed - now inside right column */}
+        <section className="mb-16" aria-label={currentLanguage === 'zh' ? '获取报价' : currentLanguage === 'es' ? 'Solicitar presupuesto' : currentLanguage === 'pt' ? 'Solicitar cotação' : 'Get a Quote'}>
+          <InquiryForm
+            productName={localizedProductName}
+            productLink={window.location.href}
+          />
+        </section>
       </div>
 
       {/* Floating contact buttons */}
