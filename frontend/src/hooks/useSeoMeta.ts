@@ -16,6 +16,18 @@ interface SeoMetaOptions {
 const SUPPORTED_LANGUAGES = ['en', 'zh', 'es', 'pt'];
 const SITE_ORIGIN = 'https://lingyealu.com';
 
+const trimMetadata = (value: string | undefined, limit: number) => {
+  if (!value) return value;
+  const text = value.trim();
+  if (text.length <= limit) return text;
+  const slice = text.slice(0, limit + 1);
+  const boundary = Math.max(slice.lastIndexOf(' '), slice.lastIndexOf(','), slice.lastIndexOf('，'), slice.lastIndexOf(';'));
+  return slice.slice(0, boundary > limit * 0.65 ? boundary : limit).trim().replace(/[,:;–—-]+$/, '');
+};
+
+const normalizeTitle = (value?: string) => trimMetadata(value?.replace(/\s*[|｜–—-]\s*LingYe Aluminum\s*$/i, ''), 65);
+const normalizeDescription = (value?: string, language?: string) => trimMetadata(value?.replace(/\s+/g, ' '), language === 'zh' ? 90 : 160);
+
 const upsertMeta = (attr: 'name' | 'property', key: string, content?: string) => {
   if (!content || typeof document === 'undefined') return;
   let el = document.querySelector(`meta[${attr}="${key}"]`) as HTMLMetaElement | null;
@@ -71,16 +83,18 @@ const updateHreflang = (language: string, canonicalPath?: string, alternateLangu
 export const useSeoMeta = ({ title, description, keywords, canonicalPath, ogTitle, ogDescription, robots, language, ogImage, alternateLanguages }: SeoMetaOptions) => {
   useEffect(() => {
     if (language) document.documentElement.lang = language;
-    if (title) document.title = title;
-    upsertMeta('name', 'description', description);
+    const pageTitle = normalizeTitle(title);
+    const pageDescription = normalizeDescription(description, language);
+    if (pageTitle) document.title = pageTitle;
+    upsertMeta('name', 'description', pageDescription);
     upsertMeta('name', 'keywords', keywords);
     upsertMeta('name', 'robots', robots);
-    upsertMeta('property', 'og:title', ogTitle || title);
-    upsertMeta('property', 'og:description', ogDescription || description);
+    upsertMeta('property', 'og:title', normalizeTitle(ogTitle || pageTitle));
+    upsertMeta('property', 'og:description', normalizeDescription(ogDescription || pageDescription, language));
     upsertMeta('property', 'og:url', canonicalPath ? `${SITE_ORIGIN}${canonicalPath}` : undefined);
     upsertMeta('property', 'og:image', ogImage);
-    upsertMeta('name', 'twitter:title', ogTitle || title);
-    upsertMeta('name', 'twitter:description', ogDescription || description);
+    upsertMeta('name', 'twitter:title', normalizeTitle(ogTitle || pageTitle));
+    upsertMeta('name', 'twitter:description', normalizeDescription(ogDescription || pageDescription, language));
     upsertMeta('name', 'twitter:image', ogImage);
     upsertCanonical(canonicalPath);
     updateHreflang(language || 'en', canonicalPath, alternateLanguages);

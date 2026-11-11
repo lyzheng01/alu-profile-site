@@ -17,7 +17,18 @@ const replaceTag = (html, pattern, replacement, fallback) => (
   pattern.test(html) ? html.replace(pattern, replacement) : html.replace('</head>', `${fallback}</head>`)
 );
 
+const trimMetadata = (value, limit) => {
+  const text = String(value || '').replace(/\s+/g, ' ').trim();
+  if (text.length <= limit) return text;
+  const slice = text.slice(0, limit + 1);
+  const boundary = Math.max(slice.lastIndexOf(' '), slice.lastIndexOf(','), slice.lastIndexOf('，'), slice.lastIndexOf(';'));
+  return slice.slice(0, boundary > limit * 0.65 ? boundary : limit).trim().replace(/[,:;–—-]+$/, '');
+};
+
 const applyArticleMetadata = (html, { title, description, canonical, image, keywords, alternates = [], siteUrl = 'https://lingyealu.com' }) => {
+  title = trimMetadata(String(title || '').replace(/\s*[|｜–—-]\s*LingYe Aluminum\s*$/i, ''), 65);
+  const language = alternates.find((item) => item.route && canonical.endsWith(item.route))?.language || 'en';
+  description = trimMetadata(description, language === 'zh' ? 90 : 160);
   let output = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(title)}</title>`);
   output = replaceTag(
     output,
