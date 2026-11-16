@@ -123,10 +123,10 @@ const writeArticleMetadataFallbacks = async () => {
         .map((entry) => ({ language: entry.language, route: entry.route })),
     });
     const language = route.split('/')[1];
-    html = html.replace('<html lang="en">', `<html lang="${language}">`);
+    html = html.replace(/<html\b[^>]*>/, `<html lang="${language}" data-translation-language="${language}">`);
     if (hasUsableBody) {
       const titleHtml = `<main class="container mx-auto px-4 py-8"><article><h1>${escapeHtml(article.title)}</h1><div class="prose max-w-none">${article.content}</div></article></main>`;
-      html = html.replace('<div id="root"></div>', `<div id="root">${titleHtml}</div>`);
+      html = replaceRootContent(html, `<div id="root">${titleHtml}</div>`);
     }
     const routeDir = path.join(BUILD_DIR, route);
     fs.mkdirSync(routeDir, { recursive: true });
@@ -168,6 +168,19 @@ const CATEGORY_COPY = {
   },
 };
 const escapeHtml = (value) => String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+const replaceRootContent = (html, content) => {
+  const root = /<div\b[^>]*\bid=["']root["'][^>]*>/i.exec(html);
+  if (!root) throw new Error('Missing #root element in prerender shell');
+  const tokens = /<\/?div\b[^>]*>/gi;
+  tokens.lastIndex = root.index + root[0].length;
+  let depth = 1;
+  let token;
+  while ((token = tokens.exec(html))) {
+    depth += token[0].startsWith('</') ? -1 : 1;
+    if (depth === 0) return html.slice(0, root.index) + content + html.slice(tokens.lastIndex);
+  }
+  throw new Error('Unclosed #root element in prerender shell');
+};
 const normalizeSiteImage = (value) => typeof value === 'string'
   ? value.replace(/^https?:\/\/(?:www\.)?lingyealuminum\.com(?=\/)/i, SITE_URL)
   : value;
@@ -201,11 +214,17 @@ const writeCategoryFallbacks = async () => {
       const productPath = '/' + entry.language + '/products/' + (product.slug || product.id);
       return '<article><a href="' + productPath + '"><img loading="lazy" src="' + escapeHtml(image) + '" alt="' + escapeHtml(productName) + '" style="width:100%;height:220px;object-fit:cover"></a><h2><a href="' + productPath + '">' + escapeHtml(productName) + '</a></h2><p>' + escapeHtml(productDescription) + '</p><a href="' + productPath + '">' + (entry.language === 'zh' ? '查看产品详情' : entry.language === 'es' ? 'Ver detalles' : entry.language === 'pt' ? 'Ver detalhes' : 'View product details') + '</a></article>';
     }).join('');
+    const categoryTitle = entry.slug === 'windows-doors' ? ({
+      en: 'Window and Door Profile Catalog | LingYe Aluminum',
+      es: 'Catálogo de perfiles para ventanas y puertas | LingYe Aluminum',
+      pt: 'Catálogo de perfis para janelas e portas | LingYe Aluminum',
+      zh: '门窗铝型材目录｜凌烨铝业',
+    }[entry.language]) : name + ' | LingYe Aluminum';
     let html = applyArticleMetadata(shell, {
-      title: name + ' | LingYe Aluminum', description, canonical, siteUrl: SITE_URL,
+      title: categoryTitle, description, canonical, siteUrl: SITE_URL,
       image: normalizeSiteImage(category.image), alternates,
     });
-    html = html.replace('<html lang="en">', '<html lang="' + entry.language + '">');
+    html = html.replace(/<html\b[^>]*>/, '<html lang="' + entry.language + '" data-translation-language="' + entry.language + '">');
     html = html.replace('content="article"', 'content="website"');
     const structured = '<script type="application/ld+json">' + JSON.stringify({
       '@context': 'https://schema.org', '@type': 'CollectionPage', name, description, url: canonical,
@@ -221,7 +240,7 @@ const writeCategoryFallbacks = async () => {
       pt: ['Peso do perfil de alum\u00ednio por metro', 'Estime o peso te\u00f3rico pela \u00e1rea da se\u00e7\u00e3o e confirme a liga e o desenho antes de fazer o pedido.', 'Consulte o guia de peso'],
     }[entry.language] : null;
     const root = '<div id="root"><main style="max-width:1200px;margin:0 auto;padding:32px 24px;font-family:Arial,sans-serif"><nav><a href="/' + entry.language + '">' + home + '</a> / <a href="/' + entry.language + '/products">' + allProducts + '</a> / ' + escapeHtml(name) + '</nav><header style="padding:28px 0"><h1>' + escapeHtml(name) + '</h1><p style="max-width:760px;line-height:1.7">' + escapeHtml(description) + '</p></header><section><h2>' + escapeHtml(name) + ' — ' + (entry.language === 'zh' ? '产品目录' : 'Products') + ' (' + related.length + ')</h2><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px">' + cards + '</div></section>' + (weightGuide ? '<section style="margin:32px 0;padding:20px;border:1px solid #ddd;border-radius:12px"><h2>' + escapeHtml(weightGuide[0]) + '</h2><p>' + escapeHtml(weightGuide[1]) + ' <a href="/' + entry.language + '/news/aluminium-extrusion-weight-per-metre">' + escapeHtml(weightGuide[2]) + '</a></p></section>' : '') + '<p style="margin-top:32px"><a href="/' + entry.language + '/products">' + allProducts + '</a></p></main></div>';
-    html = html.replace('<div id="root"></div>', root);
+    html = replaceRootContent(html, root);
     const outDir = path.join(BUILD_DIR, entry.route);
     fs.mkdirSync(outDir, { recursive: true });
     fs.writeFileSync(path.join(outDir, 'index.html'), html, 'utf8');
@@ -353,11 +372,14 @@ const prerender = async () => {
         const root = document.querySelector('#root');
         const pathname = window.location.pathname;
         const isProductCatalog = /^\/[^/]+\/products(?:\/category\/[^/]+)?\/?$/.test(pathname);
+        const isNewsArchive = /^\/(en|zh|es|pt)\/news\/?$/.test(pathname);
         const catalog = document.querySelector('[data-testid="products-page"]');
+        const newsArchive = document.querySelector('[data-news-loaded="true"]');
         return document.documentElement.lang === expectedLanguage
           && document.documentElement.dataset.translationLanguage === expectedLanguage
           && Boolean(root && root.querySelector('main h1'))
           && root.innerText.trim().length > 100
+          && (!isNewsArchive || Boolean(newsArchive))
           && (!isProductCatalog || Boolean(catalog && catalog.dataset.productsLoaded === 'true' && catalog.dataset.translationLanguage === expectedLanguage));
       }, { timeout: RENDER_TIMEOUT }, language);
       const expectedPath = route === '/' ? '/en' : route;

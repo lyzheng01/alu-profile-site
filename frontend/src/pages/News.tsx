@@ -286,7 +286,9 @@ const NewsList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [selectedTag, setSelectedTag] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const articlesPerPage = 6;
+  // Keep every localized article reachable from the archive without requiring
+  // a crawler or visitor to activate client-side pagination controls.
+  const articlesPerPage = Math.max(articles.length, 1);
 
   const canonicalQuery = currentPage > 1 ? `?page=${currentPage}` : selectedTag ? `?tag=${selectedTag}` : '';
 
@@ -326,11 +328,27 @@ const NewsList: React.FC = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await fetch(`${API_ENDPOINTS.ARTICLES}?lang=${currentLanguage}`);
-        if (response.ok) {
+        const allArticles: Article[] = [];
+        let page = 1;
+        let hasNextPage = true;
+
+        while (hasNextPage && page <= 100) {
+          const response = await fetch(`${API_ENDPOINTS.ARTICLES}?lang=${encodeURIComponent(currentLanguage)}&page=${page}`);
+          if (!response.ok) break;
+
           const data = await response.json();
-          setArticles((data.results || data).map(normalizeArticleMedia));
+          if (Array.isArray(data)) {
+            allArticles.push(...data);
+            break;
+          }
+
+          const pageArticles = data.results || [];
+          allArticles.push(...pageArticles);
+          hasNextPage = Boolean(data.next) && pageArticles.length > 0;
+          page += 1;
         }
+
+        setArticles(allArticles.map(normalizeArticleMedia));
       } catch (error) {
         console.error('获取新闻数据失败:', error);
       }
@@ -345,13 +363,10 @@ const NewsList: React.FC = () => {
         }
       } catch (error) {
         console.error('获取标签数据失败:', error);
-      } finally {
-        setLoading(false);
       }
     };
 
-    fetchArticles();
-    fetchTags();
+    Promise.all([fetchArticles(), fetchTags()]).finally(() => setLoading(false));
   }, [currentLanguage, t]);
 
   // 过滤新闻（只按标签筛选，不搜索）
@@ -392,7 +407,7 @@ const NewsList: React.FC = () => {
   }
 
   return (
-    <div>
+    <div data-news-loaded="true">
       {/* 页面标题 */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-8">

@@ -96,12 +96,23 @@ const Products: React.FC = () => {
     localStorage.setItem('language', urlLanguage);
   }, [urlLanguage]);
 
+  const catalogSeo = ({
+    en: { title: 'Aluminum Profile Product Catalog | LingYe Aluminum', description: 'Browse architectural, industrial, trim, tube, and custom aluminum extrusion profiles with alloy, temper, finish, and RFQ details for export buyers.' },
+    es: { title: 'Catálogo de perfiles de aluminio | LingYe Aluminum', description: 'Explore perfiles arquitectónicos, industriales, tubos y extrusiones a medida; revise aleación, acabado y requisitos antes de solicitar cotización.' },
+    pt: { title: 'Catálogo de perfis de alumínio | LingYe Aluminum', description: 'Explore perfis arquitetônicos e industriais, tubos e extrusões sob medida; confira liga, acabamento e requisitos antes de solicitar orçamento.' },
+    zh: { title: '铝型材产品目录｜凌烨铝业', description: '浏览建筑、工业、装饰、管材及定制挤压铝型材，查看产品用途、表面处理和询价所需信息。' },
+  } as const)[currentLanguage as 'en' | 'es' | 'pt' | 'zh'] || { title: 'Aluminum Profile Product Catalog | LingYe Aluminum', description: 'Browse aluminum profiles and custom extrusion options for export projects.' };
+  const categoryTitle = categorySlug === 'windows-doors'
+    ? ({ en: 'Window and Door Profile Catalog | LingYe Aluminum', es: 'Catálogo de perfiles para ventanas y puertas | LingYe Aluminum', pt: 'Catálogo de perfis para janelas e portas | LingYe Aluminum', zh: '门窗铝型材目录｜凌烨铝业' } as const)[currentLanguage as 'en' | 'es' | 'pt' | 'zh']
+    : categoryLabel + ' | LingYe Aluminum';
+  const pageTitle = categorySlug ? categoryTitle : catalogSeo.title;
+  const pageDescription = categorySlug ? categoryDescription || catalogSeo.description : catalogSeo.description;
   useSeoMeta({
     canonicalPath: categorySlug ? '/' + currentLanguage + '/products/category/' + categorySlug : '/' + currentLanguage + '/products',
-    title: categorySlug ? categoryLabel + ' | LingYe Aluminum' : 'Aluminum Profile Product Catalog | LingYe Aluminum',
-    description: categoryDescription || 'Browse architectural, industrial, trim, tube, and custom aluminum extrusion profiles with alloy, temper, finish, and RFQ details for export buyers.',
-    ogTitle: categorySlug ? categoryLabel + ' | LingYe Aluminum' : 'LingYe Aluminum Product Catalog',
-    ogDescription: categoryDescription || 'Find aluminum profiles for windows, doors, industrial framing, trim, tubes, and OEM extrusion projects.',
+    title: pageTitle,
+    description: pageDescription,
+    ogTitle: pageTitle,
+    ogDescription: pageDescription,
     ogImage: 'https://lingyealu.com/logo.jpg?v=3',
     language: currentLanguage,
   });
@@ -109,8 +120,8 @@ const Products: React.FC = () => {
   const collectionStructuredData = React.useMemo(() => ({
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: categorySlug ? categoryLabel : 'Aluminum Profile Product Catalog | LingYe Aluminum',
-    description: categoryDescription || 'Browse architectural, industrial, trim, tube, and custom aluminum extrusion profiles.',
+    name: pageTitle,
+    description: pageDescription,
     isPartOf: { '@type': 'WebSite', name: 'LingYe Aluminum', url: 'https://lingyealu.com' },
   }), [categorySlug, categoryLabel, categoryDescription]);
 
@@ -273,6 +284,24 @@ const Products: React.FC = () => {
       </section>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
+        <nav aria-label={t('products_category_navigation', 'Product categories')} className="mb-8 flex flex-wrap gap-3">
+          <Link
+            to={`/${currentLanguage}/products`}
+            className={`rounded-full border px-4 py-2 text-sm font-medium transition ${!categorySlug ? 'border-slate-900 bg-slate-900 text-white' : 'border-slate-300 bg-white text-slate-700 hover:border-sky-500 hover:text-sky-800'}`}
+          >
+            {t('products_all_categories', 'All products')}
+          </Link>
+          {categories.map((category) => (
+            <Link
+              key={category.id}
+              to={`/${currentLanguage}/products/category/${category.slug}`}
+              className={`rounded-full border px-4 py-2 text-sm font-medium transition ${categorySlug === category.slug ? 'border-slate-900 bg-slate-900 text-white' : 'border-slate-300 bg-white text-slate-700 hover:border-sky-500 hover:text-sky-800'}`}
+            >
+              {category.name}
+            </Link>
+          ))}
+        </nav>
+
         {/* 分类文字说明（在产品前展示） */}
         {activeCategory && (
           <div className="mb-8 rounded-xl border border-sky-100 bg-white p-6">
@@ -349,7 +378,7 @@ const Products: React.FC = () => {
                         View Details
                       </Link>
                       <Link
-                        to={`/${currentLanguage}/products/${product.id}#inquiry`}
+                        to={`/${currentLanguage}/products/${product.slug}#inquiry`}
                         className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-lg border border-sky-200 px-4 py-2 text-sm font-semibold text-sky-800 transition hover:border-sky-500 hover:bg-sky-50 focus:outline-none focus:ring-2 focus:ring-sky-500"
                       >
                         Send RFQ
