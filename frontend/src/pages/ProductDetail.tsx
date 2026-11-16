@@ -211,7 +211,9 @@ const ProductDetail: React.FC = () => {
   const { t } = useTranslation();
   const { pathname } = useLocation();
   const pathLanguage = pathname.split('/').filter(Boolean)[0];
-  const routeLanguage = pathLanguage && ['en', 'zh', 'es', 'pt'].includes(pathLanguage) ? pathLanguage : 'en';
+  const routeLanguage: FactoryLanguage = pathLanguage && ['en', 'zh', 'es', 'pt'].includes(pathLanguage)
+    ? pathLanguage as FactoryLanguage
+    : 'en';
   const { productSlug } = useParams<{ productSlug: string }>();
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
@@ -220,8 +222,24 @@ const ProductDetail: React.FC = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentLanguage, setCurrentLanguage] = useState(routeLanguage);
   const pageCopy = productPageCopy[currentLanguage as FactoryLanguage] || productPageCopy.en;
-  const localizedProductName = product?.translated_name || product?.name || t('product_detail_aluminum_profile', 'Aluminum Profile');
-  const getLocalizedProductName = (item: Product) => item.translated_name || item.name || t('product_detail_aluminum_profile', 'Aluminum Profile');
+  const PRODUCT_NAME_OVERRIDES: Record<string, Partial<Record<FactoryLanguage, string>>> = {
+    'aluminium-h-profile': {
+      zh: '铝合金 H 型材',
+      es: 'Perfil H de aluminio',
+      pt: 'Perfil H de alumínio',
+    },
+    'sliding-door-system': {
+      zh: '铝合金推拉门系统型材',
+      es: 'Perfiles de aluminio para puertas correderas',
+      pt: 'Perfis de alumínio para portas de correr',
+    },
+  };
+  const getLocalizedProductName = (item: Product) =>
+    PRODUCT_NAME_OVERRIDES[item.slug]?.[currentLanguage]
+    || item.translated_name
+    || item.name
+    || t('product_detail_aluminum_profile', 'Aluminum Profile');
+  const localizedProductName = product ? getLocalizedProductName(product) : t('product_detail_aluminum_profile', 'Aluminum Profile');
 
   const resolveProductMediaUrl = (imageUrl?: string | null) => {
     if (!imageUrl) return null;
@@ -250,17 +268,52 @@ const ProductDetail: React.FC = () => {
     setCurrentLanguage(routeLanguage);
   }, [routeLanguage]);
 
+  const PRODUCT_SEO_OVERRIDES: Record<string, { title: Record<FactoryLanguage, string>; description: Record<FactoryLanguage, string> }> = {
+    'aluminium-h-profile': {
+      title: {
+        en: 'Aluminium H Profile Extrusion | LingYe Aluminum',
+        zh: '铝合金 H 型材定制供应商 | 凌烨铝业',
+        es: 'Perfil H de aluminio a medida | LingYe Aluminum',
+        pt: 'Perfil H de alumínio personalizado | LingYe Aluminum',
+      },
+      description: {
+        en: 'Aluminium H profile extrusions used to join or support compatible panels. Confirm mating dimensions, wall thickness and loading against the project drawing.',
+        zh: '用于连接或支撑板材的铝合金 H 型材。可按项目图纸确认配合尺寸、壁厚及承载要求。',
+        es: 'Perfiles H de aluminio para unir o soportar paneles compatibles. Verifique las dimensiones, el espesor de pared y la carga según el plano del proyecto.',
+        pt: 'Perfis H de alumínio para unir ou apoiar painéis compatíveis. Confirme as dimensões, a espessura da parede e a carga no desenho do projeto.',
+      },
+    },
+    'sliding-door-system': {
+      title: {
+        en: 'Aluminium Sliding Door System Profiles | LingYe Aluminum',
+        zh: '铝合金推拉门系统型材 | 凌烨铝业',
+        es: 'Perfiles de aluminio para puertas correderas | LingYe Aluminum',
+        pt: 'Perfis de alumínio para porta de correr | LingYe Aluminum',
+      },
+      description: {
+        en: 'Aluminium sliding door system profiles for patio, residential and commercial openings. Frame, panel, track and hardware are specified from the project drawings.',
+        zh: '适用于庭院、住宅及商业空间的铝合金推拉门系统型材。框体、门板、轨道和五金按项目图纸配置。',
+        es: 'Perfiles de aluminio para puertas correderas en viviendas y locales comerciales. El marco, los paneles, las guías y los herrajes se definen según los planos del proyecto.',
+        pt: 'Perfis de alumínio para portas de correr em residências e espaços comerciais. A estrutura, os painéis, os trilhos e as ferragens são definidos conforme os desenhos do projeto.',
+      },
+    },
+  };
+  const seoOverride = product?.slug ? PRODUCT_SEO_OVERRIDES[product.slug] : undefined;
+  const seoTitle = seoOverride?.title[currentLanguage] || `${localizedProductName} | LingYe Aluminum`;
+  const seoDescription = seoOverride?.description[currentLanguage] || product?.description || t('product_detail_description_pending', 'Project-specific details are confirmed against the approved drawing and specification.');
+
   useSeoMeta({
-    title: product ? `${localizedProductName} | LingYe Aluminum` : undefined,
+    title: product ? seoTitle : undefined,
+
     description: product
-      ? (product.description || t('product_detail_description_pending', 'Project-specific details are confirmed against the approved drawing and specification.'))
+      ? seoDescription
       : undefined,
     canonicalPath: product?.slug ? `/${currentLanguage}/products/${product.slug}` : undefined,
     ogImage: product?.images?.[0]?.image
       ? resolveProductMediaUrl(product.images[0].image) || undefined
       : 'https://lingyealu.com/logo.jpg?v=3',
-    ogTitle: product ? `${localizedProductName} | LingYe Aluminum` : undefined,
-    ogDescription: product?.description || undefined,
+    ogTitle: product ? seoTitle : undefined,
+    ogDescription: product ? seoDescription : undefined,
     language: currentLanguage,
   });
 
