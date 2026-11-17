@@ -1,9 +1,9 @@
-# Medidas de perfil H de alumínio: o que verificar antes de pedir uma cotação
+# Medidas de perfil H de alumínio: aberturas, espessuras e encaixe
 
-**状态：** 待发布  
-**Excerpt:** Guia orientado por desenho para definir um perfil H de alumínio, conferir o encaixe com os painéis e preparar uma solicitação de cotação completa.  
-**SEO title:** Medidas de perfil H de alumínio: cotas essenciais  
-**Meta description:** Saiba como especificar largura e altura totais, espessura da alma e das pernas, aberturas livres e comprimento de corte antes de encomendar uma extrusão de alumínio.  
+**状态：** Publicado (conteúdo e metadados SEO em português atualizados em 31-10-2026)  
+**Excerpt:** Defina as medidas do perfil H pelo desenho, confira as aberturas com as peças correspondentes e prepare uma cotação clara.  
+**SEO title:** Medidas de perfil H de alumínio: aberturas e espessuras  
+**Meta description:** Saiba como especificar largura e altura, espessura da alma e das pernas, aberturas e comprimento de corte de um perfil H, além das opções publicadas.  
 **Meta keywords:** medidas perfil H alumínio, dimensões seção H alumínio, extrusão perfil H, canal H alumínio, desenho de extrusão
 
 Um perfil H de alumínio é usado com frequência para alinhar ou unir painéis, mas o nome “perfil H” não define sozinho uma medida funcional. A seção, os espaços abertos, as espessuras e o acabamento influenciam o encaixe das peças.
@@ -20,19 +20,27 @@ Desenhe o perfil na orientação usada no conjunto e identifique as faces funcio
 ![Diagrama de perfil H com largura W, altura H, espessura das pernas tf, espessura da alma tw e aberturas g1 e g2](/images/aluminium-h-profile-dimensions.svg)
 *Referência dimensional. Os símbolos são usados nesta guia e não indicam medidas nominais ou tolerâncias.*
 
-Inclua as cotas que definem a peça:
+Use uma notação coerente na vista da seção:
 
-- **W — largura total:** medida externa a externa entre as duas pernas na vista do desenho.
-- **H — altura total:** medida externa a externa na direção perpendicular. Indique a orientação para evitar trocar W e H.
-- **tw — espessura da alma:** espessura do elemento central que conecta as pernas.
-- **tf — espessura das pernas laterais:** espessura de cada perna externa. Se forem diferentes, especifique cada uma.
-- **g1 e g2 — aberturas livres:** espaços úteis em cada lado da alma para painéis ou peças adjacentes. Informe cada abertura se forem diferentes e indique onde deve ser medida.
-- **L — comprimento de corte:** comprimento final no sentido da extrusão; acrescente requisitos de esquadro, rebarbação, furos ou usinagem.
+| Cota | O que medir | Nota para o desenho |
+|---|---|---|
+| **W — largura total** | Medida externa a externa entre as pernas na seção. | Indique a orientação para não confundir W com H. |
+| **H — altura total** | Medida externa a externa na direção perpendicular. | Marque as faces funcionais e o sentido da medição. |
+| **tw — espessura da alma** | Espessura do elemento central que conecta as pernas. | Informe o valor nominal e a tolerância. |
+| **tf — espessura das pernas** | Espessura de cada perna externa. | Especifique cada lado separadamente se forem diferentes. |
+| **g1 e g2 — aberturas livres** | Espaços úteis em cada lado da alma para as peças correspondentes. | Defina cada abertura e indique a altura ou região do encaixe. |
+| **L — comprimento de corte** | Comprimento final no sentido da extrusão. | Inclua esquadro, rebarbação, furos ou usinagem, se necessário. |
 
 ![Paquímetro digital verificando a alma central de um perfil H de alumínio](/images/aluminium-h-profile-web-thickness-measurement.webp)
 *Inspeção ilustrativa. Confirme no desenho aprovado o método de medição e os limites de aceitação.*
 
 Um catálogo pode usar outras letras ou agrupar cotas. Ao escolher uma seção existente, solicite o desenho atual do fornecedor; para um perfil personalizado, defina cada face e dimensão crítica no seu próprio desenho.
+
+## Opções publicadas e dimensões que a ficha não informa
+
+A página atual de [perfis H de alumínio da LingYe](/pt/products/aluminium-h-profile) informa comprimentos padrão de **4–6 m**, comprimentos personalizados, espessuras a partir de **0,7 mm** e têmpera T5/T6. Também lista as ligas 6063, 6063A, 6061, 6005, 6060, 6082, 6351, 7005 e 7075. Os acabamentos publicados incluem anodização, pintura a pó, efeito madeira, PVDF, jateamento e eletroforese. Confirme as opções para o perfil e o pedido cotados.
+
+Esses dados **não formam uma tabela universal de medidas da seção H**. A página não define uma largura, altura, espessura da alma ou abertura válida para todos os perfis. Confirme **W, H, tw, tf, g1 e g2** no desenho atual do perfil cotado; o mínimo publicado de 0,7 mm não significa que todas as paredes tenham essa espessura. Para escolher o acabamento, consulte o guia de [acabamentos superficiais para perfis de alumínio](/pt/news/selecting-an-aluminium-profile-finish).
 
 ## Confira as duas aberturas com as peças de união
 

@@ -170,7 +170,7 @@ STATICFILES_DIRS = [
 if DEBUG:
     MEDIA_URL = '/media/'
 else:
-    MEDIA_URL = os.environ.get('MEDIA_URL', 'https://lingyealuminum.com/media/')
+    MEDIA_URL = os.environ.get('MEDIA_URL', 'https://lingyealu.com/media/')
 
 MEDIA_ROOT = BASE_DIR / 'media'
 

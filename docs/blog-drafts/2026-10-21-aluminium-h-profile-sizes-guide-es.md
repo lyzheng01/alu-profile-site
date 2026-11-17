@@ -1,9 +1,9 @@
-# Medidas de perfiles H de aluminio: qué medir antes de solicitar una cotización
+# Medidas de perfiles H de aluminio: aberturas, espesores y ajuste
 
-**状态：** 待发布  
-**Excerpt:** Guía basada en planos para definir un perfil H de aluminio, comprobar el ajuste con los paneles y preparar una solicitud de cotización completa.  
-**SEO title:** Medidas de perfil H de aluminio: cotas clave  
-**Meta description:** Aprenda a especificar ancho y altura totales, espesor del alma y de las patas, aberturas libres y longitud de corte antes de pedir una extrusión de aluminio.  
+**状态：** 已发布（contenido y metadatos SEO en español actualizados el 31-10-2026）  
+**Excerpt:** Define las medidas del perfil H a partir del plano, comprueba las aberturas con las piezas acopladas y prepara una solicitud de cotización clara.  
+**SEO title:** Medidas de perfil H de aluminio: aberturas y espesores  
+**Meta description:** Aprende a especificar ancho y altura, espesor del alma y las patas, aberturas y longitud de corte de un perfil H; consulta también las opciones publicadas.  
 **Meta keywords:** medidas perfil H aluminio, dimensiones sección H aluminio, extrusión perfil H, canal H aluminio, plano de extrusión aluminio
 
 Un perfil H de aluminio suele utilizarse para alinear o unir paneles, pero el nombre “perfil H” por sí solo no define una medida funcional. La sección, los espacios abiertos, los espesores y el acabado influyen en el ajuste de las piezas.
@@ -20,19 +20,27 @@ Dibuje el perfil en la orientación del conjunto e identifique las caras funcion
 ![Diagrama de perfil H con ancho W, altura H, espesor de patas tf, espesor del alma tw y aberturas g1 y g2](/images/aluminium-h-profile-dimensions.svg)
 *Referencia dimensional. Los símbolos pertenecen a esta guía y no indican medidas nominales ni tolerancias.*
 
-Incluya las cotas que definen su pieza:
+Utilice una notación coherente en la vista de sección:
 
-- **W — ancho total:** distancia exterior a exterior entre las dos patas en la vista del plano.
-- **H — altura total:** distancia exterior a exterior en la dirección perpendicular. Indique la orientación para no intercambiar W y H.
-- **tw — espesor del alma:** espesor del elemento central que conecta las patas.
-- **tf — espesor de las patas:** espesor de cada pata exterior. Si son diferentes, especifíquelas por separado.
-- **g1 y g2 — aberturas libres:** huecos útiles a cada lado del alma para los paneles o piezas contiguas. Indique cada abertura si no son iguales y señale dónde debe medirse.
-- **L — longitud de corte:** longitud final en el sentido de extrusión; añada requisitos de escuadrado, desbarbado, taladrado o mecanizado.
+| Cota | Qué medir | Nota para el plano |
+|---|---|---|
+| **W — ancho total** | Distancia exterior a exterior entre las patas en la sección. | Indique la orientación para no confundir W con H. |
+| **H — altura total** | Distancia exterior a exterior en la dirección perpendicular. | Marque las caras funcionales y el sentido de medición. |
+| **tw — espesor del alma** | Espesor del elemento central que conecta las patas. | Indique el valor nominal y la tolerancia. |
+| **tf — espesor de las patas** | Espesor de cada pata exterior. | Especifíquelas por separado si son diferentes. |
+| **g1 y g2 — aberturas libres** | Huecos útiles a cada lado del alma para las piezas acopladas. | Defina cada abertura e indique la altura o zona de ajuste. |
+| **L — longitud de corte** | Longitud final en el sentido de extrusión. | Añada escuadrado, desbarbado, taladros o mecanizado si se requieren. |
 
 ![Calibrador digital comprobando el alma central de un perfil H de aluminio](/images/aluminium-h-profile-web-thickness-measurement.webp)
 *Inspección ilustrativa. Confirme en el plano aprobado el método de medición y los límites de aceptación.*
 
 Un catálogo puede utilizar otras letras o agrupar cotas. Si elige una sección existente, solicite el plano vigente del proveedor; para una sección personalizada, defina cada cara y dimensión crítica en su propio plano.
+
+## Opciones publicadas y dimensiones que la ficha no especifica
+
+La ficha actual de [perfiles H de aluminio LingYe](/es/products/aluminium-h-profile) indica longitudes estándar de **4–6 m**, longitudes personalizadas, espesores desde **0,7 mm** y temple T5/T6. Enumera las aleaciones 6063, 6063A, 6061, 6005, 6060, 6082, 6351, 7005 y 7075. Los acabados publicados incluyen anodizado, pintura en polvo, efecto madera, PVDF, granallado y electroforesis. Confirma las opciones para el perfil y el pedido cotizados.
+
+Estos datos **no son una tabla universal de medidas de sección H**. La ficha no define un ancho, una altura, un espesor de alma ni aberturas válidos para todos los perfiles. Confirma **W, H, tw, tf, g1 y g2** en el plano vigente del perfil cotizado; el mínimo publicado de 0,7 mm no significa que todas las paredes tengan ese espesor. Para elegir un acabado, consulta la guía de [acabados superficiales para perfiles de aluminio](/es/news/selecting-an-aluminium-profile-finish).
 
 ## Compruebe ambas aberturas con las piezas de unión
 

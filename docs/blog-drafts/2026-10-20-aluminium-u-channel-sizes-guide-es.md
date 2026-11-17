@@ -2,8 +2,8 @@
 
 **状态：** 待发布  
 **Excerpt:** Guía práctica para medir un canal U de aluminio y preparar una consulta basada en plano, sin inventar una tabla universal de medidas.  
-**SEO title:** Medidas de canal U de aluminio: guía de dimensiones  
-**Meta description:** Aprende a especificar base, altura de alas, espesor, abertura útil y longitud de corte de un canal U, y qué datos confirmar en el plano.  
+**SEO title:** Medidas de canal U de aluminio en mm: base, alas y espesor  
+**Meta description:** Aprende a especificar en milímetros la base, las alas, el espesor, la abertura y la longitud de un canal U, y confirma las opciones del proveedor y el plano.  
 **Meta keywords:** medidas canal U aluminio, dimensiones perfil U aluminio, espesor canal aluminio, perfil extruido aluminio, plano de extrusión
 
 Quien busca medidas de canales U de aluminio normalmente necesita algo más que un ancho nominal: necesita saber si el perfil encajará con un panel, una guía o una pieza contigua y qué cotas debe incluir en el plano o la solicitud de oferta.
@@ -34,6 +34,26 @@ Utiliza una vista de sección y define los puntos de medición. Las letras sigui
 
 
 Si B y T son cotas exteriores y las paredes son uniformes, `B − 2T` puede servir como estimación inicial de la abertura. No sustituye la cota W: los radios interiores, la inclinación, la variación del espesor y la altura de ajuste pueden cambiar la holgura útil. Acota directamente la abertura funcional en el plano.
+
+### Convertir pulgadas a milímetros
+
+Si el plano está en pulgadas, convierte con **milímetros = pulgadas × 25,4**. Estos valores solo convierten unidades; no son medidas estándar de secciones U.
+
+| Medida del plano | Conversión |
+|---:|---:|
+| 1/8 in | 3,175 mm |
+| 1/4 in | 6,35 mm |
+| 3/8 in | 9,525 mm |
+| 1/2 in | 12,7 mm |
+| 1 in | 25,4 mm |
+
+Mantén la unidad original del plano como unidad de control, salvo que el proyecto indique otra cosa. No redondees una conversión que afecte al ajuste; confirma la tolerancia aplicable y el método de medición en el plano aprobado.
+
+## Opciones publicadas y dimensiones de sección
+
+La ficha actual de [canales U de LingYe](/es/products/aluminium-u-channel) indica longitudes estándar de **4–6 m**, longitudes personalizadas y espesores de pared desde **0,7 mm**. También enumera temples T4/T5/T6. Confirma las opciones disponibles para el perfil y el pedido cotizados con el plano vigente del proveedor.
+
+Esos datos no definen la sección transversal. La ficha no establece un ancho de base, altura de alas ni abertura libre universales. Confirma **B, H, T y W** en el plano del perfil cotizado; el espesor mínimo publicado no significa que todos los perfiles tengan ese espesor.
 
 ## Define el ajuste antes de elegir una medida nominal
 

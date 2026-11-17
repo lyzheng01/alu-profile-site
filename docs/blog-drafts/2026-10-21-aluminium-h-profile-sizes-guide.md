@@ -1,9 +1,9 @@
-# Aluminium H Profile Sizes: What to Measure Before You Request a Quote
+# Aluminium H Profile Sizes: Dimensions, Openings and Fit
 
 **状态：** 待发布  
-**Excerpt:** A drawing-first guide to defining an aluminium H profile, checking its openings against mating panels and preparing a complete extrusion enquiry.  
-**SEO title:** Aluminium H Profile Sizes: Dimensions to Check  
-**Meta description:** Learn how to specify H profile overall width and height, web and side-leg thickness, clear openings and cut length before ordering an aluminium extrusion.  
+**Excerpt:** Learn how to define H profile dimensions from a section drawing, check both openings against mating parts, and prepare a clear aluminium extrusion enquiry.  
+**SEO title:** Aluminium H Profile Sizes: Dimensions & Openings  
+**Meta description:** See how to define an aluminium H profile: overall width and height, web and leg thickness, clear openings, cut length and published product options.  
 **Meta keywords:** aluminium h profile sizes, aluminium h section dimensions, h profile extrusion, h channel dimensions, aluminium extrusion drawing
 
 An aluminium H profile is often chosen to align or join panels, but “H profile” alone does not define a usable size. The cross-section, open spaces, wall thicknesses and finished surface all affect whether the mating parts fit.
@@ -20,19 +20,27 @@ Draw the profile in the orientation used by the assembly and mark the functional
 ![H-section dimension diagram showing overall width W, overall height H, side-leg thickness tf, web thickness tw and clear openings g1 and g2](/images/aluminium-h-profile-dimensions.svg)
 *Dimension reference only. The symbols are used for this guide and do not imply nominal values or tolerances.*
 
-Include the dimensions that define your part:
+Use a consistent set of dimensions in the section view:
 
-- **W — overall width:** outside-to-outside across the two side legs in the drawing view.
-- **H — overall height:** outside-to-outside in the perpendicular direction. State the orientation so W and H cannot be swapped.
-- **tw — web thickness:** thickness of the central connecting web.
-- **tf — side-leg thickness:** thickness of each outer leg. If the two legs differ, call them out separately.
-- **g1 and g2 — clear openings:** usable gaps on either side of the web where panels or adjoining parts fit. Specify each opening if they are not equal, and identify the height or location where it matters.
-- **L — cut length:** finished length along the extrusion direction, with end squareness, deburring, holes or machining noted as needed.
+| Label | What to measure | Drawing note |
+|---|---|---|
+| **W — overall width** | Outside-to-outside across the side legs in the section view. | Show the view orientation so W and H cannot be swapped. |
+| **H — overall height** | Outside-to-outside in the perpendicular direction. | Mark the functional faces and measurement direction. |
+| **tw — web thickness** | Thickness of the central connecting web. | State the nominal value and tolerance. |
+| **tf — side-leg thickness** | Thickness of each outer leg. | Specify each leg separately if they differ. |
+| **g1 and g2 — clear openings** | Usable gaps on either side of the web where mating parts fit. | Define each opening and the height or engagement point where fit matters. |
+| **L — cut length** | Finished length along the extrusion direction. | Add end squareness, deburring, holes or machining requirements. |
 
 ![A digital caliper checking the central web of an aluminium H-section extrusion](/images/aluminium-h-profile-web-thickness-measurement.webp)
 *Illustrative inspection setup. Confirm the measurement method and acceptance limits on the approved drawing.*
 
 A catalogue may use different letters or combine dimensions. Copy the supplier’s current drawing when selecting an existing section; for a custom profile, define each critical face and dimension directly on your own drawing.
+
+## Published product options and what they do not specify
+
+The current [LingYe aluminium H profile listing](/en/products/aluminium-h-profile) lists **4–6 m standard lengths**, custom lengths, wall thicknesses from **0.7 mm and above**, and T5/T6 temper options. It lists alloys 6063, 6063A, 6061, 6005, 6060, 6082, 6351, 7005 and 7075. Listed surface treatments include anodizing, powder coating, wood grain, PVDF, sand blasting and electrophoresis. Confirm availability for the specific profile and order with the supplier.
+
+These options do **not** give a universal H-section size chart. The listing does not specify one overall width, height, web thickness or opening for every profile. Confirm **W, H, tw, tf, g1 and g2** on the current drawing for the quoted section; the listed 0.7 mm minimum does not mean every wall uses that thickness. For finish terminology and selection, see the guide to [aluminium profile surface finishes](/en/news/selecting-an-aluminium-profile-finish).
 
 ## Match both openings to the parts being joined
 

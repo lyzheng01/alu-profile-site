@@ -2,8 +2,8 @@
 
 **状态：** 待发布  
 **Excerpt:** A practical guide to measuring an aluminium U channel and preparing a clear drawing-based enquiry without assuming a universal size chart.  
-**SEO title:** Aluminium U Channel Sizes: How to Measure a Section  
-**Meta description:** Learn how to specify aluminium U channel size by base width, leg height, wall thickness, clear opening and cut length, plus the drawing details buyers should confirm.  
+**SEO title:** Aluminium U Channel Sizes: Dimensions in mm & How to Measure  
+**Meta description:** Learn how to specify aluminium U channel sizes in mm: measure the base, legs, wall thickness, opening and cut length, then check listed product options and drawing requirements.  
 **Meta keywords:** aluminium u channel sizes, aluminium channel dimensions, u channel wall thickness, aluminium u section, aluminium extrusion drawing
 
 People searching for aluminium U channel sizes usually need more than a nominal width. They need to know whether the channel will fit a panel, guide, edge or adjoining part, and what dimensions to put on a drawing or RFQ.
@@ -23,17 +23,39 @@ Use a section view and define the measurement points. The letters below are a si
 ![U-channel schematic with outside base width B, overall leg height H, wall thickness T and clear opening W marked](/images/aluminium-u-channel-section-dimensions.svg)
 *Dimension reference only. No nominal size or tolerance is implied.*
 
-- **B — outside base width:** the overall width across the outside faces of the base.
-- **H — overall leg height:** the outside height from the base underside to the top of each leg. If the legs differ, specify H1 and H2 separately.
-- **T — wall thickness:** state whether the base and both legs share one nominal thickness. Call out each wall separately if they do not.
-- **W — clear opening:** the usable inside width between the legs, measured at the height where the mating part must fit.
-- **L — cut length:** the finished length along the extrusion direction. Also state whether ends must be square, deburred, drilled or machined.
+| Drawing label | What to measure | What to show on the drawing |
+|---|---|---|
+| **B — outside base width** | Overall width across the outside faces of the base. | State the outside measurement and its tolerance. |
+| **H — overall leg height** | Outside height from the base underside to the top of each leg. | Specify H1 and H2 separately if the legs differ. |
+| **T — wall thickness** | Thickness of the base and each leg. | State whether one nominal thickness applies to all walls; call out differences. |
+| **W — clear opening** | Usable inside width between the legs, measured where the mating part must fit. | Dimension the functional opening directly and identify the measurement height. |
+| **L — cut length** | Finished length along the extrusion direction. | State end condition and any deburring, drilling or machining. |
 
 ![Digital caliper checking the clear opening of an aluminium U channel](/images/aluminium-u-channel-opening-measurement.webp)
 *Illustrative inspection setup. Confirm functional dimensions and tolerance on the approved drawing.*
 
 
 If B and T are outside dimensions and the walls are uniform, `B − 2T` can be a first estimate of the opening. It is not a substitute for dimensioning W: corner radii, taper, wall variation and the height of the fit can change the usable clearance. Dimension the functional opening directly on the drawing.
+
+### Converting inch dimensions to millimetres
+
+For a drawing supplied in inches, convert with **millimetres = inches × 25.4**. These are unit conversions only; they are not standard U-channel section sizes.
+
+| Drawing value | Converted value |
+|---:|---:|
+| 1/8 in | 3.175 mm |
+| 1/4 in | 6.35 mm |
+| 3/8 in | 9.525 mm |
+| 1/2 in | 12.7 mm |
+| 1 in | 25.4 mm |
+
+Keep the original drawing unit as the controlling unit unless the project specifies otherwise. Do not round a converted value that controls fit; confirm the governing tolerance and measurement method on the approved drawing.
+
+## Published U-channel options and section dimensions
+
+The current [LingYe U-channel product listing](/en/products/aluminium-u-channel) states a standard length range of **4–6 m**, custom lengths, and wall thicknesses from **0.7 mm and above**. It also lists T4/T5/T6 temper options. Confirm the options available for the quoted profile and order against the current supplier drawing.
+
+Those listing values do not define the cross-section. The listing does not give one universal base width, leg height or clear opening. Confirm **B, H, T and W** from the profile drawing for the section being quoted; do not treat the listed minimum thickness as the thickness of every profile.
 
 ## Choose the fit before choosing a nominal size
 

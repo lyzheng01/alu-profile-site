@@ -2,8 +2,8 @@
 
 **状态：** 待发布  
 **Excerpt:** Guia prático para medir um canal U de alumínio e preparar uma consulta com base em desenho, sem inventar uma tabela universal de medidas.  
-**SEO title:** Medidas de canal U de alumínio: guia de dimensões  
-**Meta description:** Saiba como especificar base, altura das abas, espessura, abertura livre e comprimento de corte de um canal U, e quais dados confirmar no desenho.  
+**SEO title:** Medidas de canal U de alumínio em mm: base, abas e espessura  
+**Meta description:** Saiba como especificar em milímetros a base, as abas, a espessura, a abertura e o comprimento de um canal U, e confirme as opções do fornecedor e o desenho.  
 **Meta keywords:** medidas canal U alumínio, dimensões perfil U alumínio, espessura canal de alumínio, perfil extrudado, desenho de extrusão
 
 Quem pesquisa medidas de canal U de alumínio geralmente precisa de mais do que uma largura nominal: precisa confirmar se o perfil vai encaixar em um painel, guia ou peça adjacente e quais cotas devem constar no desenho ou pedido de cotação.
@@ -34,6 +34,26 @@ Use uma vista da seção e defina os pontos de medição. As letras abaixo são 
 
 
 Se B e T forem cotas externas e as paredes tiverem espessura uniforme, `B − 2T` pode ser uma estimativa inicial da abertura. Isso não substitui a cota W: raios internos, inclinação, variação da parede e altura do encaixe podem alterar a folga útil. Coloque a abertura funcional diretamente no desenho.
+
+### Converter polegadas para milímetros
+
+Se o desenho estiver em polegadas, converta com **milímetros = polegadas × 25,4**. Estes valores são apenas conversões de unidade; não representam medidas padrão de seções U.
+
+| Medida no desenho | Conversão |
+|---:|---:|
+| 1/8 in | 3,175 mm |
+| 1/4 in | 6,35 mm |
+| 3/8 in | 9,525 mm |
+| 1/2 in | 12,7 mm |
+| 1 in | 25,4 mm |
+
+Mantenha a unidade original do desenho como unidade de controle, salvo indicação diferente no projeto. Não arredonde uma conversão que afete o encaixe; confirme a tolerância aplicável e o método de medição no desenho aprovado.
+
+## Opções publicadas e dimensões da seção
+
+A página atual de [canais U da LingYe](/pt/products/aluminium-u-channel) informa comprimento padrão de **4–6 m**, comprimentos personalizados e espessura de parede a partir de **0,7 mm**. Também lista opções de têmpera T4/T5/T6. Confirme as opções disponíveis para o perfil e o pedido cotados no desenho vigente do fornecedor.
+
+Esses dados não definem a seção transversal. A página não informa uma largura de base, altura das abas ou abertura livre universal. Confirme **B, H, T e W** no desenho do perfil cotado; a espessura mínima publicada não significa que todos os perfis tenham essa espessura.
 
 ## Defina o encaixe antes de escolher a medida nominal
 

@@ -31,6 +31,14 @@ def load_content(root, language):
     if not path.is_file():
         raise CommandError(f"Missing article draft for {language}")
     lines = path.read_text(encoding="utf-8-sig").splitlines()
+    title = next((line[2:].strip() for line in lines if line.startswith("# ")), "")
+    metadata = {}
+    for line in lines:
+        match = re.match(r"^\*\*(Excerpt|SEO title|Meta description|Meta keywords):\*\*\s*(.*)$", line)
+        if match:
+            metadata[match.group(1)] = match.group(2).strip()
+    if not title or any(not metadata.get(field) for field in ("Excerpt", "SEO title", "Meta description", "Meta keywords")):
+        raise CommandError(f"Missing article title or SEO metadata in {path}")
     body = [line for line in lines if not line.startswith("# ") and not line.startswith("**状态：**") and not re.match(r"^\*\*(Excerpt|SEO title|Meta description|Meta keywords):\*", line)]
     found = set()
     output = []
@@ -67,7 +75,7 @@ def load_content(root, language):
     content = render_markdown("\n".join(output))
     if content.count("<img") != 5:
         raise CommandError(f"Expected five rendered images for {language}; found {content.count('<img')}")
-    return content
+    return title, metadata, content
 
 
 class Command(BaseCommand):
@@ -78,14 +86,14 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         root = Path(settings.BASE_DIR).parent
-        content_by_language = {lang: load_content(root, lang) for lang in LANGUAGES}
+        localized = {lang: load_content(root, lang) for lang in LANGUAGES}
         article = Article.objects.filter(slug=SLUG, status="published").first()
         if article is None:
             raise CommandError(f"Published article not found: {SLUG}")
         if options["dry_run"]:
-            self.stdout.write(f"Validated published article {article.id} and five images in {len(LANGUAGES)} language drafts.")
+            self.stdout.write(f"Validated published article {article.id}, five images, and content/SEO metadata in {len(LANGUAGES)} language drafts.")
             return
-        backup_dir = root / "backups" / "20261020_u_channel_images_update"
+        backup_dir = root / "backups" / "20261030_u_channel_multilingual_deploy"
         backup_dir.mkdir(parents=True, exist_ok=True)
         if "sqlite" not in connection.settings_dict["ENGINE"]:
             raise CommandError("Automatic backup currently requires the configured SQLite database.")
@@ -98,12 +106,27 @@ class Command(BaseCommand):
             if translation_file.exists():
                 shutil.copy2(translation_file, backup_dir / translation_file.name)
         with transaction.atomic():
-            article.content = content_by_language["en"]
-            article.save(update_fields=["content", "updated_at"])
+            title, metadata, content = localized["en"]
+            article.title = title
+            article.content = content
+            article.excerpt = metadata["Excerpt"]
+            article.meta_title = metadata["SEO title"]
+            article.meta_description = metadata["Meta description"]
+            article.meta_keywords = metadata["Meta keywords"]
+            article.save(update_fields=["title", "content", "excerpt", "meta_title", "meta_description", "meta_keywords", "updated_at"])
             for language in LANGUAGES[1:]:
                 translations = translation_service._load_translations_from_file("article", language)
-                translations[f"content_{article.id}"] = content_by_language[language]
+                title, metadata, content = localized[language]
+                for field, value in {
+                    "title": title,
+                    "content": content,
+                    "excerpt": metadata["Excerpt"],
+                    "meta_title": metadata["SEO title"],
+                    "meta_description": metadata["Meta description"],
+                    "meta_keywords": metadata["Meta keywords"],
+                }.items():
+                    translations[f"{field}_{article.id}"] = value
                 if not translation_service._save_translations_to_file("article", language, translations):
                     raise CommandError(f"Could not save {language} article content")
-        self.stdout.write(self.style.SUCCESS(f"Updated published article {article.id}; five images in en, zh, es and pt."))
+        self.stdout.write(self.style.SUCCESS(f"Updated published article {article.id}; content and SEO metadata in en, zh, es and pt."))
 
