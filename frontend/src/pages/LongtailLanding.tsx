@@ -248,6 +248,7 @@ const LongtailLanding: React.FC = () => {
     ogTitle: page?.title,
     ogDescription: page?.description,
     language: 'en',
+    alternateLanguages: ['en'],
   });
 
   useEffect(() => {
