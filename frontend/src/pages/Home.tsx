@@ -97,13 +97,18 @@ const Home: React.FC = () => {
   const [factoryImages, setFactoryImages] = useState<FactoryImage[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
 
+  const homeSeo = ({
+    en: { title: 'China Aluminum Profile Manufacturer | LingYe Aluminum', description: 'LingYe Aluminum supplies architectural and industrial aluminum profiles, custom extrusion, surface finishing, OEM drawing support, and export packaging for global B2B buyers.' },
+    es: { title: 'Fabricante de perfiles de aluminio en China | LingYe Aluminum', description: 'Suministramos perfiles arquitectónicos e industriales, extrusión a medida, acabados, apoyo con planos y embalaje de exportación para compradores B2B.' },
+    pt: { title: 'Fabricante de perfis de alumínio na China | LingYe Aluminum', description: 'Fornecemos perfis arquitetônicos e industriais, extrusão sob medida, acabamentos, apoio com desenhos e embalagem para exportação B2B.' },
+    zh: { title: '中国铝型材制造商｜凌烨铝业', description: '凌烨铝业为全球企业客户提供建筑与工业铝型材、定制挤压、表面处理、图纸支持及出口包装服务。' },
+  } as const)[currentLanguage as 'en' | 'es' | 'pt' | 'zh'] || { title: 'China Aluminum Profile Manufacturer | LingYe Aluminum', description: 'LingYe Aluminum supplies aluminum profiles and custom extrusion for global B2B buyers.' };
   useSeoMeta({
-    title: 'China Aluminum Profile Manufacturer | LingYe Aluminum',
-    description:
-      'LingYe Aluminum supplies architectural and industrial aluminum profiles, custom extrusion, surface finishing, OEM drawing support, and export packaging for global B2B buyers.',
+    title: homeSeo.title,
+    description: homeSeo.description,
     canonicalPath: `/${currentLanguage}`,
-    ogTitle: 'LingYe Aluminum | China Aluminum Profile Manufacturer',
-    ogDescription: 'Factory-direct aluminum extrusion, finishing, and export RFQ support for global buyers.',
+    ogTitle: homeSeo.title,
+    ogDescription: homeSeo.description,
     ogImage: 'https://lingyealu.com/images/home-hero-aluminum-anodizing-line.webp',
     language: currentLanguage,
   });
