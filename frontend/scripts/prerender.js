@@ -136,6 +136,9 @@ const writeArticleMetadataFallbacks = async () => {
       description: article.meta_description || article.excerpt || article.summary || undefined,
       datePublished: article.created_at || undefined,
       dateModified: article.updated_at || article.created_at || undefined,
+      image: article.featured_image
+        ? [article.featured_image.replace(/^https?:\/\/(?:www\.)?lingyealuminum\.com(?=\/)/i, SITE_URL)]
+        : undefined,
       author: { '@type': 'Organization', name: article.author || 'LingYe Aluminum' },
       publisher: { '@type': 'Organization', name: 'LingYe Aluminum', url: SITE_URL },
       mainEntityOfPage: canonicalUrl,
