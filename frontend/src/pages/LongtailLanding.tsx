@@ -275,11 +275,10 @@ const LongtailLanding: React.FC = () => {
     if (!page) return null;
     return {
       '@context': 'https://schema.org',
-      '@type': 'Product',
+      '@type': 'Service',
       name: page.h1,
       description: page.description,
-      brand: { '@type': 'Brand', name: 'LingYe Aluminum' },
-      manufacturer: { '@type': 'Organization', name: 'LingYe Aluminum' },
+      provider: { '@type': 'Organization', name: 'LingYe Aluminum', url: 'https://lingyealu.com' },
       url: typeof window !== 'undefined' ? window.location.href : `https://lingyealu.com/en/${page.slug}`,
     };
   }, [page]);

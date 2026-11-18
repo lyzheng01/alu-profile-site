@@ -302,6 +302,17 @@ const Products: React.FC = () => {
           ))}
         </nav>
 
+        {categorySlug === 'windows-doors' && (
+          <div className="mb-8 rounded-xl border border-sky-100 bg-white p-5">
+            <Link
+              to={`/${currentLanguage}/products/windows-doors/showcase`}
+              className="font-semibold text-sky-800 underline underline-offset-4 hover:text-sky-950"
+            >
+              {t('showcase_title', 'Window and Door Aluminium Profiles')}
+            </Link>
+          </div>
+        )}
+
         {/* 分类文字说明（在产品前展示） */}
         {activeCategory && (
           <div className="mb-8 rounded-xl border border-sky-100 bg-white p-6">
