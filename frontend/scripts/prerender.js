@@ -128,6 +128,31 @@ const writeArticleMetadataFallbacks = async () => {
       const titleHtml = `<main class="container mx-auto px-4 py-8"><article><h1>${escapeHtml(article.title)}</h1><div class="prose max-w-none">${article.content}</div></article></main>`;
       html = replaceRootContent(html, `<div id="root">${titleHtml}</div>`);
     }
+    const canonicalUrl = `${SITE_URL}${route}`;
+    const articleSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: article.title,
+      description: article.meta_description || article.excerpt || article.summary || undefined,
+      datePublished: article.created_at || undefined,
+      dateModified: article.updated_at || article.created_at || undefined,
+      author: { '@type': 'Organization', name: article.author || 'LingYe Aluminum' },
+      publisher: { '@type': 'Organization', name: 'LingYe Aluminum', url: SITE_URL },
+      mainEntityOfPage: canonicalUrl,
+    };
+    const breadcrumbSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/${language}` },
+        { '@type': 'ListItem', position: 2, name: 'News', item: `${SITE_URL}/${language}/news` },
+        { '@type': 'ListItem', position: 3, name: article.title, item: canonicalUrl },
+      ],
+    };
+    const articleJsonLd = [articleSchema, breadcrumbSchema]
+      .map((schema) => `<script type="application/ld+json" data-prerender-seo="article">${JSON.stringify(schema).replace(/</g, '\\u003c')}</script>`)
+      .join('');
+    html = html.replace('</head>', `${articleJsonLd}</head>`);
     const routeDir = path.join(BUILD_DIR, route);
     fs.mkdirSync(routeDir, { recursive: true });
     fs.writeFileSync(path.join(routeDir, 'index.html'), html, 'utf8');
