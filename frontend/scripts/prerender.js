@@ -414,6 +414,21 @@ const prerender = async () => {
       if (new URL(page.url()).pathname !== expectedPath) {
         throw new Error(`Route redirected during prerender: ${route} -> ${new URL(page.url()).pathname}`);
       }
+      await page.evaluate(() => {
+        const visible = (document.body?.innerText || '').toLocaleLowerCase();
+        document.querySelectorAll('script[type="application/ld+json"]').forEach((script) => {
+          try {
+            const schema = JSON.parse(script.textContent || '');
+            if (schema['@type'] !== 'FAQPage') return;
+            const questions = (schema.mainEntity || []).map((item) => item.name || '').filter(Boolean);
+            if (questions.length && questions.some((question) => !visible.includes(question.toLocaleLowerCase()))) {
+              script.remove();
+            }
+          } catch {
+            // Leave invalid JSON-LD untouched for separate validation.
+          }
+        });
+      });
       let html = await page.content();
       html = html.replace(/http:\/\/127\.0\.0\.1:\d+/g, 'https://lingyealu.com');
       html = html.replace(/https?:\/\/(?:www\.)?lingyealuminum\.com/gi, 'https://lingyealu.com');
