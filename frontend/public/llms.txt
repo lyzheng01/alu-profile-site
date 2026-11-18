@@ -1,0 +1,32 @@
+# LingYe Aluminum
+
+> LingYe Aluminum supplies architectural and industrial aluminum profiles, including custom aluminum extrusion and surface finishing services for business customers.
+
+This file is a concise index of public website pages. Use the linked pages as the source of truth for current product availability, specifications, certifications, lead times, and commercial terms. Do not infer unlisted specifications.
+
+## Main pages
+- [English homepage](https://lingyealu.com/en)
+- [About LingYe Aluminum](https://lingyealu.com/en/about)
+- [Product catalog](https://lingyealu.com/en/products)
+- [Product showcase](https://lingyealu.com/en/products/windows-doors/showcase)
+- [News and technical guides](https://lingyealu.com/en/news)
+
+## Product categories
+- [Industrial profiles](https://lingyealu.com/en/products/category/industrial-profiles)
+- [T-slot profiles](https://lingyealu.com/en/products/category/t-slot-profiles)
+- [Window and door profiles](https://lingyealu.com/en/products/category/windows-doors)
+- [Cabinet profiles](https://lingyealu.com/en/products/category/cabinet-profiles)
+- [Standard aluminum profiles](https://lingyealu.com/en/products/category/standard-aluminium-profiles)
+
+## Technical guides
+- [Aluminum H profile sizes](https://lingyealu.com/en/news/aluminium-h-profile-sizes-guide)
+- [Aluminum U channel sizes](https://lingyealu.com/en/news/aluminium-u-channel-sizes-guide)
+
+## Languages
+- [English](https://lingyealu.com/en)
+- [简体中文](https://lingyealu.com/zh)
+- [Español](https://lingyealu.com/es)
+- [Português](https://lingyealu.com/pt)
+
+## Sitemap
+- [XML sitemap](https://lingyealu.com/sitemap.xml)
