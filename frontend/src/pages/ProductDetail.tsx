@@ -14,14 +14,16 @@ interface Product {
   name?: string;
   translated_name?: string;
   description: string;
-  category: {
+  category?: {
     id: number;
-    name: string;
+    name?: string;
+    translated_name?: string;
     slug?: string;
   };
   subcategory?: {
     id: number;
-    name: string;
+    name?: string;
+    translated_name?: string;
     slug?: string;
   };
   features: string | Array<Record<string, any>>;
@@ -240,6 +242,8 @@ const ProductDetail: React.FC = () => {
     || item.name
     || t('product_detail_aluminum_profile', 'Aluminum Profile');
   const localizedProductName = product ? getLocalizedProductName(product) : t('product_detail_aluminum_profile', 'Aluminum Profile');
+  const localizedCategoryName = product?.category?.translated_name || product?.category?.name;
+  const localizedSubcategoryName = product?.subcategory?.translated_name || product?.subcategory?.name;
 
   const resolveProductMediaUrl = (imageUrl?: string | null) => {
     if (!imageUrl) return null;
@@ -338,11 +342,11 @@ const ProductDetail: React.FC = () => {
         '@type': 'Organization',
         name: 'LingYe Aluminum',
       },
-      category: product.category?.name || undefined,
+      category: localizedCategoryName || undefined,
       sku: String(product.id),
       url: typeof window !== 'undefined' ? window.location.href : undefined,
     };
-  }, [product, localizedProductName]);
+  }, [product, localizedProductName, localizedCategoryName]);
 
   useStructuredData('product', productStructuredData);
 
@@ -719,15 +723,15 @@ const ProductDetail: React.FC = () => {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             {localizedProductName}
-            {product.category && (
+            {localizedCategoryName && (
               <span className="text-2xl font-normal text-gray-600 ml-2">
-                - {product.category.name}
+                - {localizedCategoryName}
               </span>
             )}
           </h1>
           <p className="text-gray-600">
-            Categories: All Product{product.category && `, ${product.category.name}`}
-            {product.subcategory && `, ${product.subcategory.name}`}
+            Categories: All Product{localizedCategoryName && `, ${localizedCategoryName}`}
+            {localizedSubcategoryName && `, ${localizedSubcategoryName}`}
           </p>
         </div>
 
